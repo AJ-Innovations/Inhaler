@@ -141,9 +141,9 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
             return (
               <div
                 key={plan.id}
-                className={`relative w-[90%] min-w-[90%] h-[450px] snap-center rounded-[40px] border p-6 flex flex-col justify-between transition-all duration-700 ${plan.highlight
-                    ? `${colors.highlight} ${colors.border} shadow-[0_0_40px_rgba(16,185,129,0.08)]`
-                    : `bg-white/[0.02] ${colors.border}`
+                className={`relative w-[90%] min-w-[90%] h-[550px] snap-center rounded-[40px] border p-6 flex flex-col justify-between transition-all duration-700 ${plan.highlight
+                  ? `${colors.highlight} ${colors.border} shadow-[0_0_40px_rgba(16,185,129,0.08)]`
+                  : `bg-white/[0.02] ${colors.border}`
                   }`}
               >
                 <div className="space-y-4 shrink-0">
