@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Zap, Crown, Star, ChevronLeft, Lock } from 'lucide-react';
 
@@ -10,6 +10,28 @@ interface SubscriptionViewProps {
 
 export function SubscriptionView({ onBack }: SubscriptionViewProps) {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const [activeIndex, setActiveIndex] = useState(1); // Default to the Pro plan (index 1)
+  const touchStart = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStart.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStart.current === null) return;
+    const diff = touchStart.current - e.changedTouches[0].clientX;
+    const threshold = 50; // swipe threshold in px
+    
+    if (diff > threshold) {
+      // Swipe left -> Next card
+      setActiveIndex(prev => Math.min(prev + 1, plans.length - 1));
+    } else if (diff < -threshold) {
+      // Swipe right -> Previous card
+      setActiveIndex(prev => Math.max(prev - 1, 0));
+    }
+    
+    touchStart.current = null;
+  };
 
   const plans = [
     {
@@ -135,88 +157,102 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
         </div>
 
         {/* Full Screen Scrollable Cards Slider */}
-        <div className="flex-1 flex flex-row gap-4 pb-4 pt-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-6 items-center min-h-0">
-          {plans.map((plan) => {
-            const colors = getColorClasses(plan.color || 'emerald');
-            return (
-              <div
-                key={plan.id}
-                className={`relative w-[90%] min-w-[90%] h-[550px] snap-center rounded-[40px] border p-6 flex flex-col justify-between transition-all duration-700 ${plan.highlight
-                  ? `${colors.highlight} ${colors.border} shadow-[0_0_40px_rgba(16,185,129,0.08)]`
-                  : `bg-white/[0.02] ${colors.border}`
+        <div 
+          className="flex-1 w-full overflow-hidden relative min-h-0 flex items-center"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div 
+            className="flex flex-row gap-4 h-[550px] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] w-full items-center"
+            style={{ 
+              transform: `translateX(calc(8% - ${activeIndex} * (84% + 16px)))` 
+            }}
+          >
+            {plans.map((plan, index) => {
+              const colors = getColorClasses(plan.color || 'emerald');
+              const isActive = index === activeIndex;
+              return (
+                <div
+                  key={plan.id}
+                  onClick={() => setActiveIndex(index)}
+                  className={`relative w-[84%] min-w-[84%] h-full rounded-[40px] border p-6 flex flex-col justify-between transition-all duration-700 cursor-pointer ${
+                    isActive 
+                      ? `${colors.highlight} ${colors.border} shadow-[0_0_40px_rgba(16,185,129,0.08)] scale-100 opacity-100` 
+                      : `bg-white/[0.02] ${colors.border} scale-95 opacity-50`
                   }`}
-              >
-                <div className="space-y-4 shrink-0">
-                  {plan.popular && (
-                    <div className={`absolute top-6 right-6 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${colors.badge}`}>
-                      MOST POPULAR
+                >
+                  <div className="space-y-4 shrink-0">
+                    {plan.popular && (
+                      <div className={`absolute top-6 right-6 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${colors.badge}`}>
+                        MOST POPULAR
+                      </div>
+                    )}
+
+                    {/* Gradient Glow */}
+                    {(plan.highlight || plan.id === 'premium' || plan.id === 'free') && (
+                      <div className={`absolute -top-20 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full blur-[60px] pointer-events-none ${colors.glow}`} />
+                    )}
+
+                    <div className="space-y-4">
+                      <div className="space-y-1">
+                        <h3 className="text-xl font-light text-white">{plan.name}</h3>
+                        <p className="text-gray-500 text-[9px] uppercase tracking-widest font-bold">Billed {billingCycle}</p>
+                      </div>
+
+                      <div className="flex items-baseline gap-2">
+                        {plan.strikethrough && (
+                          <span className={`text-lg text-gray-600 font-light line-through decoration-2 tracking-tighter self-center mb-1 ${colors.badge.replace('bg-', 'decoration-').replace('/10', '/50')}`}>
+                            ${plan.strikethrough}
+                          </span>
+                        )}
+                        <span className="text-4xl font-light text-white tracking-tighter">${plan.displayPrice || plan.price}</span>
+                        <span className="text-xs text-gray-500 font-medium">{plan.period || '/ month'}</span>
+                      </div>
+
+                      <p className="text-gray-400 text-xs font-light leading-relaxed min-h-[36px]">{plan.description}</p>
                     </div>
-                  )}
+                  </div>
 
-                  {/* Gradient Glow */}
-                  {(plan.highlight || plan.id === 'premium' || plan.id === 'free') && (
-                    <div className={`absolute -top-20 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full blur-[60px] pointer-events-none ${colors.glow}`} />
-                  )}
+                  {/* Button ABOVE features list */}
+                  <button className={`w-full py-4 my-4 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-2xl active:scale-95 shrink-0 ${colors.button}`}>
+                    Get it now
+                  </button>
 
-                  <div className="space-y-4">
-                    <div className="space-y-1">
-                      <h3 className="text-xl font-light text-white">{plan.name}</h3>
-                      <p className="text-gray-500 text-[9px] uppercase tracking-widest font-bold">Billed {billingCycle}</p>
-                    </div>
+                  <div className="flex-1 overflow-y-auto pr-1 space-y-3 border-t border-white/5 pt-4 scrollbar-hide min-h-0">
+                    {/* Specialized Cloud storage for the third card */}
+                    {plan.id === 'premium' && (
+                      <div className="flex items-center gap-4 group shrink-0">
+                        <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 bg-gradient-to-br from-amber-500 to-yellow-400 text-black shadow-[0_0_12px_rgba(245,158,11,0.25)]">
+                          <Star size={10} fill="black" />
+                        </div>
+                        <span className="text-xs text-white font-black tracking-tight group-hover:text-amber-400 transition-colors">CLOUD PROGRESS SYNC</span>
+                      </div>
+                    )}
 
-                    <div className="flex items-baseline gap-2">
-                      {plan.strikethrough && (
-                        <span className={`text-lg text-gray-600 font-light line-through decoration-2 tracking-tighter self-center mb-1 ${colors.badge.replace('bg-', 'decoration-').replace('/10', '/50')}`}>
-                          ${plan.strikethrough}
-                        </span>
-                      )}
-                      <span className="text-4xl font-light text-white tracking-tighter">${plan.displayPrice || plan.price}</span>
-                      <span className="text-xs text-gray-500 font-medium">{plan.period || '/ month'}</span>
-                    </div>
+                    {/* Included Features */}
+                    {plan.features.map((feature, i) => (
+                      <div key={i} className="flex items-center gap-4 group shrink-0">
+                        <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all ${colors.icon}`}>
+                          <Check size={10} strokeWidth={3} />
+                        </div>
+                        <span className="text-xs text-gray-300 font-light group-hover:text-white transition-colors">{feature}</span>
+                      </div>
+                    ))}
 
-                    <p className="text-gray-400 text-xs font-light leading-relaxed min-h-[36px]">{plan.description}</p>
+                    {/* Excluded / Locked Features */}
+                    {plan.lockedFeatures && plan.lockedFeatures.map((feature, i) => (
+                      <div key={`locked-${i}`} className="flex items-center gap-4 group shrink-0 opacity-40">
+                        <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 border border-white/10 bg-white/5 text-gray-500">
+                          <Lock size={9} />
+                        </div>
+                        <span className="text-xs text-gray-500 font-light line-through decoration-white/20">{feature}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-
-                {/* Button ABOVE features list */}
-                <button className={`w-full py-4 my-4 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-2xl active:scale-95 shrink-0 ${colors.button}`}>
-                  Get it now
-                </button>
-
-                <div className="flex-1 overflow-y-auto pr-1 space-y-3 border-t border-white/5 pt-4 scrollbar-hide min-h-0">
-                  {/* Specialized Cloud storage for the third card */}
-                  {plan.id === 'premium' && (
-                    <div className="flex items-center gap-4 group shrink-0">
-                      <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 bg-gradient-to-br from-amber-500 to-yellow-400 text-black shadow-[0_0_12px_rgba(245,158,11,0.25)]">
-                        <Star size={10} fill="black" />
-                      </div>
-                      <span className="text-xs text-white font-black tracking-tight group-hover:text-amber-400 transition-colors">CLOUD PROGRESS SYNC</span>
-                    </div>
-                  )}
-
-                  {/* Included Features */}
-                  {plan.features.map((feature, i) => (
-                    <div key={i} className="flex items-center gap-4 group shrink-0">
-                      <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all ${colors.icon}`}>
-                        <Check size={10} strokeWidth={3} />
-                      </div>
-                      <span className="text-xs text-gray-300 font-light group-hover:text-white transition-colors">{feature}</span>
-                    </div>
-                  ))}
-
-                  {/* Excluded / Locked Features */}
-                  {plan.lockedFeatures && plan.lockedFeatures.map((feature, i) => (
-                    <div key={`locked-${i}`} className="flex items-center gap-4 group shrink-0 opacity-40">
-                      <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 border border-white/10 bg-white/5 text-gray-500">
-                        <Lock size={9} />
-                      </div>
-                      <span className="text-xs text-gray-500 font-light line-through decoration-white/20">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         {/* Billing Toggle Footer Section (non-scrollable static footer below the cards) */}
