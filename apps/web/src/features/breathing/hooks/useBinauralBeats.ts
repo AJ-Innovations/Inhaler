@@ -102,7 +102,7 @@ export function useBinauralBeats(isPlaying: boolean = false) {
 
     leftOscRef.current.start();
     rightOscRef.current.start();
-  }, [stop, volume]);
+  }, [stop]);
 
   useEffect(() => {
     if (activeBinaural === 'none' || !isPlaying) {
