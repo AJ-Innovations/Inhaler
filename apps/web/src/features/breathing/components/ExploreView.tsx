@@ -161,10 +161,10 @@ export function ExploreView({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="w-full space-y-10"
+      className="w-full"
     >
       {/* Sticky Top Bar containing Search & Rounded Profile Icon with Streak Badge */}
-      <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-md py-4 flex items-center gap-3 w-full border-b border-white/[0.04]">
+      <div className="sticky top-0 z-50 -mt-12 pt-12 pb-4 bg-black/90 backdrop-blur-md flex items-center gap-3 w-full border-b border-white/[0.04]">
         {/* Search Bar */}
         <div className="relative flex-1">
           <div className="relative flex items-center group">
@@ -217,7 +217,7 @@ export function ExploreView({
 
       {/* Normal View: Hero & Standard Collections */}
       {!hasActiveSearch && (
-        <>
+        <div className="space-y-10 mt-4 w-full">
           {/* Hero Section - Static Positioned Gestures (Pan-based navigation) */}
           <section className="relative w-full h-[480px] rounded-[48px] overflow-hidden group bg-[#0D0D0D] touch-pan-y">
             <AnimatePresence mode="wait">
@@ -336,12 +336,12 @@ export function ExploreView({
               ))}
             </div>
           </div>
-        </>
+        </div>
       )}
 
       {/* Search Results View */}
       {hasActiveSearch && (
-        <div className="space-y-8">
+        <div className="space-y-10 mt-4 w-full">
           {filteredCustomExercises.length === 0 && filteredGlobalExercises.length === 0 ? (
             <motion.div 
               initial={{ opacity: 0 }}
