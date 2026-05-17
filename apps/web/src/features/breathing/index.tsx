@@ -69,7 +69,7 @@ export function BreathingExercise() {
   return (
     <div className="h-screen bg-black text-white selection:bg-white/20 flex flex-col overflow-hidden">
       {/* Scrollable Content Area */}
-      <div className="flex-1 overflow-y-auto pt-12 pb-32 scroll-smooth">
+      <div className="flex-1 overflow-y-auto pb-32 scroll-smooth">
         <div className="flex flex-col items-center w-full px-4 sm:px-0 max-w-[480px] mx-auto font-sans relative z-10">
           <AnimatePresence mode="wait">
             {view === 'home' && (
@@ -94,103 +94,125 @@ export function BreathingExercise() {
                   />
                 )}
                 {activeTab === 'library' && (
-                  <LibraryView
-                    key="library"
-                    onStart={handleStart}
-                    onDetails={handleDetails}
-                    customExercises={customExercises}
-                    favorites={favorites}
-                    onToggleFavorite={toggleFavorite}
-                    onDeleteCustom={deleteExercise}
-                    onCreate={() => setView('builder')}
-                  />
+                  <div className="pt-12 w-full">
+                    <LibraryView
+                      key="library"
+                      onStart={handleStart}
+                      onDetails={handleDetails}
+                      customExercises={customExercises}
+                      favorites={favorites}
+                      onToggleFavorite={toggleFavorite}
+                      onDeleteCustom={deleteExercise}
+                      onCreate={() => setView('builder')}
+                    />
+                  </div>
                 )}
                 {activeTab === 'achievements' && (
-                  <AchievementsView
-                    key="achievements"
-                    stats={stats}
-                    customGoals={customGoals}
-                    customExercises={customExercises}
-                    onAddGoal={addCustomGoal}
-                    onDeleteGoal={deleteCustomGoal}
-                    onStart={handleStart}
-                  />
+                  <div className="pt-12 w-full">
+                    <AchievementsView
+                      key="achievements"
+                      stats={stats}
+                      customGoals={customGoals}
+                      customExercises={customExercises}
+                      onAddGoal={addCustomGoal}
+                      onDeleteGoal={deleteCustomGoal}
+                      onStart={handleStart}
+                    />
+                  </div>
                 )}
                 {activeTab === 'journal' && (
-                  <JournalView
-                    key="journal"
-                    sessions={sessions}
-                    stats={stats}
-                  />
+                  <div className="pt-12 w-full">
+                    <JournalView
+                      key="journal"
+                      sessions={sessions}
+                      stats={stats}
+                    />
+                  </div>
                 )}
                 {activeTab === 'profile' && (
-                  <ProfileView
-                    key="profile"
-                    stats={stats}
-                    userName={userName}
-                    userAvatar={userAvatar}
-                    onUpdateName={updateUserName}
-                    onUpdateAvatar={updateAvatar}
-                    onResetData={clearAllData}
-                    onUpgrade={() => setView('subscription')}
-                    onLogin={() => setView('auth')}
-                  />
+                  <div className="pt-12 w-full">
+                    <ProfileView
+                      key="profile"
+                      stats={stats}
+                      userName={userName}
+                      userAvatar={userAvatar}
+                      onUpdateName={updateUserName}
+                      onUpdateAvatar={updateAvatar}
+                      onResetData={clearAllData}
+                      onUpgrade={() => setView('subscription')}
+                      onLogin={() => setView('auth')}
+                    />
+                  </div>
                 )}
               </motion.div>
             )}
             {view === 'subscription' && (
-              <SubscriptionView
-                key="subscription"
-                onBack={() => setView('home')}
-              />
+              <div className="pt-12 w-full">
+                <SubscriptionView
+                  key="subscription"
+                  onBack={() => setView('home')}
+                />
+              </div>
             )}
             {view === 'auth' && (
-              <AuthView
-                key="auth"
-                onBack={() => setView('home')}
-                onSuccess={() => setView('home')}
-              />
+              <div className="pt-12 w-full">
+                <AuthView
+                  key="auth"
+                  onBack={() => setView('home')}
+                  onSuccess={() => setView('home')}
+                />
+              </div>
             )}
             {view === 'builder' && (
-              <CustomBuilder
-                key="builder"
-                onBack={() => setView('home')}
-                onSave={(ex) => { addExercise(ex); setView('home'); setActiveTab('library'); }}
-              />
+              <div className="pt-12 w-full">
+                <CustomBuilder
+                  key="builder"
+                  onBack={() => setView('home')}
+                  onSave={(ex) => { addExercise(ex); setView('home'); setActiveTab('library'); }}
+                />
+              </div>
             )}
             {view === 'setup' && selectedExercise && (
-              <SessionSetup
-                key="setup"
-                exercise={selectedExercise}
-                onBack={handleBack}
-                onConfirm={handleConfirmSetup}
-              />
+              <div className="pt-12 w-full">
+                <SessionSetup
+                  key="setup"
+                  exercise={selectedExercise}
+                  onBack={handleBack}
+                  onConfirm={handleConfirmSetup}
+                />
+              </div>
             )}
             {view === 'exercise' && selectedExercise && sessionConfig && (
-              <ExerciseView
-                key="exercise"
-                exercise={selectedExercise}
-                config={sessionConfig}
-                onBack={() => setView('setup')}
-                onComplete={handleComplete}
-                onRecordSession={recordSession}
-              />
+              <div className="pt-12 w-full flex flex-col items-center">
+                <ExerciseView
+                  key="exercise"
+                  exercise={selectedExercise}
+                  config={sessionConfig}
+                  onBack={() => setView('setup')}
+                  onComplete={handleComplete}
+                  onRecordSession={recordSession}
+                />
+              </div>
             )}
             {view === 'complete' && selectedExercise && sessionResults && (
-              <SessionComplete
-                key="complete"
-                exercise={selectedExercise}
-                duration={sessionResults.duration}
-                cycles={sessionResults.cycles}
-                onHome={handleBack}
-                onRestart={() => setView('exercise')}
-              />
+              <div className="pt-12 w-full">
+                <SessionComplete
+                  key="complete"
+                  exercise={selectedExercise}
+                  duration={sessionResults.duration}
+                  cycles={sessionResults.cycles}
+                  onHome={handleBack}
+                  onRestart={() => setView('exercise')}
+                />
+              </div>
             )}
           </AnimatePresence>
 
           <AnimatePresence>
             {view === 'details' && selectedExercise && (
-              <DetailsView key="details" exercise={selectedExercise} onBack={handleBack} onStart={() => setView('setup')} />
+              <div className="pt-12 w-full">
+                <DetailsView key="details" exercise={selectedExercise} onBack={handleBack} onStart={() => setView('setup')} />
+              </div>
             )}
           </AnimatePresence>
         </div>
