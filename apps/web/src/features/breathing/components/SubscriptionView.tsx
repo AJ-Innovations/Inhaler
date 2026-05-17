@@ -120,40 +120,22 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
       className="h-[100dvh] w-full bg-black overflow-hidden flex flex-col"
     >
       <div className="max-w-[480px] mx-auto w-full flex flex-col h-full overflow-hidden">
-        {/* Sticky Top Header Bar with Centered Title & Back button in a Single Row */}
-        <div className="sticky top-0 z-50 bg-black/95 backdrop-blur-md px-6 py-4 flex items-center justify-between border-b border-white/[0.04] shrink-0 w-full">
-          <button
-            onClick={onBack}
-            className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors shrink-0"
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <h1 className="text-xl font-medium tracking-tight text-white flex-1 text-center pr-10">Choose your Plan</h1>
-        </div>
-
-        {/* Billing Toggle (non-scrollable static sub-section) */}
-        <div className="flex items-center justify-center gap-4 py-4 shrink-0 border-b border-white/[0.02] bg-black">
-          <span className={`text-[10px] uppercase tracking-widest font-bold ${billingCycle === 'monthly' ? 'text-white' : 'text-gray-500'}`}>Monthly</span>
-          <button
-            onClick={() => setBillingCycle(prev => prev === 'monthly' ? 'yearly' : 'monthly')}
-            className={`w-12 h-6 rounded-full border border-white/10 relative p-1 transition-all duration-500 shrink-0 ${billingCycle === 'yearly' ? 'bg-emerald-500/80 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-white/10'
-              }`}
-          >
-            <motion.div
-              animate={{ x: billingCycle === 'monthly' ? 0 : 24 }}
-              className="w-4 h-4 rounded-full bg-white shadow-lg"
-            />
-          </button>
-          <div className="flex items-center gap-2">
-            <span className={`text-[10px] uppercase tracking-widest font-bold ${billingCycle === 'yearly' ? 'text-white' : 'text-gray-500'}`}>Yearly</span>
-            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[8px] font-black text-emerald-400 uppercase tracking-tighter">
-              Save 20%
-            </span>
+        {/* Sticky Top Header Bar with Centered Title, Back button & Gorgeous Subtitle */}
+        <div className="sticky top-0 z-50 bg-black/95 backdrop-blur-md px-6 py-4 flex flex-col items-center border-b border-white/[0.04] shrink-0 w-full gap-1">
+          <div className="flex items-center justify-between w-full">
+            <button
+              onClick={onBack}
+              className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors shrink-0"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <h1 className="text-xl font-medium tracking-tight text-white flex-1 text-center pr-10">Choose your Plan</h1>
           </div>
+          <p className="text-white/40 text-[11px] tracking-wide font-light">Unlock absolute breathing mastery & cloud sync.</p>
         </div>
 
         {/* Full Screen Scrollable Cards Slider */}
-        <div className="flex-1 flex flex-row gap-4 pb-8 pt-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-6 items-center min-h-0">
+        <div className="flex-1 flex flex-row gap-4 pb-4 pt-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-6 items-center min-h-0">
           {plans.map((plan) => {
             const colors = getColorClasses(plan.color || 'emerald');
             return (
@@ -235,6 +217,27 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
               </div>
             );
           })}
+        </div>
+
+        {/* Billing Toggle Footer Section (non-scrollable static footer below the cards) */}
+        <div className="flex items-center justify-center gap-4 py-6 shrink-0 border-t border-white/[0.04] bg-black">
+          <span className={`text-[10px] uppercase tracking-widest font-bold ${billingCycle === 'monthly' ? 'text-white' : 'text-gray-500'}`}>Monthly</span>
+          <button
+            onClick={() => setBillingCycle(prev => prev === 'monthly' ? 'yearly' : 'monthly')}
+            className={`w-12 h-6 rounded-full border border-white/10 relative p-1 transition-all duration-500 shrink-0 ${billingCycle === 'yearly' ? 'bg-emerald-500/80 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-white/10'
+              }`}
+          >
+            <motion.div
+              animate={{ x: billingCycle === 'monthly' ? 0 : 24 }}
+              className="w-4 h-4 rounded-full bg-white shadow-lg"
+            />
+          </button>
+          <div className="flex items-center gap-2">
+            <span className={`text-[10px] uppercase tracking-widest font-bold ${billingCycle === 'yearly' ? 'text-white' : 'text-gray-500'}`}>Yearly</span>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[8px] font-black text-emerald-400 uppercase tracking-tighter">
+              Save 20%
+            </span>
+          </div>
         </div>
       </div>
     </motion.div>
