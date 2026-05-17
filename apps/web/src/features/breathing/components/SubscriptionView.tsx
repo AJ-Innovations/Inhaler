@@ -105,54 +105,58 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
       exit={{ opacity: 0, x: -20 }}
       className="h-full w-full bg-black overflow-y-auto scrollbar-hide"
     >
-      <div className="max-w-[480px] mx-auto px-6 py-12 flex flex-col">
-        {/* Back Button */}
-        <button 
-          onClick={onBack}
-          className="mb-8 w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
-        >
-          <ChevronLeft size={20} />
-        </button>
-
-      <div className="text-center mb-16 space-y-4">
-        <h1 className="text-4xl font-light tracking-tight text-white">Choose your Plan</h1>
-        <p className="text-gray-500 text-sm font-light">Discover the perfect plan tailored just for you.</p>
-        
-        {/* Billing Toggle */}
-        <div className="flex items-center justify-center gap-4 pt-4">
-          <span className={`text-[10px] uppercase tracking-widest font-bold ${billingCycle === 'monthly' ? 'text-white' : 'text-gray-500'}`}>Monthly</span>
+      <div className="max-w-[480px] mx-auto py-12 flex flex-col">
+        {/* Padded Header / Top Section */}
+        <div className="px-6 flex flex-col">
+          {/* Back Button */}
           <button 
-            onClick={() => setBillingCycle(prev => prev === 'monthly' ? 'yearly' : 'monthly')}
-            className={`w-12 h-6 rounded-full border border-white/10 relative p-1 transition-all duration-500 ${
-              billingCycle === 'yearly' ? 'bg-emerald-500/80 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-white/10'
-            }`}
+            onClick={onBack}
+            className="mb-8 w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors self-start"
           >
-            <motion.div 
-              animate={{ x: billingCycle === 'monthly' ? 0 : 24 }}
-              className="w-4 h-4 rounded-full bg-white shadow-lg"
-            />
+            <ChevronLeft size={20} />
           </button>
-          <div className="flex items-center gap-2">
-            <span className={`text-[10px] uppercase tracking-widest font-bold ${billingCycle === 'yearly' ? 'text-white' : 'text-gray-500'}`}>Yearly</span>
-            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[8px] font-black text-emerald-400 uppercase tracking-tighter">
-              Save 20%
-            </span>
+
+          <div className="text-center mb-12 space-y-4">
+            <h1 className="text-4xl font-light tracking-tight text-white">Choose your Plan</h1>
+            <p className="text-gray-500 text-sm font-light">Discover the perfect plan tailored just for you.</p>
+            
+            {/* Billing Toggle */}
+            <div className="flex items-center justify-center gap-4 pt-4">
+              <span className={`text-[10px] uppercase tracking-widest font-bold ${billingCycle === 'monthly' ? 'text-white' : 'text-gray-500'}`}>Monthly</span>
+              <button 
+                onClick={() => setBillingCycle(prev => prev === 'monthly' ? 'yearly' : 'monthly')}
+                className={`w-12 h-6 rounded-full border border-white/10 relative p-1 transition-all duration-500 ${
+                  billingCycle === 'yearly' ? 'bg-emerald-500/80 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-white/10'
+                }`}
+              >
+                <motion.div 
+                  animate={{ x: billingCycle === 'monthly' ? 0 : 24 }}
+                  className="w-4 h-4 rounded-full bg-white shadow-lg"
+                />
+              </button>
+              <div className="flex items-center gap-2">
+                <span className={`text-[10px] uppercase tracking-widest font-bold ${billingCycle === 'yearly' ? 'text-white' : 'text-gray-500'}`}>Yearly</span>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[8px] font-black text-emerald-400 uppercase tracking-tighter">
+                  Save 20%
+                </span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex flex-row gap-6 pb-20 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-2">
-        {plans.map((plan) => {
-          const colors = getColorClasses(plan.color || 'emerald');
-          return (
-            <div 
-              key={plan.id}
-              className={`relative min-w-[320px] snap-center rounded-[42px] border p-8 space-y-8 transition-all duration-700 ${
-                plan.highlight 
-                  ? `${colors.highlight} ${colors.border} shadow-[0_0_50px_rgba(16,185,129,0.1)]` 
-                  : `bg-white/[0.02] ${colors.border}`
-              }`}
-            >
+        {/* Full Screen Scrollable Cards Slider */}
+        <div className="flex flex-row gap-4 pb-20 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-6">
+          {plans.map((plan) => {
+            const colors = getColorClasses(plan.color || 'emerald');
+            return (
+              <div 
+                key={plan.id}
+                className={`relative w-[85%] min-w-[85%] snap-center rounded-[42px] border p-8 space-y-8 transition-all duration-700 ${
+                  plan.highlight 
+                    ? `${colors.highlight} ${colors.border} shadow-[0_0_50px_rgba(16,185,129,0.1)]` 
+                    : `bg-white/[0.02] ${colors.border}`
+                }`}
+              >
               {plan.popular && (
                 <div className={`absolute top-8 right-8 px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest border ${colors.badge}`}>
                   MOST POPULAR
