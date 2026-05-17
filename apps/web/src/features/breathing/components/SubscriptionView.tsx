@@ -165,7 +165,11 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
           <div 
             className="flex flex-row gap-4 h-[550px] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] w-full items-center"
             style={{ 
-              transform: `translateX(calc(8% - ${activeIndex} * (84% + 16px)))` 
+              transform: activeIndex === 0 
+                ? 'translateX(12%)' 
+                : activeIndex === 1 
+                  ? 'translateX(calc(-64% - 16px))' 
+                  : 'translateX(calc(-140% - 32px))' 
             }}
           >
             {plans.map((plan, index) => {
@@ -175,7 +179,7 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
                 <div
                   key={plan.id}
                   onClick={() => setActiveIndex(index)}
-                  className={`relative w-[84%] min-w-[84%] h-full rounded-[40px] border p-6 flex flex-col justify-between transition-all duration-700 cursor-pointer ${
+                  className={`relative w-[76%] min-w-[76%] h-full rounded-[40px] border p-6 flex flex-col justify-between transition-all duration-700 cursor-pointer ${
                     isActive 
                       ? `${colors.highlight} ${colors.border} shadow-[0_0_40px_rgba(16,185,129,0.08)] scale-100 opacity-100` 
                       : `bg-white/[0.02] ${colors.border} scale-95 opacity-50`
