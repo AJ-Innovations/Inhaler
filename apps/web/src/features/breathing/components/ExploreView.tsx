@@ -21,11 +21,11 @@ interface ExploreViewProps {
   onProfileClick: () => void;
 }
 
-export function ExploreView({ 
-  onStart, 
-  onDetails, 
-  customExercises, 
-  favorites, 
+export function ExploreView({
+  onStart,
+  onDetails,
+  customExercises,
+  favorites,
   onToggleFavorite,
   stats,
   userAvatar,
@@ -107,7 +107,7 @@ export function ExploreView({
     const interval = setInterval(() => {
       const elapsed = Date.now() - startTime;
       const newProgress = (elapsed / cycleTime) * 100;
-      
+
       if (newProgress >= 100) {
         setProgress(0);
         setHeroIndex((prev) => (prev + 1) % heroSlides.length);
@@ -135,7 +135,7 @@ export function ExploreView({
   const filteredCustomExercises = useMemo(() => {
     if (!searchQuery.trim()) return customExercises;
     const query = searchQuery.toLowerCase().trim();
-    return customExercises.filter(ex => 
+    return customExercises.filter(ex =>
       ex.name.toLowerCase().includes(query) ||
       ex.subtitle.toLowerCase().includes(query) ||
       ex.description.toLowerCase().includes(query) ||
@@ -146,7 +146,7 @@ export function ExploreView({
   const filteredGlobalExercises = useMemo(() => {
     if (!searchQuery.trim()) return exercises;
     const query = searchQuery.toLowerCase().trim();
-    return exercises.filter(ex => 
+    return exercises.filter(ex =>
       ex.name.toLowerCase().includes(query) ||
       ex.subtitle.toLowerCase().includes(query) ||
       ex.description.toLowerCase().includes(query) ||
@@ -164,13 +164,13 @@ export function ExploreView({
       className="w-full"
     >
       {/* Sticky Top Bar containing Search & Rounded Profile Icon with Streak Badge */}
-      <div className="sticky top-0 z-50 pt-8 pb-4 bg-black/95 backdrop-blur-md flex items-center gap-3 w-full border-b border-white/[0.04]">
+      <div className="sticky top-0 z-50 pt-4 pb-2 bg-black/95 backdrop-blur-md flex items-center gap-3 w-full border-b border-white/[0.04]">
         {/* Search Bar */}
         <div className="relative flex-1">
           <div className="relative flex items-center group">
-            <Search 
-              className="absolute left-4 text-gray-500 transition-colors group-focus-within:text-white" 
-              size={18} 
+            <Search
+              className="absolute left-4 text-gray-500 transition-colors group-focus-within:text-white"
+              size={18}
             />
             <input
               type="text"
@@ -234,11 +234,11 @@ export function ExploreView({
                 className="absolute inset-0 bg-[#0D0D0D] border border-white/[0.08] rounded-[48px] p-12 flex flex-col items-center justify-center text-center gap-8 shadow-2xl overflow-hidden z-10"
               >
                 {/* Background Glow */}
-                <div 
+                <div
                   className={`absolute inset-0 opacity-30 blur-[120px] transition-all duration-1000 bg-gradient-to-br ${activeSlide.bg}`}
                 />
 
-                <motion.div 
+                <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.2 }}
@@ -260,14 +260,14 @@ export function ExploreView({
                   </p>
                 </div>
 
-                <button 
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
                     onStart(activeSlide.exercise);
                   }}
-                  className="group relative h-16 px-12 rounded-full bg-white text-black font-bold text-sm uppercase tracking-widest flex items-center justify-center gap-3 shadow-[0_25px_50px_rgba(255,255,255,0.15)] hover:scale-105 active:scale-95 transition-all mt-4 z-20"
+                  className="group relative h-14 px-12 rounded-full bg-white text-black font-bold text-sm uppercase tracking-widest flex items-center justify-center gap-3 shadow-[0_25px_50px_rgba(255,255,255,0.15)] hover:scale-105 active:scale-95 transition-all mt-2 z-20"
                 >
-                  <Play size={18} fill="currentColor" />
+                  <Play size={16} fill="currentColor" />
                   <span>Begin Session</span>
                 </button>
               </motion.div>
@@ -276,12 +276,12 @@ export function ExploreView({
             {/* Persistent Activation Signal Container */}
             <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-3 z-40 pointer-events-none">
               {heroSlides.map((_, i) => (
-                <div 
-                  key={i} 
+                <div
+                  key={i}
                   className={`relative h-1.5 rounded-full bg-white/10 overflow-hidden transition-all duration-500 ${heroIndex === i ? 'w-20' : 'w-5'}`}
                 >
                   {heroIndex === i && (
-                    <motion.div 
+                    <motion.div
                       className="absolute inset-y-0 left-0 bg-white"
                       initial={false}
                       animate={{ width: `${progress}%` }}
@@ -292,7 +292,7 @@ export function ExploreView({
               ))}
             </div>
           </section>
-          
+
           {/* Custom Section */}
           {customExercises.length > 0 && (
             <div className="space-y-6">
@@ -303,10 +303,10 @@ export function ExploreView({
 
               <div className="flex flex-col gap-5">
                 {customExercises.map((ex) => (
-                  <ExerciseCard 
-                    key={ex.id} 
-                    exercise={ex} 
-                    onStart={() => onStart(ex)} 
+                  <ExerciseCard
+                    key={ex.id}
+                    exercise={ex}
+                    onStart={() => onStart(ex)}
                     onDetails={() => onDetails(ex)}
                     isFavorite={favorites.includes(ex.id)}
                     onToggleFavorite={() => onToggleFavorite(ex.id)}
@@ -322,13 +322,13 @@ export function ExploreView({
               <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600">Global Collection</span>
               <span className="text-[10px] text-gray-500 font-medium">{exercises.length} practices</span>
             </div>
-            
+
             <div className="flex flex-col gap-5">
               {exercises.map((ex: Exercise) => (
-                <ExerciseCard 
-                  key={ex.id} 
-                  exercise={ex} 
-                  onStart={() => onStart(ex)} 
+                <ExerciseCard
+                  key={ex.id}
+                  exercise={ex}
+                  onStart={() => onStart(ex)}
                   onDetails={() => onDetails(ex)}
                   isFavorite={favorites.includes(ex.id)}
                   onToggleFavorite={() => onToggleFavorite(ex.id)}
@@ -343,7 +343,7 @@ export function ExploreView({
       {hasActiveSearch && (
         <div className="space-y-10 mt-4 w-full">
           {filteredCustomExercises.length === 0 && filteredGlobalExercises.length === 0 ? (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
               className="flex flex-col items-center justify-center py-20 text-center"
@@ -361,10 +361,10 @@ export function ExploreView({
                   </div>
                   <div className="flex flex-col gap-5">
                     {filteredCustomExercises.map((ex) => (
-                      <ExerciseCard 
-                        key={ex.id} 
-                        exercise={ex} 
-                        onStart={() => onStart(ex)} 
+                      <ExerciseCard
+                        key={ex.id}
+                        exercise={ex}
+                        onStart={() => onStart(ex)}
                         onDetails={() => onDetails(ex)}
                         isFavorite={favorites.includes(ex.id)}
                         onToggleFavorite={() => onToggleFavorite(ex.id)}
@@ -382,10 +382,10 @@ export function ExploreView({
                   </div>
                   <div className="flex flex-col gap-5">
                     {filteredGlobalExercises.map((ex) => (
-                      <ExerciseCard 
-                        key={ex.id} 
-                        exercise={ex} 
-                        onStart={() => onStart(ex)} 
+                      <ExerciseCard
+                        key={ex.id}
+                        exercise={ex}
+                        onStart={() => onStart(ex)}
                         onDetails={() => onDetails(ex)}
                         isFavorite={favorites.includes(ex.id)}
                         onToggleFavorite={() => onToggleFavorite(ex.id)}
