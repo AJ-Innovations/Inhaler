@@ -89,6 +89,8 @@ export function BreathingExercise() {
                     favorites={favorites}
                     onToggleFavorite={toggleFavorite}
                     stats={stats}
+                    userAvatar={userAvatar}
+                    onProfileClick={() => setActiveTab('profile')}
                   />
                 )}
                 {activeTab === 'library' && (
