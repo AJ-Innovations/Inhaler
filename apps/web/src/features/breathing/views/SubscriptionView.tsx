@@ -6,12 +6,27 @@ import { Check, Zap, Crown, Star, ChevronLeft, Lock } from 'lucide-react';
 
 interface SubscriptionViewProps {
   onBack: () => void;
+  isOnboarding?: boolean;
+  onPlanSelected?: (planId: string) => void;
 }
 
-export function SubscriptionView({ onBack }: SubscriptionViewProps) {
+export function SubscriptionView({ onBack, isOnboarding, onPlanSelected }: SubscriptionViewProps) {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [activeIndex, setActiveIndex] = useState(1); // Default to the Pro plan (index 1)
   const touchStart = useRef<number | null>(null);
+
+  // Colour tokens keyed directly off activeIndex — re-derived on every render
+  const toggleOnClass = [
+    'bg-blue-600/80 shadow-[0_0_15px_rgba(37,99,235,0.35)]',   // Free  (index 0)
+    'bg-emerald-500/80 shadow-[0_0_15px_rgba(16,185,129,0.3)]', // Pro   (index 1)
+    'bg-amber-400/80 shadow-[0_0_15px_rgba(245,158,11,0.35)]',  // Premium (index 2)
+  ][activeIndex] ?? 'bg-emerald-500/80 shadow-[0_0_15px_rgba(16,185,129,0.3)]';
+
+  const badgeColorClass = [
+    'bg-blue-600/10 border-blue-600/20 text-blue-400',           // Free
+    'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',  // Pro
+    'bg-amber-400/10 border-amber-400/20 text-amber-400',        // Premium
+  ][activeIndex] ?? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400';
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStart.current = e.touches[0].clientX;
@@ -159,21 +174,48 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
           <p className="text-white/40 text-[11px] tracking-wide font-light">Unlock absolute breathing mastery & cloud sync.</p>
         </div>
 
-        {/* Full Screen Scrollable Cards Slider */}
+        {/* Plan Selector Pill Tabs */}
+        <div className="flex items-center justify-center px-6 pt-4 pb-2 shrink-0">
+          <div className="flex w-full bg-white/[0.04] border border-white/[0.06] rounded-full p-1 gap-1">
+            {plans.map((plan, index) => {
+              const isSelected = index === activeIndex;
+              const PlanIcon = plan.icon;
+
+              // Pre-defined safe className strings per colour
+              const selectedClass =
+                plan.color === 'blue'
+                  ? 'bg-blue-600 text-white shadow-[0_0_16px_rgba(37,99,235,0.35)]'
+                  : plan.color === 'gold'
+                    ? 'bg-amber-400 text-black shadow-[0_0_16px_rgba(245,158,11,0.40)]'
+                    : 'bg-emerald-500 text-black shadow-[0_0_16px_rgba(16,185,129,0.35)]';
+
+              return (
+                <button
+                  key={plan.id}
+                  onClick={() => setActiveIndex(index)}
+                  className={`flex-1 flex items-center justify-center gap-1.5 h-9 rounded-full text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-300 ${isSelected
+                    ? selectedClass
+                    : 'text-gray-500 hover:text-gray-300 hover:bg-white/[0.04]'
+                    }`}
+                >
+                  <PlanIcon size={11} />
+                  {plan.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Centered Single-Card Viewer */}
         <div
-          className="flex-1 w-full overflow-hidden relative min-h-0 flex items-center"
+          className="flex-1 w-full relative min-h-0 flex items-center justify-center px-5"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
+          {/* Track — slides via translateX */}
           <div
-            className="flex flex-row gap-2 h-[550px] transition-[left] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] w-full items-center relative"
-            style={{
-              left: activeIndex === 0
-                ? '12%'
-                : activeIndex === 1
-                  ? 'calc(-64% - 16px)'
-                  : 'calc(-140% - 32px)'
-            }}
+            className="flex flex-row gap-4 h-[520px] items-stretch transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] w-full"
+            style={{ transform: `translateX(calc(-${activeIndex} * (100% + 16px)))` }}
           >
             {plans.map((plan, index) => {
               const colors = getColorClasses(plan.color || 'emerald');
@@ -182,9 +224,9 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
                 <div
                   key={plan.id}
                   onClick={() => setActiveIndex(index)}
-                  className={`relative w-[76%] min-w-[76%] h-full rounded-[40px] border p-6 flex flex-col justify-between transition-all duration-700 cursor-pointer ${isActive
-                    ? `${colors.highlight} ${colors.border} shadow-[0_0_40px_rgba(16,185,129,0.08)] scale-100 opacity-100`
-                    : `bg-white/[0.02] ${colors.border} scale-95 opacity-50`
+                  className={`relative w-full min-w-full h-full rounded-[36px] border p-6 flex flex-col justify-between transition-all duration-500 cursor-pointer ${isActive
+                    ? `${colors.highlight} ${colors.border} shadow-[0_0_50px_rgba(0,0,0,0.4)] scale-100 opacity-100`
+                    : `bg-white/[0.02] ${colors.border} scale-95 opacity-40`
                     }`}
                 >
                   <div className="space-y-4 shrink-0">
@@ -232,8 +274,18 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
                   </div>
 
                   {/* Button ABOVE features list with gloss animation */}
-                  <button className={`w-full py-4 my-4 rounded-full text-[14px] font-black uppercase tracking-[0.15em] transition-all duration-500 shadow-2xl active:scale-95 shrink-0 relative overflow-hidden ${colors.button}`}>
-                    <span className="relative z-10">Subscribe Now</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (onPlanSelected) {
+                        onPlanSelected(plan.id);
+                      }
+                    }}
+                    className={`w-full py-4 my-4 rounded-full text-[14px] font-black uppercase tracking-[0.15em] transition-all duration-500 shadow-2xl active:scale-95 shrink-0 relative overflow-hidden ${colors.button}`}
+                  >
+                    <span className="relative z-10">
+                      {plan.id === 'free' ? 'Choose Free' : 'Subscribe Now'}
+                    </span>
                     <motion.div
                       initial={{ x: '-100%' }}
                       animate={{ x: '100%' }}
@@ -284,22 +336,33 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
           </div>
         </div>
 
-        {/* Billing Toggle Footer Section (non-scrollable static footer below the cards) */}
+        {/* Billing Toggle Footer — colours derived from activeIndex at component level */}
         <div className="flex items-center justify-center gap-4 py-6 shrink-0 border-t border-white/[0.04] bg-black">
-          <span className={`text-[10px] uppercase tracking-widest font-bold ${billingCycle === 'monthly' ? 'text-white' : 'text-gray-500'}`}>Monthly</span>
+          <span className={`text-[10px] uppercase tracking-widest font-bold transition-colors duration-300 ${
+            billingCycle === 'monthly' ? 'text-white' : 'text-gray-500'
+          }`}>
+            Monthly
+          </span>
+
           <button
             onClick={() => setBillingCycle(prev => prev === 'monthly' ? 'yearly' : 'monthly')}
-            className={`w-12 h-6 rounded-full border border-white/10 relative p-1 transition-all duration-500 shrink-0 ${billingCycle === 'yearly' ? 'bg-emerald-500/80 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-white/10'
-              }`}
+            className={`w-12 h-6 rounded-full border border-white/10 relative p-1 transition-all duration-500 shrink-0 ${
+              billingCycle === 'yearly' ? toggleOnClass : 'bg-white/10'
+            }`}
           >
             <motion.div
               animate={{ x: billingCycle === 'monthly' ? 0 : 24 }}
               className="w-4 h-4 rounded-full bg-white shadow-lg"
             />
           </button>
+
           <div className="flex items-center gap-2">
-            <span className={`text-[10px] uppercase tracking-widest font-bold ${billingCycle === 'yearly' ? 'text-white' : 'text-gray-500'}`}>Yearly</span>
-            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[8px] font-black text-emerald-400 uppercase tracking-tighter">
+            <span className={`text-[10px] uppercase tracking-widest font-bold transition-colors duration-300 ${
+              billingCycle === 'yearly' ? 'text-white' : 'text-gray-500'
+            }`}>
+              Yearly
+            </span>
+            <span className={`px-2 py-0.5 rounded-full border text-[8px] font-black uppercase tracking-tighter transition-all duration-300 ${badgeColorClass}`}>
               Save 20%
             </span>
           </div>
