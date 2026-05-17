@@ -32,7 +32,7 @@ export function ExerciseCard({
       <svg width="0" height="0" className="absolute pointer-events-none" style={{ position: 'absolute', width: 0, height: 0 }}>
         <defs>
           <linearGradient id="bookmark-red-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#ff5922ff" /> {/* iOS bright red */}
+            <stop offset="0%" stopColor="#ff6c22ff" /> {/* iOS bright red */}
             <stop offset="100%" stopColor="#ff0000ff" /> {/* Deep crimson red */}
           </linearGradient>
         </defs>
