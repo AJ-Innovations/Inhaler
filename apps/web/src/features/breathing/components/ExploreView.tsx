@@ -164,7 +164,7 @@ export function ExploreView({
       className="w-full"
     >
       {/* Sticky Top Bar containing Search & Rounded Profile Icon with Streak Badge */}
-      <div className="sticky top-0 z-50 pt-4 pb-2 bg-black/95 backdrop-blur-md flex items-center gap-3 w-full border-b border-white/[0.04]">
+      <div className="sticky top-0 z-50 pt-4 pb-2 bg-black/90 backdrop-blur-md flex items-center gap-3 w-full border-b border-white/[0.04]">
         {/* Search Bar */}
         <div className="relative flex-1">
           <div className="relative flex items-center group">
@@ -205,13 +205,6 @@ export function ExploreView({
             )}
           </div>
 
-          {/* Streak Overlaid Badge */}
-          {stats.streak > 0 && (
-            <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-orange-500 border border-black shadow-[0_0_10px_rgba(249,115,22,0.45)]">
-              <Zap className="text-white fill-white animate-pulse" size={8} />
-              <span className="text-[8px] font-black text-white leading-none">{stats.streak}</span>
-            </div>
-          )}
         </motion.button>
       </div>
 
