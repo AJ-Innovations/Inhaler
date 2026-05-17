@@ -146,7 +146,7 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
     >
       <div className="max-w-[480px] mx-auto w-full flex flex-col h-full overflow-hidden">
         {/* Sticky Top Header Bar with Centered Title, Back button & Gorgeous Subtitle */}
-        <div className="sticky top-0 z-50 bg-black/95 backdrop-blur-md px-6 py-4 flex flex-col items-center border-b border-white/[0.04] shrink-0 w-full gap-1">
+        <div className="sticky top-0 z-50 bg-transparent backdrop-blur-md px-6 py-4 flex flex-col items-center border-b border-white/[0.04] shrink-0 w-full gap-1">
           <div className="flex items-center justify-between w-full">
             <button
               onClick={onBack}
@@ -154,7 +154,7 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
             >
               <ChevronLeft size={20} />
             </button>
-            <h1 className="text-xl font-medium tracking-tight text-white flex-1 text-center pr-10">Choose your Plan</h1>
+            <h1 className="text-2xl font-medium tracking-tight text-white flex-1 text-center pr-10">Choose your Plan</h1>
           </div>
           <p className="text-white/40 text-[11px] tracking-wide font-light">Unlock absolute breathing mastery & cloud sync.</p>
         </div>
