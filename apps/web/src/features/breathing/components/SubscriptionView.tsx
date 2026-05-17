@@ -153,13 +153,13 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
         </div>
 
         {/* Full Screen Scrollable Cards Slider */}
-        <div className="flex-1 flex flex-row gap-4 pb-8 pt-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-6 items-stretch min-h-0">
+        <div className="flex-1 flex flex-row gap-4 pb-8 pt-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-6 items-center min-h-0">
           {plans.map((plan) => {
             const colors = getColorClasses(plan.color || 'emerald');
             return (
               <div
                 key={plan.id}
-                className={`relative w-[82%] min-w-[82%] snap-start rounded-[40px] border p-6 flex flex-col justify-between transition-all duration-700 ${plan.highlight
+                className={`relative w-[90%] min-w-[90%] h-[450px] snap-start rounded-[40px] border p-6 flex flex-col justify-between transition-all duration-700 ${plan.highlight
                     ? `${colors.highlight} ${colors.border} shadow-[0_0_40px_rgba(16,185,129,0.08)]`
                     : `bg-white/[0.02] ${colors.border}`
                   }`}
