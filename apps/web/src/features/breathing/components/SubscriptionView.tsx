@@ -232,8 +232,8 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
                   </div>
 
                   {/* Button ABOVE features list with gloss animation */}
-                  <button className={`w-full py-4 my-4 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-2xl active:scale-95 shrink-0 relative overflow-hidden ${colors.button}`}>
-                    <span className="relative z-10">Get it now</span>
+                  <button className={`w-full py-4 my-4 rounded-full text-[14px] font-black uppercase tracking-[0.15em] transition-all duration-500 shadow-2xl active:scale-95 shrink-0 relative overflow-hidden ${colors.button}`}>
+                    <span className="relative z-10">Subscribe Now</span>
                     <motion.div
                       initial={{ x: '-100%' }}
                       animate={{ x: '100%' }}
