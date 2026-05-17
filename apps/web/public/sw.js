@@ -54,3 +54,57 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
+// Push Notifications Listener
+self.addEventListener('push', (event) => {
+  let data = { title: 'Mindful Moment', body: 'Take a deep breath with Inhale.' };
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch (e) {
+      data = { title: 'Mindful Moment', body: event.data.text() };
+    }
+  }
+
+  const options = {
+    body: data.body,
+    icon: '/icon-192.png',
+    badge: '/icon-192.png',
+    vibrate: [100, 50, 100],
+    data: {
+      dateOfArrival: Date.now(),
+      primaryKey: 1
+    },
+    actions: [
+      { action: 'explore', title: 'Start Breathing' },
+      { action: 'close', title: 'Close' }
+    ]
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  );
+});
+
+// Handle Notification Clicks
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  
+  if (event.action === 'explore' || !event.action) {
+    event.waitUntil(
+      clients.matchAll({ type: 'window' }).then((windowClients) => {
+        // If an app window is already open, focus on it
+        for (let i = 0; i < windowClients.length; i++) {
+          const client = windowClients[i];
+          if (client.url === '/' && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        // Otherwise, open a new window
+        if (clients.openWindow) {
+          return clients.openWindow('/');
+        }
+      })
+    );
+  }
+});
