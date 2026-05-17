@@ -216,102 +216,112 @@ export function BreathingExercise() {
   };
 
   return (
-    <div className="h-screen bg-black text-white selection:bg-white/20 flex flex-col overflow-hidden">
-      {/* Scrollable Content Area */}
-      <div id="breathing-scroll-container" className="flex-1 overflow-y-auto pb-32 scroll-smooth">
-        <div className="flex flex-col items-center w-full px-4 sm:px-0 max-w-[480px] mx-auto font-sans relative z-10">
-          <AnimatePresence mode="wait">
-            {view === 'home' && (
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="w-full"
-              >
-                {activeTab === 'explore' && (
-                  <ExploreView
-                    key="explore"
-                    onStart={handleStart}
-                    onDetails={handleDetails}
-                    customExercises={customExercises}
-                    favorites={favorites}
-                    onToggleFavorite={toggleFavorite}
-                    stats={stats}
-                    userAvatar={userAvatar}
-                    onProfileClick={() => setActiveTab('profile')}
-                  />
-                )}
-                {activeTab === 'library' && (
-                  <div className="pt-12 w-full">
-                    <LibraryView
-                      key="library"
+    <div className="h-screen bg-black text-white selection:bg-white/20 flex flex-col overflow-hidden relative">
+      <AnimatePresence mode="wait">
+        {view === 'home' ? (
+          <motion.div
+            key="home-layout"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex-1 flex flex-col overflow-hidden h-full"
+          >
+            {/* Scrollable Content Area */}
+            <div id="breathing-scroll-container" className="flex-1 overflow-y-auto pb-32 scroll-smooth">
+              <div className="flex flex-col items-center w-full px-4 sm:px-0 max-w-[480px] mx-auto font-sans relative z-10">
+                <AnimatePresence mode="wait">
+                  {activeTab === 'explore' && (
+                    <ExploreView
+                      key="explore"
                       onStart={handleStart}
                       onDetails={handleDetails}
                       customExercises={customExercises}
                       favorites={favorites}
                       onToggleFavorite={toggleFavorite}
-                      onDeleteCustom={deleteExercise}
-                      onCreate={() => setView('builder')}
-                    />
-                  </div>
-                )}
-                {activeTab === 'achievements' && (
-                  <div className="pt-12 w-full">
-                    <AchievementsView
-                      key="achievements"
                       stats={stats}
-                      customGoals={customGoals}
-                      customExercises={customExercises}
-                      onAddGoal={addCustomGoal}
-                      onDeleteGoal={deleteCustomGoal}
-                      onStart={handleStart}
-                    />
-                  </div>
-                )}
-                {activeTab === 'journal' && (
-                  <div className="pt-12 w-full">
-                    <JournalView
-                      key="journal"
-                      sessions={sessions}
-                      stats={stats}
-                    />
-                  </div>
-                )}
-                {activeTab === 'profile' && (
-                  <div className="pt-12 w-full">
-                    <ProfileView
-                      key="profile"
-                      stats={stats}
-                      userName={userName}
                       userAvatar={userAvatar}
-                      onUpdateName={updateUserName}
-                      onUpdateAvatar={updateAvatar}
-                      onResetData={clearAllData}
-                      onUpgrade={() => setView('subscription')}
-                      onLogin={() => setView('auth')}
-                      isInstallable={isInstallable && !isInstalled}
-                      isIOS={isIOS}
-                      onInstallPWA={handleInstallPWA}
-                      dailyReminderEnabled={dailyReminderEnabled}
-                      dailyReminderTime={dailyReminderTime}
-                      onToggleReminder={handleToggleReminder}
-                      onUpdateTime={handleUpdateTime}
+                      onProfileClick={() => setActiveTab('profile')}
                     />
-                  </div>
-                )}
-              </motion.div>
-            )}
-            {view === 'subscription' && (
-              <div className="pt-12 w-full">
-                <SubscriptionView
-                  key="subscription"
-                  onBack={() => setView('home')}
-                />
+                  )}
+                  {activeTab === 'library' && (
+                    <div className="pt-12 w-full">
+                      <LibraryView
+                        key="library"
+                        onStart={handleStart}
+                        onDetails={handleDetails}
+                        customExercises={customExercises}
+                        favorites={favorites}
+                        onToggleFavorite={toggleFavorite}
+                        onDeleteCustom={deleteExercise}
+                        onCreate={() => setView('builder')}
+                      />
+                    </div>
+                  )}
+                  {activeTab === 'achievements' && (
+                    <div className="pt-12 w-full">
+                      <AchievementsView
+                        key="achievements"
+                        stats={stats}
+                        customGoals={customGoals}
+                        customExercises={customExercises}
+                        onAddGoal={addCustomGoal}
+                        onDeleteGoal={deleteCustomGoal}
+                        onStart={handleStart}
+                      />
+                    </div>
+                  )}
+                  {activeTab === 'journal' && (
+                    <div className="pt-12 w-full">
+                      <JournalView
+                        key="journal"
+                        sessions={sessions}
+                        stats={stats}
+                      />
+                    </div>
+                  )}
+                  {activeTab === 'profile' && (
+                    <div className="pt-12 w-full">
+                      <ProfileView
+                        key="profile"
+                        stats={stats}
+                        userName={userName}
+                        userAvatar={userAvatar}
+                        onUpdateName={updateUserName}
+                        onUpdateAvatar={updateAvatar}
+                        onResetData={clearAllData}
+                        onUpgrade={() => setView('subscription')}
+                        onLogin={() => setView('auth')}
+                        isInstallable={isInstallable && !isInstalled}
+                        isIOS={isIOS}
+                        onInstallPWA={handleInstallPWA}
+                        dailyReminderEnabled={dailyReminderEnabled}
+                        dailyReminderTime={dailyReminderTime}
+                        onToggleReminder={handleToggleReminder}
+                        onUpdateTime={handleUpdateTime}
+                      />
+                    </div>
+                  )}
+                </AnimatePresence>
               </div>
+            </div>
+            <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key={view}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="flex-1 h-full w-full overflow-hidden"
+          >
+            {view === 'subscription' && (
+              <SubscriptionView
+                key="subscription"
+                onBack={() => setView('home')}
+              />
             )}
             {view === 'auth' && (
-              <div className="pt-12 w-full">
+              <div className="h-full w-full overflow-y-auto">
                 <AuthView
                   key="auth"
                   onBack={() => setView('home')}
@@ -320,7 +330,7 @@ export function BreathingExercise() {
               </div>
             )}
             {view === 'builder' && (
-              <div className="pt-12 w-full">
+              <div className="h-full w-full overflow-y-auto">
                 <CustomBuilder
                   key="builder"
                   onBack={() => setView('home')}
@@ -329,7 +339,7 @@ export function BreathingExercise() {
               </div>
             )}
             {view === 'setup' && selectedExercise && (
-              <div className="pt-12 w-full">
+              <div className="h-full w-full overflow-y-auto">
                 <SessionSetup
                   key="setup"
                   exercise={selectedExercise}
@@ -339,7 +349,7 @@ export function BreathingExercise() {
               </div>
             )}
             {view === 'exercise' && selectedExercise && sessionConfig && (
-              <div className="pt-12 w-full flex flex-col items-center">
+              <div className="h-full w-full overflow-y-auto flex flex-col items-center">
                 <ExerciseView
                   key="exercise"
                   exercise={selectedExercise}
@@ -351,7 +361,7 @@ export function BreathingExercise() {
               </div>
             )}
             {view === 'complete' && selectedExercise && sessionResults && (
-              <div className="pt-12 w-full">
+              <div className="h-full w-full overflow-y-auto">
                 <SessionComplete
                   key="complete"
                   exercise={selectedExercise}
@@ -362,21 +372,19 @@ export function BreathingExercise() {
                 />
               </div>
             )}
-          </AnimatePresence>
-
-          <AnimatePresence>
             {view === 'details' && selectedExercise && (
-              <div className="pt-12 w-full">
-                <DetailsView key="details" exercise={selectedExercise} onBack={handleBack} onStart={() => setView('setup')} />
+              <div className="h-full w-full overflow-y-auto">
+                <DetailsView 
+                  key="details" 
+                  exercise={selectedExercise} 
+                  onBack={handleBack} 
+                  onStart={() => setView('setup')} 
+                />
               </div>
             )}
-          </AnimatePresence>
-        </div>
-      </div>
-
-      {view === 'home' && (
-        <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
