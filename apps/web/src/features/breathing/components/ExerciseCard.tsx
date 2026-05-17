@@ -68,13 +68,13 @@ export function ExerciseCard({
             {onToggleFavorite && (
               <button 
                 onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }}
-                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 border ${
+                className={`w-10 h-10 flex items-center justify-center transition-all duration-300 ${
                   isFavorite 
-                    ? 'bg-white border-white text-black' 
-                    : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:text-white shadow-lg'
+                    ? 'text-red-500 hover:text-red-400' 
+                    : 'text-gray-400 hover:text-white'
                 }`}
               >
-                <Bookmark size={16} fill={isFavorite ? "currentColor" : "none"} strokeWidth={2} />
+                <Bookmark size={18} fill={isFavorite ? "currentColor" : "none"} strokeWidth={2} />
               </button>
             )}
             {isCustom && (
