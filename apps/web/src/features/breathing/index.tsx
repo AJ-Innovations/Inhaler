@@ -18,6 +18,7 @@ import { JournalView } from './views/JournalView';
 import { AchievementsView } from './views/AchievementsView';
 import { SubscriptionView } from './views/SubscriptionView';
 import { AuthView } from './views/AuthView';
+import { OnboardingView } from './views/OnboardingView';
 
 type ViewType = 'home' | 'exercise' | 'details' | 'setup' | 'complete' | 'builder' | 'subscription' | 'auth';
 
@@ -27,6 +28,7 @@ export function BreathingExercise() {
   const [activeTab, setActiveTab] = useState<TabType>('explore');
   const [sessionConfig, setSessionConfig] = useState<SessionConfig | null>(null);
   const [sessionResults, setSessionResults] = useState<{ duration: number; cycles: number } | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
 
   // Advanced PWA States & Hooks
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -51,6 +53,11 @@ export function BreathingExercise() {
       const time = localStorage.getItem('inhale_daily_reminder_time') || '08:30';
       setDailyReminderEnabled(enabled);
       setDailyReminderTime(time);
+
+      const completed = localStorage.getItem('inhale_onboarding_completed') === 'true';
+      setShowOnboarding(!completed);
+    } else {
+      setShowOnboarding(false);
     }
   }, []);
 
@@ -190,6 +197,18 @@ export function BreathingExercise() {
     }
   }, []);
 
+  const handleCompleteOnboarding = (planId: string, name?: string) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('inhale_onboarding_completed', 'true');
+      localStorage.setItem('inhale_active_plan', planId);
+      if (name) {
+        updateUserName(name);
+      }
+    }
+    setShowOnboarding(false);
+    setView('home');
+  };
+
   const handleStart = (ex: Exercise) => {
     setSelectedExercise(ex);
     setView('setup');
@@ -218,7 +237,20 @@ export function BreathingExercise() {
   return (
     <div className="h-screen bg-black text-white selection:bg-white/20 flex flex-col overflow-hidden relative">
       <AnimatePresence mode="wait">
-        {view === 'home' ? (
+        {showOnboarding === null ? (
+          <motion.div
+            key="onboarding-loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex-1 bg-black"
+          />
+        ) : showOnboarding === true ? (
+          <OnboardingView
+            key="onboarding-flow"
+            onComplete={handleCompleteOnboarding}
+          />
+        ) : view === 'home' ? (
           <motion.div
             key="home-layout"
             initial={{ opacity: 0 }}
