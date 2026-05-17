@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Sparkles, Zap, Sunrise, Moon, Brain, Wind, Search, X, UserRound } from 'lucide-react';
 import { Exercise, exercises } from '../data';
-import { ExerciseCard } from './ExerciseCard';
+import { ExerciseCard } from '../components/ExerciseCard';
 
 interface ExploreViewProps {
   onStart: (ex: Exercise) => void;

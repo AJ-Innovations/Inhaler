@@ -5,19 +5,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { Exercise } from './data';
 import { useLibrary } from './hooks/useCustomExercises';
-import { CustomBuilder } from './components/CustomBuilder';
+import { CustomBuilder } from './views/CustomBuilder';
 import { BottomNav, TabType } from './components/BottomNav';
-import { ExploreView } from './components/ExploreView';
-import { LibraryView } from './components/LibraryView';
-import { ProfileView } from './components/ProfileView';
-import { ExerciseView } from './components/ExerciseView';
-import { DetailsView } from './components/DetailsView';
-import { SessionSetup, SessionConfig } from './components/SessionSetup';
-import { SessionComplete } from './components/SessionComplete';
-import { JournalView } from './components/JournalView';
-import { AchievementsView } from './components/AchievementsView';
-import { SubscriptionView } from './components/SubscriptionView';
-import { AuthView } from './components/AuthView';
+import { ExploreView } from './views/ExploreView';
+import { LibraryView } from './views/LibraryView';
+import { ProfileView } from './views/ProfileView';
+import { ExerciseView } from './views/ExerciseView';
+import { DetailsView } from './views/DetailsView';
+import { SessionSetup, SessionConfig } from './views/SessionSetup';
+import { SessionComplete } from './views/SessionComplete';
+import { JournalView } from './views/JournalView';
+import { AchievementsView } from './views/AchievementsView';
+import { SubscriptionView } from './views/SubscriptionView';
+import { AuthView } from './views/AuthView';
 
 type ViewType = 'home' | 'exercise' | 'details' | 'setup' | 'complete' | 'builder' | 'subscription' | 'auth';
 

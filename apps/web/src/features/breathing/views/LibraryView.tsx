@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Library, Plus } from 'lucide-react';
 import { Exercise, exercises } from '../data';
-import { ExerciseCard } from './ExerciseCard';
+import { ExerciseCard } from '../components/ExerciseCard';
 
 interface LibraryViewProps {
   onStart: (ex: Exercise) => void;

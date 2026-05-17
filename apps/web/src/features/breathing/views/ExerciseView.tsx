@@ -8,8 +8,8 @@ import { useBreathingTimer } from '../hooks/useBreathingTimer';
 import { useSoundscape } from '../hooks/useSoundscape';
 import { useVoiceAssistant } from '../hooks/useVoiceAssistant';
 import { useBinauralBeats } from '../hooks/useBinauralBeats';
-import { BreathingCircle } from './BreathingCircle';
-import { SessionSettings } from './SessionSettings';
+import { BreathingCircle } from '../components/BreathingCircle';
+import { SessionSettings } from '../components/SessionSettings';
 import { SessionConfig } from './SessionSetup';
 
 interface ExerciseViewProps {
