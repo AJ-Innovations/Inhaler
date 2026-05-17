@@ -25,7 +25,7 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const [voiceVolume, setVoiceVolume] = useState(0.8);
-  const [selectedVoiceId, setSelectedVoiceId] = useState('seraphina');
+  const [selectedVoiceId, setSelectedVoiceId] = useState('luna');
 
   const timer = useBreathingTimer(exercise.pattern);
   
@@ -38,7 +38,11 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
 
   // Audio hooks now play if session is active OR if settings are open (for testing)
   const soundscape = useSoundscape(timer.isActive || isSettingsOpen);
-  useVoiceAssistant(timer.phase, timer.isActive);
+  const voiceAssistant = useVoiceAssistant(timer.phase, timer.isActive, {
+    profileId: selectedVoiceId,
+    isEnabled: isVoiceEnabled,
+    volume: voiceVolume
+  });
   const binaural = useBinauralBeats(timer.isActive || isSettingsOpen);
 
   // Check for completion
@@ -177,15 +181,7 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
         onSelectVoice={setSelectedVoiceId}
         voiceVolume={voiceVolume}
         onSetVoiceVolume={setVoiceVolume}
-        onTestVoice={(id) => {
-          if (typeof window !== 'undefined') {
-            const utterance = new SpeechSynthesisUtterance("Inhale deeply through your nose.");
-            const voices = window.speechSynthesis.getVoices();
-            const voice = voices.find(v => v.name.includes(id === 'atlas' ? 'Male' : 'Female'));
-            if (voice) utterance.voice = voice;
-            window.speechSynthesis.speak(utterance);
-          }
-        }}
+        onTestVoice={voiceAssistant.testVoice}
         activeBinaural={binaural.activeBinaural}
         onSelectBinaural={binaural.toggleBinaural}
         binauralVolume={binaural.binauralVolume}
