@@ -43,6 +43,10 @@ interface ProfileViewProps {
   isInstallable?: boolean;
   isIOS?: boolean;
   onInstallPWA?: () => void;
+  dailyReminderEnabled?: boolean;
+  dailyReminderTime?: string;
+  onToggleReminder?: (enabled: boolean) => void;
+  onUpdateTime?: (time: string) => void;
 }
 
 type SettingsType = 'notifications' | 'privacy' | 'goal' | 'about' | 'none';
@@ -58,7 +62,11 @@ export function ProfileView({
   onLogin,
   isInstallable = false,
   isIOS = false,
-  onInstallPWA
+  onInstallPWA,
+  dailyReminderEnabled = false,
+  dailyReminderTime = '08:30',
+  onToggleReminder,
+  onUpdateTime
 }: ProfileViewProps) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [isSelectingAvatar, setIsSelectingAvatar] = useState(false);
@@ -139,7 +147,7 @@ export function ProfileView({
     {
       title: 'Preferences',
       items: [
-        { id: 'notifications' as SettingsType, icon: Bell, label: 'Notifications', value: 'Morning Mindful', color: 'bg-blue-500' },
+        { id: 'notifications' as SettingsType, icon: Bell, label: 'Notifications', value: dailyReminderEnabled ? dailyReminderTime : 'Off', color: 'bg-blue-500' },
         { id: 'privacy' as SettingsType, icon: Shield, label: 'Privacy & Health', value: 'Connected', color: 'bg-emerald-500' },
         { id: 'goal' as SettingsType, icon: Target, label: 'Daily Goal', value: `${dailyGoal} Minutes`, color: 'bg-orange-500' },
       ]
@@ -157,19 +165,66 @@ export function ProfileView({
     switch (activeSettings) {
       case 'notifications':
         return (
-          <div className="space-y-6">
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-light text-white">Daily Reminder</span>
-                <div className="w-12 h-6 bg-indigo-500 rounded-full flex items-center px-1">
-                  <div className="w-4 h-4 bg-white rounded-full ml-auto" />
+          <div className="space-y-8">
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <span className="text-sm font-light text-white">Daily Reminder</span>
+                  <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+                    {dailyReminderEnabled ? `Active at ${dailyReminderTime}` : 'Disabled'}
+                  </p>
                 </div>
+                
+                {/* Sleek iOS Switch */}
+                <button
+                  onClick={() => onToggleReminder?.(!dailyReminderEnabled)}
+                  className={`w-12 h-6 rounded-full flex items-center px-1 transition-all duration-300 ${
+                    dailyReminderEnabled ? 'bg-indigo-500' : 'bg-white/10'
+                  }`}
+                >
+                  <motion.div 
+                    layout
+                    className="w-4 h-4 bg-white rounded-full shadow-md"
+                    animate={{ x: dailyReminderEnabled ? 20 : 0 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                </button>
               </div>
-              <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Scheduled for 08:30 AM</p>
+
+              {dailyReminderEnabled && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="space-y-4 pt-4 border-t border-white/5"
+                >
+                  <label className="block text-[10px] uppercase tracking-widest font-black text-gray-500">
+                    Reminder Time
+                  </label>
+                  
+                  {/* Styled Dark-Theme Input Time */}
+                  <div className="relative">
+                    <input
+                      type="time"
+                      value={dailyReminderTime}
+                      onChange={(e) => onUpdateTime?.(e.target.value)}
+                      className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-xl font-light text-white focus:outline-none focus:border-indigo-500/50 appearance-none cursor-pointer"
+                    />
+                  </div>
+                </motion.div>
+              )}
             </div>
-            <div className="space-y-2">
-              <h4 className="text-[10px] uppercase tracking-widest font-bold text-gray-600 px-2">Recent Alerts</h4>
-              <p className="text-sm text-gray-500 px-2 italic font-light">No new notifications</p>
+
+            <div className="space-y-4">
+              <h4 className="text-[10px] uppercase tracking-widest font-bold text-gray-600 px-2">System Alerts</h4>
+              <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 space-y-3">
+                <p className="text-xs text-gray-400 font-light">
+                  Push status: <span className="text-emerald-400 font-medium">Active</span>
+                </p>
+                <p className="text-[10px] text-gray-500 leading-relaxed uppercase tracking-wider font-bold">
+                  Enable system settings permissions to receive lock-screen alert popups.
+                </p>
+              </div>
             </div>
           </div>
         );
