@@ -21,7 +21,7 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
     if (touchStart.current === null) return;
     const diff = touchStart.current - e.changedTouches[0].clientX;
     const threshold = 50; // swipe threshold in px
-    
+
     if (diff > threshold) {
       // Swipe left -> Next card
       setActiveIndex(prev => Math.min(prev + 1, plans.length - 1));
@@ -29,7 +29,7 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
       // Swipe right -> Previous card
       setActiveIndex(prev => Math.max(prev - 1, 0));
     }
-    
+
     touchStart.current = null;
   };
 
@@ -111,7 +111,8 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
           button: 'bg-blue-600 text-white hover:bg-blue-500',
           badge: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
           icon: 'text-blue-400 bg-blue-500/10',
-          highlight: 'bg-blue-500/5'
+          highlight: 'bg-blue-500/5',
+          priceColor: 'text-blue-400'
         };
       case 'gold':
         return {
@@ -120,7 +121,8 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
           button: 'bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black hover:opacity-90',
           badge: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
           icon: 'text-amber-400 bg-amber-500/10',
-          highlight: 'bg-gradient-to-br from-amber-500/5 to-yellow-500/5'
+          highlight: 'bg-gradient-to-br from-amber-500/5 to-yellow-500/5',
+          priceColor: 'text-amber-400'
         };
       default:
         return {
@@ -129,7 +131,8 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
           button: 'bg-[#10B981] text-black hover:bg-[#34D399]',
           badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
           icon: 'text-emerald-400 bg-emerald-500/10',
-          highlight: 'bg-emerald-500/5'
+          highlight: 'bg-emerald-500/5',
+          priceColor: 'text-emerald-400'
         };
     }
   };
@@ -157,19 +160,19 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
         </div>
 
         {/* Full Screen Scrollable Cards Slider */}
-        <div 
+        <div
           className="flex-1 w-full overflow-hidden relative min-h-0 flex items-center"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          <div 
-            className="flex flex-row gap-4 h-[550px] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] w-full items-center"
-            style={{ 
-              transform: activeIndex === 0 
-                ? 'translateX(12%)' 
-                : activeIndex === 1 
-                  ? 'translateX(calc(-64% - 16px))' 
-                  : 'translateX(calc(-140% - 32px))' 
+          <div
+            className="flex flex-row gap-2 h-[550px] transition-[left] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] w-full items-center relative"
+            style={{
+              left: activeIndex === 0
+                ? '12%'
+                : activeIndex === 1
+                  ? 'calc(-64% - 16px)'
+                  : 'calc(-140% - 32px)'
             }}
           >
             {plans.map((plan, index) => {
@@ -179,11 +182,10 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
                 <div
                   key={plan.id}
                   onClick={() => setActiveIndex(index)}
-                  className={`relative w-[76%] min-w-[76%] h-full rounded-[40px] border p-6 flex flex-col justify-between transition-all duration-700 cursor-pointer ${
-                    isActive 
-                      ? `${colors.highlight} ${colors.border} shadow-[0_0_40px_rgba(16,185,129,0.08)] scale-100 opacity-100` 
-                      : `bg-white/[0.02] ${colors.border} scale-95 opacity-50`
-                  }`}
+                  className={`relative w-[76%] min-w-[76%] h-full rounded-[40px] border p-6 flex flex-col justify-between transition-all duration-700 cursor-pointer ${isActive
+                    ? `${colors.highlight} ${colors.border} shadow-[0_0_40px_rgba(16,185,129,0.08)] scale-100 opacity-100`
+                    : `bg-white/[0.02] ${colors.border} scale-95 opacity-50`
+                    }`}
                 >
                   <div className="space-y-4 shrink-0">
                     {plan.popular && (
@@ -203,23 +205,46 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
                         <p className="text-gray-500 text-[9px] uppercase tracking-widest font-bold">Billed {billingCycle}</p>
                       </div>
 
-                      <div className="flex items-baseline gap-2">
-                        {plan.strikethrough && (
-                          <span className={`text-lg text-gray-600 font-light line-through decoration-2 tracking-tighter self-center mb-1 ${colors.badge.replace('bg-', 'decoration-').replace('/10', '/50')}`}>
-                            ${plan.strikethrough}
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-baseline gap-4">
+                          {plan.strikethrough && (
+                            <span className={`text-2xl text-gray-400 font-light line-through decoration-2 tracking-tighter self-center mb-1 ${colors.badge.replace('bg-', 'decoration-').replace('/10', '/50')}`}>
+                              ${plan.strikethrough}
+                            </span>
+                          )}
+                          <span className={`text-4xl font-light tracking-tighter transition-colors duration-500 ${billingCycle === 'yearly' ? colors.priceColor : 'text-white'
+                            }`}>
+                            ${plan.displayPrice || plan.price}
                           </span>
+                          <span className="text-xs text-gray-500 font-medium">{plan.period || '/ month'}</span>
+                        </div>
+
+                        {billingCycle === 'yearly' && plan.id !== 'free' && (
+                          <div className={`inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full border text-[9px] font-extrabold uppercase tracking-wider w-fit animate-pulse ${colors.badge}`}>
+                            <Zap size={10} fill="currentColor" className="shrink-0" />
+                            20% Discount Applied
+                          </div>
                         )}
-                        <span className="text-4xl font-light text-white tracking-tighter">${plan.displayPrice || plan.price}</span>
-                        <span className="text-xs text-gray-500 font-medium">{plan.period || '/ month'}</span>
                       </div>
 
                       <p className="text-gray-400 text-xs font-light leading-relaxed min-h-[36px]">{plan.description}</p>
                     </div>
                   </div>
 
-                  {/* Button ABOVE features list */}
-                  <button className={`w-full py-4 my-4 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-2xl active:scale-95 shrink-0 ${colors.button}`}>
-                    Get it now
+                  {/* Button ABOVE features list with gloss animation */}
+                  <button className={`w-full py-4 my-4 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-2xl active:scale-95 shrink-0 relative overflow-hidden ${colors.button}`}>
+                    <span className="relative z-10">Get it now</span>
+                    <motion.div
+                      initial={{ x: '-100%' }}
+                      animate={{ x: '100%' }}
+                      transition={{
+                        repeat: Infinity,
+                        repeatType: 'loop',
+                        duration: 2.5,
+                        ease: 'linear',
+                      }}
+                      className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none"
+                    />
                   </button>
 
                   <div className="flex-1 overflow-y-auto pr-1 space-y-3 border-t border-white/5 pt-4 scrollbar-hide min-h-0">
