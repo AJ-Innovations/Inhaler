@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 export type SoundscapeType = 'none' | 'zen-river' | 'zen-fountain' | 'winter-rain' | 'light-rain' | 'nature-birds' | 'hz-transformation' | 'white-noise' | 'pink-noise' | 'brown-noise';
 
