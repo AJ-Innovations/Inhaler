@@ -40,7 +40,7 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
       displayPrice: billingCycle === 'monthly' ? '1' : '10',
       strikethrough: billingCycle === 'yearly' ? '12' : null,
       period: billingCycle === 'monthly' ? '/ month' : '/ year',
-      description: 'Ideal for small teams and power users.',
+      description: 'Ideal for daily users building a consistent breathing habit.',
       features: [
         'All Free features included',
         'Advanced custom breath builder v2',
@@ -65,7 +65,7 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
       displayPrice: billingCycle === 'monthly' ? '5' : '50',
       strikethrough: billingCycle === 'yearly' ? '60' : null,
       period: billingCycle === 'monthly' ? '/ month' : '/ year',
-      description: 'Best choice for enterprises and studios.',
+      description: 'Designed for serious users seeking total mental and physical mastery.',
       features: [
         'All Pro features included',
         'Dedicated 1-on-1 AI coach',
@@ -159,7 +159,7 @@ export function SubscriptionView({ onBack }: SubscriptionViewProps) {
             return (
               <div
                 key={plan.id}
-                className={`relative w-[90%] min-w-[90%] h-[450px] snap-start rounded-[40px] border p-6 flex flex-col justify-between transition-all duration-700 ${plan.highlight
+                className={`relative w-[90%] min-w-[90%] h-[450px] snap-center rounded-[40px] border p-6 flex flex-col justify-between transition-all duration-700 ${plan.highlight
                     ? `${colors.highlight} ${colors.border} shadow-[0_0_40px_rgba(16,185,129,0.08)]`
                     : `bg-white/[0.02] ${colors.border}`
                   }`}
