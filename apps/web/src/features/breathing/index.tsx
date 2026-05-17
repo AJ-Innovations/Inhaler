@@ -34,11 +34,94 @@ export function BreathingExercise() {
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
 
+  // Dynamic Push & Daily Routine Reminders
+  const [dailyReminderEnabled, setDailyReminderEnabled] = useState(false);
+  const [dailyReminderTime, setDailyReminderTime] = useState('08:30');
+
   const {
     customExercises, favorites, sessions, stats, customGoals,
     toggleFavorite, deleteExercise, addExercise, recordSession, addCustomGoal, deleteCustomGoal,
     userName, userAvatar, updateUserName, updateAvatar, clearAllData
   } = useLibrary();
+
+  // Load reminder settings from LocalStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const enabled = localStorage.getItem('inhale_daily_reminder_enabled') === 'true';
+      const time = localStorage.getItem('inhale_daily_reminder_time') || '08:30';
+      setDailyReminderEnabled(enabled);
+      setDailyReminderTime(time);
+    }
+  }, []);
+
+  const triggerNotification = async (title: string, body: string) => {
+    if (!('Notification' in window)) return;
+    if (Notification.permission === 'granted') {
+      if ('serviceWorker' in navigator) {
+        const reg = await navigator.serviceWorker.ready;
+        reg.showNotification(title, {
+          body,
+          icon: '/icon-192.png',
+          badge: '/icon-192.png',
+          vibrate: [100, 50, 100],
+        } as any);
+      } else {
+        new Notification(title, { body, icon: '/icon-192.png' });
+      }
+    }
+  };
+
+  const handleToggleReminder = async (enabled: boolean) => {
+    if (enabled) {
+      if ('Notification' in window) {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          setDailyReminderEnabled(true);
+          localStorage.setItem('inhale_daily_reminder_enabled', 'true');
+          triggerNotification('Reminders Enabled! 🧘', 'You will be notified daily at your scheduled breathing time.');
+        } else {
+          alert('Notification permission is required to enable daily reminders.');
+          setDailyReminderEnabled(false);
+          localStorage.setItem('inhale_daily_reminder_enabled', 'false');
+        }
+      } else {
+        alert('Notifications are not supported in this browser.');
+      }
+    } else {
+      setDailyReminderEnabled(false);
+      localStorage.setItem('inhale_daily_reminder_enabled', 'false');
+    }
+  };
+
+  const handleUpdateTime = (time: string) => {
+    setDailyReminderTime(time);
+    localStorage.setItem('inhale_daily_reminder_time', time);
+  };
+
+  // Scheduled Reminder Background Checker (Runs every 30s)
+  useEffect(() => {
+    if (!dailyReminderEnabled) return;
+
+    let lastNotifiedDate = '';
+
+    const checkTimeAndNotify = () => {
+      const now = new Date();
+      const currentHourMin = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const todayStr = now.toDateString();
+
+      if (currentHourMin === dailyReminderTime && lastNotifiedDate !== todayStr) {
+        lastNotifiedDate = todayStr;
+        triggerNotification(
+          'Mindfulness Time! 🧘',
+          'It is time for your scheduled breathing exercise. Take a minute to center yourself.'
+        );
+      }
+    };
+
+    checkTimeAndNotify();
+    const interval = setInterval(checkTimeAndNotify, 30000);
+    return () => clearInterval(interval);
+  }, [dailyReminderEnabled, dailyReminderTime]);
 
   // Register service worker and capture PWA installers
   useEffect(() => {
@@ -210,6 +293,10 @@ export function BreathingExercise() {
                       isInstallable={isInstallable && !isInstalled}
                       isIOS={isIOS}
                       onInstallPWA={handleInstallPWA}
+                      dailyReminderEnabled={dailyReminderEnabled}
+                      dailyReminderTime={dailyReminderTime}
+                      onToggleReminder={handleToggleReminder}
+                      onUpdateTime={handleUpdateTime}
                     />
                   </div>
                 )}
