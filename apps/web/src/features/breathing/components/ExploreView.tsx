@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Sparkles, Zap, Sunrise, Moon, Brain, Wind } from 'lucide-react';
+import { Play, Sparkles, Zap, Sunrise, Moon, Brain, Wind, Search, X } from 'lucide-react';
 import { Exercise, exercises } from '../data';
 import { ExerciseCard } from './ExerciseCard';
 
@@ -29,6 +29,7 @@ export function ExploreView({
 }: ExploreViewProps) {
   const [heroIndex, setHeroIndex] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
   const cycleTime = 5000;
 
   const heroSlides = useMemo(() => {
@@ -96,6 +97,8 @@ export function ExploreView({
   }, []);
 
   useEffect(() => {
+    if (searchQuery.trim()) return; // Don't run the hero slider if searching
+
     const startTime = Date.now();
     const interval = setInterval(() => {
       const elapsed = Date.now() - startTime;
@@ -111,7 +114,7 @@ export function ExploreView({
     }, 16);
 
     return () => clearInterval(interval);
-  }, [heroIndex, heroSlides.length]);
+  }, [heroIndex, heroSlides.length, searchQuery]);
 
   const handleManualNav = (dir: number) => {
     setProgress(0);
@@ -123,6 +126,31 @@ export function ExploreView({
   };
 
   const activeSlide = heroSlides[heroIndex];
+
+  // Filtering logic
+  const filteredCustomExercises = useMemo(() => {
+    if (!searchQuery.trim()) return customExercises;
+    const query = searchQuery.toLowerCase().trim();
+    return customExercises.filter(ex => 
+      ex.name.toLowerCase().includes(query) ||
+      ex.subtitle.toLowerCase().includes(query) ||
+      ex.description.toLowerCase().includes(query) ||
+      ex.benefits.some(b => b.toLowerCase().includes(query))
+    );
+  }, [customExercises, searchQuery]);
+
+  const filteredGlobalExercises = useMemo(() => {
+    if (!searchQuery.trim()) return exercises;
+    const query = searchQuery.toLowerCase().trim();
+    return exercises.filter(ex => 
+      ex.name.toLowerCase().includes(query) ||
+      ex.subtitle.toLowerCase().includes(query) ||
+      ex.description.toLowerCase().includes(query) ||
+      ex.benefits.some(b => b.toLowerCase().includes(query))
+    );
+  }, [searchQuery]);
+
+  const hasActiveSearch = searchQuery.trim().length > 0;
 
   return (
     <motion.div
@@ -148,124 +176,214 @@ export function ExploreView({
         </div>
       </div>
 
-      {/* Hero Section - Static Positioned Gestures (Pan-based navigation) */}
-      <section className="relative w-full h-[480px] rounded-[48px] overflow-hidden group bg-[#0D0D0D] touch-pan-y">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeSlide.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-            onPanEnd={(_, info) => {
-              if (info.offset.x > 50) handleManualNav(-1);
-              else if (info.offset.x < -50) handleManualNav(1);
-            }}
-            className="absolute inset-0 bg-[#0D0D0D] border border-white/[0.08] rounded-[48px] p-12 flex flex-col items-center justify-center text-center gap-8 shadow-2xl overflow-hidden z-10"
-          >
-            {/* Background Glow */}
-            <div 
-              className={`absolute inset-0 opacity-30 blur-[120px] transition-all duration-1000 bg-gradient-to-br ${activeSlide.bg}`}
-            />
-
-            <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className={`w-28 h-28 rounded-[36px] bg-white/[0.03] border border-white/10 flex items-center justify-center shadow-inner relative z-10 ${activeSlide.color}`}
+      {/* Premium Search Bar */}
+      <div className="relative w-full px-1">
+        <div className="relative flex items-center group">
+          <Search 
+            className="absolute left-4 text-gray-500 transition-colors group-focus-within:text-white" 
+            size={18} 
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search practices, benefits, or goals..."
+            className="w-full h-12 pl-12 pr-10 rounded-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-gray-500 text-sm focus:outline-none focus:border-white/20 focus:bg-white/[0.07] transition-all duration-300 shadow-inner"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-4 p-1 rounded-full hover:bg-white/10 text-gray-500 hover:text-white transition-colors"
             >
-              <activeSlide.icon size={48} strokeWidth={1.5} />
-              <div className="absolute inset-0 blur-3xl opacity-30 bg-current rounded-full" />
-            </motion.div>
-
-            <div className="space-y-4 relative z-10 pointer-events-none">
-              <span className={`text-[10px] font-black uppercase tracking-[0.4em] ${activeSlide.color}`}>
-                {activeSlide.label}
-              </span>
-              <h2 className="text-4xl font-light text-white tracking-tight leading-tight">
-                {activeSlide.title}
-              </h2>
-              <p className="text-gray-400 text-sm font-light max-w-[300px] leading-relaxed mx-auto">
-                {activeSlide.subtitle}
-              </p>
-            </div>
-
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                onStart(activeSlide.exercise);
-              }}
-              className="group relative h-16 px-12 rounded-full bg-white text-black font-bold text-sm uppercase tracking-widest flex items-center justify-center gap-3 shadow-[0_25px_50px_rgba(255,255,255,0.15)] hover:scale-105 active:scale-95 transition-all mt-4 z-20"
-            >
-              <Play size={18} fill="currentColor" />
-              <span>Begin Session</span>
+              <X size={14} />
             </button>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Persistent Activation Signal Container */}
-        <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-3 z-40 pointer-events-none">
-          {heroSlides.map((_, i) => (
-            <div 
-              key={i} 
-              className={`relative h-1.5 rounded-full bg-white/10 overflow-hidden transition-all duration-500 ${heroIndex === i ? 'w-20' : 'w-5'}`}
-            >
-              {heroIndex === i && (
-                <motion.div 
-                  className="absolute inset-y-0 left-0 bg-white"
-                  initial={false}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ ease: "linear", duration: 0.016 }}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-      
-      {/* Custom Section */}
-      {customExercises.length > 0 && (
-        <div className="space-y-6">
-          <div className="flex justify-between items-center px-1">
-            <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600">Personal Journeys</span>
-            <span className="text-[10px] text-gray-500 font-medium">{customExercises.length} sessions</span>
-          </div>
-
-          <div className="flex flex-col gap-5">
-            {customExercises.map((ex) => (
-              <ExerciseCard 
-                key={ex.id} 
-                exercise={ex} 
-                onStart={() => onStart(ex)} 
-                onDetails={() => onDetails(ex)}
-                isFavorite={favorites.includes(ex.id)}
-                onToggleFavorite={() => onToggleFavorite(ex.id)}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Global Collection */}
-      <div className="space-y-6">
-        <div className="flex justify-between items-center px-1">
-          <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600">Global Collection</span>
-          <span className="text-[10px] text-gray-500 font-medium">{exercises.length} practices</span>
-        </div>
-        
-        <div className="flex flex-col gap-5">
-          {exercises.map((ex: Exercise) => (
-            <ExerciseCard 
-              key={ex.id} 
-              exercise={ex} 
-              onStart={() => onStart(ex)} 
-              onDetails={() => onDetails(ex)}
-              isFavorite={favorites.includes(ex.id)}
-              onToggleFavorite={() => onToggleFavorite(ex.id)}
-            />
-          ))}
+          )}
         </div>
       </div>
+
+      {/* Normal View: Hero & Standard Collections */}
+      {!hasActiveSearch && (
+        <>
+          {/* Hero Section - Static Positioned Gestures (Pan-based navigation) */}
+          <section className="relative w-full h-[480px] rounded-[48px] overflow-hidden group bg-[#0D0D0D] touch-pan-y">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeSlide.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
+                onPanEnd={(_, info) => {
+                  if (info.offset.x > 50) handleManualNav(-1);
+                  else if (info.offset.x < -50) handleManualNav(1);
+                }}
+                className="absolute inset-0 bg-[#0D0D0D] border border-white/[0.08] rounded-[48px] p-12 flex flex-col items-center justify-center text-center gap-8 shadow-2xl overflow-hidden z-10"
+              >
+                {/* Background Glow */}
+                <div 
+                  className={`absolute inset-0 opacity-30 blur-[120px] transition-all duration-1000 bg-gradient-to-br ${activeSlide.bg}`}
+                />
+
+                <motion.div 
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className={`w-28 h-28 rounded-[36px] bg-white/[0.03] border border-white/10 flex items-center justify-center shadow-inner relative z-10 ${activeSlide.color}`}
+                >
+                  <activeSlide.icon size={48} strokeWidth={1.5} />
+                  <div className="absolute inset-0 blur-3xl opacity-30 bg-current rounded-full" />
+                </motion.div>
+
+                <div className="space-y-4 relative z-10 pointer-events-none">
+                  <span className={`text-[10px] font-black uppercase tracking-[0.4em] ${activeSlide.color}`}>
+                    {activeSlide.label}
+                  </span>
+                  <h2 className="text-4xl font-light text-white tracking-tight leading-tight">
+                    {activeSlide.title}
+                  </h2>
+                  <p className="text-gray-400 text-sm font-light max-w-[300px] leading-relaxed mx-auto">
+                    {activeSlide.subtitle}
+                  </p>
+                </div>
+
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onStart(activeSlide.exercise);
+                  }}
+                  className="group relative h-16 px-12 rounded-full bg-white text-black font-bold text-sm uppercase tracking-widest flex items-center justify-center gap-3 shadow-[0_25px_50px_rgba(255,255,255,0.15)] hover:scale-105 active:scale-95 transition-all mt-4 z-20"
+                >
+                  <Play size={18} fill="currentColor" />
+                  <span>Begin Session</span>
+                </button>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Persistent Activation Signal Container */}
+            <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-3 z-40 pointer-events-none">
+              {heroSlides.map((_, i) => (
+                <div 
+                  key={i} 
+                  className={`relative h-1.5 rounded-full bg-white/10 overflow-hidden transition-all duration-500 ${heroIndex === i ? 'w-20' : 'w-5'}`}
+                >
+                  {heroIndex === i && (
+                    <motion.div 
+                      className="absolute inset-y-0 left-0 bg-white"
+                      initial={false}
+                      animate={{ width: `${progress}%` }}
+                      transition={{ ease: "linear", duration: 0.016 }}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+          
+          {/* Custom Section */}
+          {customExercises.length > 0 && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center px-1">
+                <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600">Personal Journeys</span>
+                <span className="text-[10px] text-gray-500 font-medium">{customExercises.length} sessions</span>
+              </div>
+
+              <div className="flex flex-col gap-5">
+                {customExercises.map((ex) => (
+                  <ExerciseCard 
+                    key={ex.id} 
+                    exercise={ex} 
+                    onStart={() => onStart(ex)} 
+                    onDetails={() => onDetails(ex)}
+                    isFavorite={favorites.includes(ex.id)}
+                    onToggleFavorite={() => onToggleFavorite(ex.id)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Global Collection */}
+          <div className="space-y-6">
+            <div className="flex justify-between items-center px-1">
+              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600">Global Collection</span>
+              <span className="text-[10px] text-gray-500 font-medium">{exercises.length} practices</span>
+            </div>
+            
+            <div className="flex flex-col gap-5">
+              {exercises.map((ex: Exercise) => (
+                <ExerciseCard 
+                  key={ex.id} 
+                  exercise={ex} 
+                  onStart={() => onStart(ex)} 
+                  onDetails={() => onDetails(ex)}
+                  isFavorite={favorites.includes(ex.id)}
+                  onToggleFavorite={() => onToggleFavorite(ex.id)}
+                />
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Search Results View */}
+      {hasActiveSearch && (
+        <div className="space-y-8">
+          {filteredCustomExercises.length === 0 && filteredGlobalExercises.length === 0 ? (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              className="flex flex-col items-center justify-center py-20 text-center"
+            >
+              <Search size={48} strokeWidth={1} className="mb-4 text-gray-500" />
+              <p className="text-sm font-light text-gray-400">No practices found matching "{searchQuery}"</p>
+            </motion.div>
+          ) : (
+            <>
+              {filteredCustomExercises.length > 0 && (
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center px-1">
+                    <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600">Personal Journeys</span>
+                    <span className="text-[10px] text-gray-500 font-medium">{filteredCustomExercises.length} found</span>
+                  </div>
+                  <div className="flex flex-col gap-5">
+                    {filteredCustomExercises.map((ex) => (
+                      <ExerciseCard 
+                        key={ex.id} 
+                        exercise={ex} 
+                        onStart={() => onStart(ex)} 
+                        onDetails={() => onDetails(ex)}
+                        isFavorite={favorites.includes(ex.id)}
+                        onToggleFavorite={() => onToggleFavorite(ex.id)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {filteredGlobalExercises.length > 0 && (
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center px-1">
+                    <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600">Global Collection</span>
+                    <span className="text-[10px] text-gray-500 font-medium">{filteredGlobalExercises.length} found</span>
+                  </div>
+                  <div className="flex flex-col gap-5">
+                    {filteredGlobalExercises.map((ex) => (
+                      <ExerciseCard 
+                        key={ex.id} 
+                        exercise={ex} 
+                        onStart={() => onStart(ex)} 
+                        onDetails={() => onDetails(ex)}
+                        isFavorite={favorites.includes(ex.id)}
+                        onToggleFavorite={() => onToggleFavorite(ex.id)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
     </motion.div>
   );
 }
