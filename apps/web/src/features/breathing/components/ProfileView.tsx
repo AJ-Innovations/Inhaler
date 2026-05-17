@@ -40,6 +40,9 @@ interface ProfileViewProps {
   onResetData: () => void;
   onUpgrade: () => void;
   onLogin: () => void;
+  isInstallable?: boolean;
+  isIOS?: boolean;
+  onInstallPWA?: () => void;
 }
 
 type SettingsType = 'notifications' | 'privacy' | 'goal' | 'about' | 'none';
@@ -52,7 +55,10 @@ export function ProfileView({
   onUpdateAvatar,
   onResetData,
   onUpgrade,
-  onLogin
+  onLogin,
+  isInstallable = false,
+  isIOS = false,
+  onInstallPWA
 }: ProfileViewProps) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [isSelectingAvatar, setIsSelectingAvatar] = useState(false);
@@ -60,7 +66,16 @@ export function ProfileView({
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [activeSettings, setActiveSettings] = useState<SettingsType>('none');
   const [dailyGoal, setDailyGoal] = useState(15);
+  const [showIOSPrompt, setShowIOSPrompt] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleInstallClick = () => {
+    if (isIOS) {
+      setShowIOSPrompt(true);
+    } else if (onInstallPWA) {
+      onInstallPWA();
+    }
+  };
 
   const handleSaveName = () => {
     if (tempName.trim()) {
@@ -525,6 +540,31 @@ export function ProfileView({
         </div>
       </motion.button>
 
+      {/* PWA Install Button */}
+      {isInstallable && (
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleInstallClick}
+          className="w-full mt-6 relative overflow-hidden rounded-[36px] p-6 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 group"
+        >
+          <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition-opacity">
+            <Smartphone size={40} className="text-indigo-400" />
+          </div>
+          <div className="relative z-10 flex flex-col items-start text-left space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded-full bg-indigo-500 text-white text-[8px] font-black uppercase tracking-tighter">Fast Access</span>
+              <h4 className="text-lg font-light text-white tracking-tight">Install Inhaler App</h4>
+            </div>
+            <p className="text-xs text-gray-400 font-light max-w-[240px]">Add Inhaler to your home screen for quick offline access, premium performance, and immersive sessions.</p>
+            <div className="pt-2 flex items-center gap-2 text-indigo-400">
+              <span className="text-[10px] font-black uppercase tracking-widest">Install Now</span>
+              <ChevronRight size={14} />
+            </div>
+          </div>
+        </motion.button>
+      )}
+
       {/* Stats Section */}
       <div className="w-full bg-[#0D0D0D] border border-white/[0.06] rounded-[42px] p-8 shadow-2xl">
         <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600 mb-6 px-1">Mindfulness Journey</h3>
@@ -626,6 +666,73 @@ export function ProfileView({
                   className="w-full h-14 rounded-2xl bg-white/5 text-gray-400 font-bold text-sm uppercase tracking-widest active:scale-95 transition-all"
                 >
                   Cancel
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* iOS PWA Installation Helper Overlay */}
+      <AnimatePresence>
+        {showIOSPrompt && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] bg-black/85 backdrop-blur-xl flex items-center justify-center px-8"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="bg-[#0D0D0D] border border-white/10 p-10 rounded-[48px] w-full max-w-md space-y-8 shadow-2xl relative"
+            >
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <h3 className="text-2xl font-light text-white tracking-tight">Add to Home Screen</h3>
+                  <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-600">iOS Safari Setup</p>
+                </div>
+                <button
+                  onClick={() => setShowIOSPrompt(false)}
+                  className="w-10 h-10 rounded-full bg-white/5 text-gray-500 flex items-center justify-center hover:text-white transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                <p className="text-sm text-gray-400 font-light leading-relaxed">
+                  Safari doesn't support automatic 1-click installations, but you can add Inhaler to your home screen in 3 quick steps:
+                </p>
+                
+                <div className="space-y-4">
+                  <div className="flex items-start gap-4">
+                    <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">1</div>
+                    <p className="text-sm text-gray-300 font-light pt-0.5">
+                      Tap the <span className="text-indigo-400 font-medium">Share</span> button (looks like a square with an upward arrow) in Safari.
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">2</div>
+                    <p className="text-sm text-gray-300 font-light pt-0.5">
+                      Scroll down the list of options and select <span className="text-indigo-400 font-medium">"Add to Home Screen"</span>.
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">3</div>
+                    <p className="text-sm text-gray-300 font-light pt-0.5">
+                      Confirm by tapping <span className="text-indigo-400 font-medium">"Add"</span> in the top right corner!
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-white/5 flex flex-col gap-4">
+                <button
+                  onClick={() => setShowIOSPrompt(false)}
+                  className="w-full h-14 rounded-2xl bg-white text-black font-bold text-sm uppercase tracking-widest active:scale-95 transition-all"
+                >
+                  Got It
                 </button>
               </div>
             </motion.div>
