@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Sparkles, Zap, Sunrise, Moon, Brain, Wind, Search, X } from 'lucide-react';
+import { Play, Sparkles, Zap, Sunrise, Moon, Brain, Wind, Search, X, UserRound } from 'lucide-react';
 import { Exercise, exercises } from '../data';
 import { ExerciseCard } from './ExerciseCard';
 
@@ -17,6 +17,8 @@ interface ExploreViewProps {
     sessionCount: number;
     streak: number;
   };
+  userAvatar: string | null;
+  onProfileClick: () => void;
 }
 
 export function ExploreView({ 
@@ -25,7 +27,9 @@ export function ExploreView({
   customExercises, 
   favorites, 
   onToggleFavorite,
-  stats
+  stats,
+  userAvatar,
+  onProfileClick
 }: ExploreViewProps) {
   const [heroIndex, setHeroIndex] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -159,46 +163,56 @@ export function ExploreView({
       exit={{ opacity: 0, y: -10 }}
       className="w-full space-y-10"
     >
-      {/* Header & Streak */}
-      <div className="flex justify-between items-start px-1">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-light tracking-tight text-white/90">Inhaler</h1>
-          <p className="text-gray-500 text-[10px] uppercase tracking-[0.4em] font-bold">Zen System</p>
+      {/* Sticky Top Bar containing Search & Rounded Profile Icon with Streak Badge */}
+      <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-md py-4 flex items-center gap-3 w-full border-b border-white/[0.04]">
+        {/* Search Bar */}
+        <div className="relative flex-1">
+          <div className="relative flex items-center group">
+            <Search 
+              className="absolute left-4 text-gray-500 transition-colors group-focus-within:text-white" 
+              size={18} 
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search practices, benefits, or goals..."
+              className="w-full h-12 pl-12 pr-10 rounded-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-gray-500 text-sm focus:outline-none focus:border-white/20 focus:bg-white/[0.07] transition-all duration-300 shadow-inner"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-4 p-1 rounded-full hover:bg-white/10 text-gray-500 hover:text-white transition-colors"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
         </div>
-        <div className="flex gap-2">
-          <motion.div 
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-orange-500/10 border border-orange-500/20 shadow-lg"
-          >
-            <Zap className="text-orange-500" size={14} fill="currentColor" />
-            <span className="text-[11px] font-black text-orange-500 uppercase tracking-widest">{stats.streak} Day Streak</span>
-          </motion.div>
-        </div>
-      </div>
 
-      {/* Premium Search Bar */}
-      <div className="relative w-full px-1">
-        <div className="relative flex items-center group">
-          <Search 
-            className="absolute left-4 text-gray-500 transition-colors group-focus-within:text-white" 
-            size={18} 
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search practices, benefits, or goals..."
-            className="w-full h-12 pl-12 pr-10 rounded-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-gray-500 text-sm focus:outline-none focus:border-white/20 focus:bg-white/[0.07] transition-all duration-300 shadow-inner"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-4 p-1 rounded-full hover:bg-white/10 text-gray-500 hover:text-white transition-colors"
-            >
-              <X size={14} />
-            </button>
+        {/* Profile Avatar Trigger Button */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={onProfileClick}
+          className="relative w-12 h-12 rounded-full border border-white/10 bg-white/[0.03] flex items-center justify-center flex-shrink-0 cursor-pointer overflow-visible shadow-lg hover:border-white/20 transition-all"
+        >
+          <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center">
+            {userAvatar ? (
+              <img src={userAvatar} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              <UserRound size={22} className="text-white/40" />
+            )}
+          </div>
+
+          {/* Streak Overlaid Badge */}
+          {stats.streak > 0 && (
+            <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-orange-500 border border-black shadow-[0_0_10px_rgba(249,115,22,0.45)]">
+              <Zap className="text-white fill-white animate-pulse" size={8} />
+              <span className="text-[8px] font-black text-white leading-none">{stats.streak}</span>
+            </div>
           )}
-        </div>
+        </motion.button>
       </div>
 
       {/* Normal View: Hero & Standard Collections */}
