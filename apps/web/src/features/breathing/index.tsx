@@ -28,11 +28,77 @@ export function BreathingExercise() {
   const [sessionConfig, setSessionConfig] = useState<SessionConfig | null>(null);
   const [sessionResults, setSessionResults] = useState<{ duration: number; cycles: number } | null>(null);
 
+  // Advanced PWA States & Hooks
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+
   const {
     customExercises, favorites, sessions, stats, customGoals,
     toggleFavorite, deleteExercise, addExercise, recordSession, addCustomGoal, deleteCustomGoal,
     userName, userAvatar, updateUserName, updateAvatar, clearAllData
   } = useLibrary();
+
+  // Register service worker and capture PWA installers
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // 1. Register cache-first advanced service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then((reg) => console.log('Service Worker registered successfully:', reg.scope))
+        .catch((err) => console.error('Service Worker registration failed:', err));
+    }
+
+    // 2. Detect Apple iOS Device
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isApple = /iphone|ipad|ipod/.test(userAgent);
+    setIsIOS(isApple);
+
+    // 3. Detect if already running in standalone/installed mode
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+    setIsInstalled(!!isStandalone);
+
+    // 4. Capture native beforeinstallprompt event for Chromium/Chrome/Edge
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+
+    // 5. Capture successful installation completion
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      setIsInstallable(false);
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    // Fallback: If it's iOS and not running in standalone, mark as installable (to show iOS tutorial modal)
+    if (isApple && !isStandalone) {
+      setIsInstallable(true);
+    }
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallPWA = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User PWA Choice outcome: ${outcome}`);
+    if (outcome === 'accepted') {
+      setIsInstalled(true);
+      setIsInstallable(false);
+    }
+    setDeferredPrompt(null);
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -141,6 +207,9 @@ export function BreathingExercise() {
                       onResetData={clearAllData}
                       onUpgrade={() => setView('subscription')}
                       onLogin={() => setView('auth')}
+                      isInstallable={isInstallable && !isInstalled}
+                      isIOS={isIOS}
+                      onInstallPWA={handleInstallPWA}
                     />
                   </div>
                 )}
