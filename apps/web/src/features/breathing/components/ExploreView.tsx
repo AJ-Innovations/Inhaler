@@ -34,7 +34,35 @@ export function ExploreView({
   const [heroIndex, setHeroIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showHeader, setShowHeader] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const cycleTime = 5000;
+
+  useEffect(() => {
+    const container = document.getElementById('breathing-scroll-container');
+    if (!container) return;
+
+    const handleScroll = () => {
+      const currentScrollY = container.scrollTop;
+      
+      // If we scroll down past 50px, hide the header on scroll down, show on scroll up
+      if (currentScrollY > 50) {
+        if (currentScrollY > lastScrollY) {
+          setShowHeader(false);
+        } else {
+          setShowHeader(true);
+        }
+      } else {
+        setShowHeader(true);
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+    };
+  }, [lastScrollY]);
 
   const heroSlides = useMemo(() => {
     const hour = new Date().getHours();
@@ -164,7 +192,15 @@ export function ExploreView({
       className="w-full"
     >
       {/* Sticky Top Bar containing Search & Rounded Profile Icon with Streak Badge */}
-      <div className="sticky top-0 z-50 -mt-12 pt-12 pb-4 bg-black/90 backdrop-blur-md flex items-center gap-3 w-full border-b border-white/[0.04]">
+      <motion.div
+        variants={{
+          visible: { y: 0, opacity: 1 },
+          hidden: { y: -120, opacity: 0 }
+        }}
+        animate={showHeader ? "visible" : "hidden"}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="sticky top-0 z-50 pt-8 pb-4 bg-black/95 backdrop-blur-md flex items-center gap-3 w-full border-b border-white/[0.04]"
+      >
         {/* Search Bar */}
         <div className="relative flex-1">
           <div className="relative flex items-center group">
@@ -213,7 +249,7 @@ export function ExploreView({
             </div>
           )}
         </motion.button>
-      </div>
+      </motion.div>
 
       {/* Normal View: Hero & Standard Collections */}
       {!hasActiveSearch && (

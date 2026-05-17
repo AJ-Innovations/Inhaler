@@ -69,7 +69,7 @@ export function BreathingExercise() {
   return (
     <div className="h-screen bg-black text-white selection:bg-white/20 flex flex-col overflow-hidden">
       {/* Scrollable Content Area */}
-      <div className="flex-1 overflow-y-auto pb-32 scroll-smooth">
+      <div id="breathing-scroll-container" className="flex-1 overflow-y-auto pb-32 scroll-smooth">
         <div className="flex flex-col items-center w-full px-4 sm:px-0 max-w-[480px] mx-auto font-sans relative z-10">
           <AnimatePresence mode="wait">
             {view === 'home' && (
