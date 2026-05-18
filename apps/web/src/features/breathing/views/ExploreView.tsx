@@ -45,16 +45,16 @@ export function ExploreView({
   const [isAmbientSelectorOpen, setIsAmbientSelectorOpen] = useState(false);
 
   const ambientList = [
-    { id: 'zen-river', name: 'Zen River', image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=300&auto=format&fit=crop' },
-    { id: 'zen-fountain', name: 'Zen Fountain', image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=300&auto=format&fit=crop' },
-    { id: 'winter-rain', name: 'Winter Rain', image: 'https://images.unsplash.com/photo-1485594050903-8e8ee7b071a8?q=80&w=300&auto=format&fit=crop' },
-    { id: 'light-rain', name: 'Light Rain', image: 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?q=80&w=300&auto=format&fit=crop' },
-    { id: 'nature-birds', name: 'Nature Birds', image: 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?q=80&w=300&auto=format&fit=crop' },
-    { id: 'hz-transformation', name: '528Hz Transform', image: 'https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=300&auto=format&fit=crop' },
-    { id: 'white-noise', name: 'White Noise', image: 'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?q=80&w=300&auto=format&fit=crop' },
-    { id: 'pink-noise', name: 'Pink Noise', image: 'https://images.unsplash.com/photo-1532767154073-93e5065788f4?q=80&w=300&auto=format&fit=crop' },
-    { id: 'brown-noise', name: 'Deep Brownian', image: 'https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=300&auto=format&fit=crop' },
-    { id: 'none', name: 'None (Silent Space)', image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=300&auto=format&fit=crop' }
+    { id: 'zen-river', name: 'Zen River', image: '/image/ambients/river.png' },
+    { id: 'zen-fountain', name: 'Zen Fountain', image: '/image/ambients/whaterfalls.png' },
+    { id: 'winter-rain', name: 'Winter Rain', image: '/image/ambients/rain.png' },
+    { id: 'light-rain', name: 'Light Rain', image: '/image/ambients/rain2.png' },
+    { id: 'nature-birds', name: 'Nature Birds', image: '/image/ambients/nature2.png' },
+    { id: 'hz-transformation', name: '528Hz Transform', image: '/image/ambients/galaxy.png' },
+    { id: 'white-noise', name: 'White Noise', image: '/image/ambients/galaxy2.png' },
+    { id: 'pink-noise', name: 'Pink Noise', image: '/image/ambients/galaxy3.png' },
+    { id: 'brown-noise', name: 'Deep Brownian', image: '/image/ambients/nature.png' },
+    { id: 'none', name: 'None (Silent Space)', image: '/image/ambients/leaf.png' }
   ];
 
   const handleToggleSound = () => {
