@@ -131,5 +131,112 @@ export const exercises: Exercise[] = [
       end: '#10b981'
     },
     pattern: { inhale: 5, hold1: 2, exhale: 5, hold2: 2 }
+  },
+  {
+    id: 'sudarshan',
+    name: 'Sudarshan Kriya',
+    subtitle: 'Joy & Energy Flow',
+    description: 'A powerful rhythmic breathing practice that harmonizes body, mind, and emotions.',
+    howTo: 'Alternate between slow, medium, and fast cycles of deep, rhythmic breathing.',
+    why: 'Synchronizes the biological rhythms of the body, releasing deep-seated stress and toxins.',
+    benefits: ['Relieves depression', 'Boosts immunity', 'Enhances life force'],
+    icon: 'Sparkle',
+    gradient: {
+      start: '#f59e0b',
+      end: '#ec4899'
+    },
+    pattern: { inhale: 3, hold1: 0, exhale: 3, hold2: 0 }
+  },
+  {
+    id: 'wim-hof',
+    name: 'Inner Fire (Tummo)',
+    subtitle: 'Resilience & Strength',
+    description: 'A method combining hyperventilation and breath retention to boost adrenaline and alkaline levels.',
+    howTo: 'Inhale deeply through the mouth, release passively. Repeat 30 times. Then exhale and hold, then inhale and hold.',
+    why: 'Temporarily shifts body pH to alkaline and stimulates the sympathetic nervous system to build stress resilience.',
+    benefits: ['Alkalizes body', 'Cold tolerance', 'Immune surge'],
+    icon: 'Flame',
+    isAdvanced: true,
+    gradient: {
+      start: '#fb7185',
+      end: '#e11d48'
+    },
+    pattern: { inhale: 2, hold1: 45, exhale: 2, hold2: 15 }
+  },
+  {
+    id: 'anulom',
+    name: 'Anulom Vilom',
+    subtitle: 'Nervous System Purifier',
+    description: 'An alternate nostril breathing technique that purifies channels and calms the active mind.',
+    howTo: 'Inhale left nostril, exhale right. Inhale right, exhale left. Keep it slow, silent, and deep.',
+    why: 'Directly balances the parasympathetic and sympathetic nervous systems, cooling and heating energies.',
+    benefits: ['Sinus clearing', 'Balances blood pressure', 'Mental clarity'],
+    icon: 'Brain',
+    gradient: {
+      start: '#3b82f6',
+      end: '#2563eb'
+    },
+    pattern: { inhale: 4, hold1: 4, exhale: 4, hold2: 4 }
+  },
+  {
+    id: 'sitali',
+    name: 'Sitali Cooling',
+    subtitle: 'Cool & Calm System',
+    description: 'A cooling breathing technique that lowers body temperature and soothes anger/anxiety.',
+    howTo: 'Curl the sides of your tongue to form a tube. Inhale deeply through this tube. Close mouth, exhale through nose.',
+    why: 'Evaporates moisture on the tongue, cooling the blood flow to the brain and throat.',
+    benefits: ['Reduces body heat', 'Quenches thirst', 'Soothes acidity'],
+    icon: 'Leaf',
+    gradient: {
+      start: '#06b6d4',
+      end: '#0891b2'
+    },
+    pattern: { inhale: 4, hold1: 2, exhale: 6, hold2: 0 }
+  },
+  {
+    id: 'bhastrika',
+    name: 'Bhastrika Bellows',
+    subtitle: 'Energy & Lung Capacity',
+    description: 'Rapid, powerful inhalations and exhalations that act like bellows, generating intense heat and energy.',
+    howTo: 'Inhale and exhale forcefully through the nose with arm movements. Keep speed rhythmic and high-paced.',
+    why: 'Forces massive oxygen exchange, tones the diaphragm, and stimulates high metabolic activity.',
+    benefits: ['Massive energy boost', 'Clears congestion', 'Oxygenates brain'],
+    icon: 'Zap',
+    isAdvanced: true,
+    gradient: {
+      start: '#ea580c',
+      end: '#d97706'
+    },
+    pattern: { inhale: 1, hold1: 0, exhale: 1, hold2: 0 }
+  },
+  {
+    id: 'bhramari',
+    name: 'Bhramari Bee',
+    subtitle: 'Vibrational Healing',
+    description: 'A soothing practice where you create a gentle humming sound during a prolonged exhale.',
+    howTo: 'Close your ears with thumbs, eyes with fingers. Inhale deep, then exhale slowly making a deep "Mmm" humming sound.',
+    why: 'The humming vibration increases nitric oxide production in sinuses by 15x and activates the vagus nerve instantly.',
+    benefits: ['Instant calm', 'Lowers blood pressure', 'Sinus health'],
+    icon: 'Infinity',
+    gradient: {
+      start: '#c084fc',
+      end: '#a855f7'
+    },
+    pattern: { inhale: 4, hold1: 0, exhale: 10, hold2: 0 }
+  },
+  {
+    id: 'buteyko',
+    name: 'Buteyko Method',
+    subtitle: 'Asthma & Breath Volume',
+    description: 'A therapeutic breathing technique focused on shallow nasal breathing to normalize breathing volume.',
+    howTo: 'Breathe shallowly through the nose. Hold breath gently after exhalation to accumulate CO2 (Control Pause).',
+    why: 'Normalizes respiration rate and increases CO2 levels to improve oxygen delivery via the Bohr effect.',
+    benefits: ['Controls asthma', 'Stops mouth-breathing', 'Improves oxygenation'],
+    icon: 'Activity',
+    gradient: {
+      start: '#10b981',
+      end: '#047857'
+    },
+    pattern: { inhale: 2, hold1: 0, exhale: 3, hold2: 5 }
   }
 ];
