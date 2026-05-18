@@ -98,8 +98,8 @@ export function ExploreView({
         subtitle: "Kickstart your day with clarity.",
         label: "Recommended for Morning",
         icon: Sunrise,
-        color: "text-orange-400",
-        bg: "from-orange-500/20 to-transparent"
+        color: "text-white",
+        bg: "from-white/10 to-transparent"
       });
     } else if (hour >= 12 && hour < 18) {
       slides.push({
@@ -109,8 +109,8 @@ export function ExploreView({
         subtitle: "Maintain focus and reduce stress.",
         label: "Recommended for Afternoon",
         icon: Sparkles,
-        color: "text-emerald-400",
-        bg: "from-emerald-500/20 to-transparent"
+        color: "text-white",
+        bg: "from-white/10 to-transparent"
       });
     } else {
       slides.push({
@@ -120,8 +120,8 @@ export function ExploreView({
         subtitle: "Prepare your mind for deep rest.",
         label: "Recommended for Evening",
         icon: Moon,
-        color: "text-indigo-400",
-        bg: "from-indigo-500/20 to-transparent"
+        color: "text-white",
+        bg: "from-white/10 to-transparent"
       });
     }
 
@@ -132,8 +132,8 @@ export function ExploreView({
       subtitle: "Optimize cognitive performance.",
       label: "Scientific Choice",
       icon: Brain,
-      color: "text-purple-400",
-      bg: "from-purple-500/20 to-transparent"
+      color: "text-white",
+      bg: "from-white/10 to-transparent"
     });
 
     slides.push({
@@ -143,8 +143,8 @@ export function ExploreView({
       subtitle: "Go beyond the surface level.",
       label: "Mastery Class",
       icon: Wind,
-      color: "text-blue-400",
-      bg: "from-blue-500/20 to-transparent"
+      color: "text-white",
+      bg: "from-white/10 to-transparent"
     });
 
     return slides;
@@ -215,9 +215,36 @@ export function ExploreView({
     >
       {/* Dynamic Greeting & Weekly Calendar Widget */}
       <div className="pt-6 pb-4 px-1 flex flex-col gap-3">
-        <h1 className="text-3xl font-light text-white tracking-tight drop-shadow-md">
-          {getGreeting()}
-        </h1>
+        <div className="flex justify-between items-center w-full">
+          <h1 className="text-3xl font-light text-white tracking-tight drop-shadow-md">
+            {getGreeting()}
+          </h1>
+
+          {/* Quick Ambient Sanctuary Icons in the same row */}
+          <div className="flex items-center gap-2">
+            {/* Sound Toggle Button (Icon only) */}
+            <button 
+              onClick={handleToggleSound}
+              className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all active:scale-90 shadow-md backdrop-blur-md ${
+                isAmbientSoundOn 
+                  ? 'bg-white/10 border-white/20 text-white' 
+                  : 'bg-white/[0.03] border-white/5 text-white/40 hover:text-white hover:bg-white/[0.06]'
+              }`}
+              title={`Ambient Sound: ${isAmbientSoundOn ? 'ON' : 'OFF'}`}
+            >
+              {isAmbientSoundOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
+            </button>
+
+            {/* Selector Button (Icon only) */}
+            <button 
+              onClick={() => setIsAmbientSelectorOpen(true)}
+              className="w-10 h-10 rounded-full bg-white/[0.03] border border-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.06] transition-all active:scale-90 shadow-md backdrop-blur-md"
+              title="Change Ambient Sanctuary"
+            >
+              <Compass size={16} />
+            </button>
+          </div>
+        </div>
 
         {/* Weekly Calendar Tracker */}
         <div className="flex gap-2">
@@ -236,35 +263,6 @@ export function ExploreView({
               </div>
             );
           })}
-        </div>
-
-        {/* Quick Ambient Sanctuary Toolbar */}
-        <div className="flex gap-3 mt-1.5">
-          {/* Sound Toggle Button */}
-          <button 
-            onClick={handleToggleSound}
-            className={`flex-1 h-11 rounded-2xl border flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-md backdrop-blur-md ${
-              isAmbientSoundOn 
-                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 font-bold' 
-                : 'bg-white/[0.03] border-white/10 text-gray-400 hover:text-white hover:bg-white/[0.06]'
-            }`}
-          >
-            {isAmbientSoundOn ? <Volume2 size={15} /> : <VolumeX size={15} />}
-            <span className="text-[9px] font-black uppercase tracking-widest">
-              Sound: {isAmbientSoundOn ? 'ON' : 'OFF'}
-            </span>
-          </button>
-
-          {/* Selector Button */}
-          <button 
-            onClick={() => setIsAmbientSelectorOpen(true)}
-            className="flex-1 h-11 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center gap-2.5 text-gray-400 hover:text-white hover:bg-white/[0.06] transition-all active:scale-95 shadow-md backdrop-blur-md"
-          >
-            <Compass size={15} />
-            <span className="text-[9px] font-black uppercase tracking-widest">
-              Ambient Style
-            </span>
-          </button>
         </div>
       </div>
       {/* Sticky Top Bar containing Search & Rounded Profile Icon with Streak Badge */}
@@ -316,7 +314,7 @@ export function ExploreView({
       {!hasActiveSearch && (
         <div className="space-y-10 mt-4 w-full">
           {/* Hero Section - Static Positioned Gestures (Pan-based navigation) */}
-          <section className="relative w-full h-[480px] rounded-[48px] overflow-hidden group bg-[#0D0D0D] touch-pan-y">
+          <section className="relative w-full h-[480px] rounded-[48px] overflow-hidden group bg-white/[0.01] backdrop-blur-md touch-pan-y">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeSlide.id}
@@ -328,7 +326,7 @@ export function ExploreView({
                   if (info.offset.x > 50) handleManualNav(-1);
                   else if (info.offset.x < -50) handleManualNav(1);
                 }}
-                className="absolute inset-0 bg-[#0D0D0D] border border-white/[0.08] rounded-[48px] p-12 flex flex-col items-center justify-center text-center gap-8 shadow-2xl overflow-hidden z-10"
+                className="absolute inset-0 bg-white/[0.02] backdrop-blur-md border border-white/[0.08] rounded-[48px] p-12 flex flex-col items-center justify-center text-center gap-8 shadow-2xl overflow-hidden z-10"
               >
                 {/* Background Glow */}
                 <div
@@ -342,11 +340,11 @@ export function ExploreView({
                   className={`w-28 h-28 rounded-[36px] bg-white/[0.03] border border-white/10 flex items-center justify-center shadow-inner relative z-10 ${activeSlide.color}`}
                 >
                   <activeSlide.icon size={48} strokeWidth={1.5} />
-                  <div className="absolute inset-0 blur-3xl opacity-30 bg-current rounded-full" />
+                  <div className="absolute inset-0 blur-3xl opacity-10 bg-white rounded-full" />
                 </motion.div>
 
                 <div className="space-y-4 relative z-10 pointer-events-none">
-                  <span className={`text-[10px] font-black uppercase tracking-[0.4em] ${activeSlide.color}`}>
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/50">
                     {activeSlide.label}
                   </span>
                   <h2 className="text-4xl font-light text-white tracking-tight leading-tight">
