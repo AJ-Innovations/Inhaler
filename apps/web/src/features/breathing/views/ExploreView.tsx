@@ -36,6 +36,24 @@ export function ExploreView({
   const [searchQuery, setSearchQuery] = useState('');
   const cycleTime = 5000;
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return 'Good Morning';
+    if (hour >= 12 && hour < 18) return 'Good Afternoon';
+    return 'Good Evening';
+  };
+
+  const currentDayIndex = new Date().getDay(); // 0 is Sunday, 1 is Monday, etc.
+  const weekDays = [
+    { name: 'Monday', label: 'M', value: 1 },
+    { name: 'Tuesday', label: 'T', value: 2 },
+    { name: 'Wednesday', label: 'W', value: 3 },
+    { name: 'Thursday', label: 'T', value: 4 },
+    { name: 'Friday', label: 'F', value: 5 },
+    { name: 'Saturday', label: 'S', value: 6 },
+    { name: 'Sunday', label: 'S', value: 0 }
+  ];
+
   const heroSlides = useMemo(() => {
     const hour = new Date().getHours();
     const slides = [];
@@ -163,6 +181,31 @@ export function ExploreView({
       exit={{ opacity: 0, y: -10 }}
       className="w-full"
     >
+      {/* Dynamic Greeting & Weekly Calendar Widget */}
+      <div className="pt-6 pb-4 px-1 flex flex-col gap-3">
+        <h1 className="text-3xl font-light text-white tracking-tight drop-shadow-md">
+          {getGreeting()}
+        </h1>
+
+        {/* Weekly Calendar Tracker */}
+        <div className="flex gap-2">
+          {weekDays.map((day) => {
+            const isToday = currentDayIndex === day.value;
+            return (
+              <div 
+                key={day.name} 
+                className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
+                  isToday 
+                    ? 'bg-gradient-to-br from-emerald-400 to-teal-500 text-black shadow-[0_0_15px_rgba(16,185,129,0.4)] scale-110 font-black' 
+                    : 'bg-white/[0.03] border border-white/5 text-gray-400 hover:text-white hover:bg-white/[0.08]'
+                }`}
+              >
+                {day.label}
+              </div>
+            );
+          })}
+        </div>
+      </div>
       {/* Sticky Top Bar containing Search & Rounded Profile Icon with Streak Badge */}
       <div className="sticky top-0 z-50 pt-4 pb-2 bg-black/90 backdrop-blur-md flex items-center gap-3 w-full border-b border-white/[0.04]">
         {/* Search Bar */}
