@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { Exercise } from './data';
@@ -41,6 +41,18 @@ const getAmbientImage = (activeSoundscape: string) => {
       return '/image/ambients/galaxy3.png';
     case 'brown-noise':
       return '/image/ambients/nature.png';
+    case 'beach':
+      return '/image/ambients/beach.png';
+    case 'lake':
+      return '/image/ambients/lake4.png';
+    case 'marine':
+      return '/image/ambients/marain.png';
+    case 'desert':
+      return '/image/ambients/desert3.png';
+    case 'ethereal':
+      return '/image/ambients/loop.png';
+    case 'forest':
+      return '/image/ambients/forest.png';
     case 'none':
     default:
       return '/image/ambients/leaf.png';
@@ -283,7 +295,7 @@ export function BreathingExercise() {
 
   return (
     <div
-      className="h-screen text-white selection:bg-white flex flex-col overflow-hidden relative bg-cover bg-center transition-all duration-1000"
+      className="h-screen w-full text-white selection:bg-white flex flex-col overflow-hidden relative bg-cover bg-center transition-all duration-1000"
       style={{
         backgroundImage: soundscape.activeSoundscape && soundscape.activeSoundscape !== 'none'
           ? `url(${getAmbientImage(soundscape.activeSoundscape)})`

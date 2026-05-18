@@ -32,6 +32,18 @@ const getAmbientImage = (activeSoundscape: string) => {
       return '/image/ambients/galaxy3.png';
     case 'brown-noise':
       return '/image/ambients/nature.png';
+    case 'beach':
+      return '/image/ambients/beach.png';
+    case 'lake':
+      return '/image/ambients/lake4.png';
+    case 'marine':
+      return '/image/ambients/marain.png';
+    case 'desert':
+      return '/image/ambients/desert3.png';
+    case 'ethereal':
+      return '/image/ambients/loop.png';
+    case 'forest':
+      return '/image/ambients/forest.png';
     case 'none':
     default:
       return '/image/ambients/leaf.png';
@@ -50,11 +62,11 @@ interface ExerciseViewProps {
   setIsAmbientSoundOn: (on: boolean) => void;
 }
 
-export function ExerciseView({ 
-  exercise, 
-  config, 
-  onBack, 
-  onComplete, 
+export function ExerciseView({
+  exercise,
+  config,
+  onBack,
+  onComplete,
   onRecordSession,
   soundscape,
   isAmbientSoundOn,
@@ -67,10 +79,11 @@ export function ExerciseView({
   const [selectedVoiceId, setSelectedVoiceId] = useState('luna');
 
   const timer = useBreathingTimer(exercise.pattern);
-  
+
   // Use a ref to avoid infinite loops with onComplete/onRecordSession
   const hasCompletedRef = useRef(false);
   const totalTimeRef = useRef(0);
+  
   useEffect(() => {
     totalTimeRef.current = timer.totalTime;
   }, [timer.totalTime]);
@@ -142,14 +155,14 @@ export function ExerciseView({
       {/* Immersive Ambient Background Layer */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-black">
         <AnimatePresence mode="wait">
-          <motion.div 
+          <motion.div
             key={soundscape.activeSoundscape}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1.0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.8, ease: "easeInOut" }}
             className="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-105"
-            style={{ 
+            style={{
               backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape)})`
             }}
           />
@@ -158,8 +171,8 @@ export function ExerciseView({
 
       {/* Header - Fixed Top */}
       <div className="px-6 pt-8 pb-3 flex justify-between items-center bg-gradient-to-b from-black/40 to-transparent relative z-10">
-        <button 
-          onClick={onBack} 
+        <button
+          onClick={onBack}
           className="p-3 rounded-full bg-white/[0.04] backdrop-blur-md border border-white/15 text-gray-300 hover:text-white hover:bg-white/[0.08] transition-all active:scale-95 shadow-lg"
         >
           <ArrowLeft size={20} />
@@ -174,18 +187,18 @@ export function ExerciseView({
       {/* Main Content Area - Scrollable or Centered */}
       <div className="flex-1 flex flex-col items-center justify-center w-full px-6 relative z-10 overflow-y-auto scrollbar-hide py-4">
         <div className="mb-4">
-           {config.mode !== 'infinite' && (
-              <div className="px-4 py-1.5 rounded-full bg-black/45 backdrop-blur-md border border-white/10 flex items-center gap-2 shadow-lg">
-                <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-                <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest">
-                  Goal: {config.value} {config.mode === 'duration' ? 'min' : 'cycles'}
-                </span>
-              </div>
-           )}
+          {config.mode !== 'infinite' && (
+            <div className="px-4 py-1.5 rounded-full bg-black/45 backdrop-blur-md border border-white/10 flex items-center gap-2 shadow-lg">
+              <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+              <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest">
+                Goal: {config.value} {config.mode === 'duration' ? 'min' : 'cycles'}
+              </span>
+            </div>
+          )}
         </div>
-        
-        <BreathingCircle 
-          phase={timer.phase} 
+
+        <BreathingCircle
+          phase={timer.phase}
           timer={timer.timeLeft}
           duration={timer.duration}
           isActive={timer.isActive}
@@ -211,21 +224,21 @@ export function ExerciseView({
       {/* Sticky Bottom Controls */}
       <div className="px-8 pt-4 pb-6 bg-gradient-to-t from-black/50 via-black/20 to-transparent relative z-10">
         <div className="max-w-[400px] mx-auto flex items-center justify-center gap-10">
-          <button 
+          <button
             onClick={handleReset}
             className="w-14 h-14 flex items-center justify-center rounded-full bg-white/[0.04] backdrop-blur-md border border-white/15 text-gray-300 hover:text-white hover:bg-white/[0.08] transition-all active:scale-95 shadow-lg"
           >
             <RotateCcw size={22} />
           </button>
-          
-          <button 
+
+          <button
             onClick={timer.toggle}
             className="w-24 h-24 flex items-center justify-center rounded-full bg-white/[0.12] backdrop-blur-lg border border-white/30 text-white hover:scale-105 active:scale-95 hover:bg-white/[0.18] transition-all shadow-[0_8px_32px_rgba(255,255,255,0.08)]"
           >
             {timer.isActive ? <Pause size={32} fill="white" /> : <Play size={32} className="ml-1" fill="white" />}
           </button>
-          
-          <button 
+
+          <button
             onClick={() => setIsSettingsOpen(true)}
             className="w-14 h-14 flex items-center justify-center rounded-full bg-white/[0.04] backdrop-blur-md border border-white/15 text-gray-300 hover:text-white hover:bg-white/[0.08] transition-all active:scale-95 shadow-lg"
           >
@@ -234,7 +247,7 @@ export function ExerciseView({
         </div>
       </div>
 
-      <SessionSettings 
+      <SessionSettings
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         activeSoundscape={soundscape.activeSoundscape}
