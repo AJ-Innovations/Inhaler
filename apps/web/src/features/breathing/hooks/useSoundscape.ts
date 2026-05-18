@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-export type SoundscapeType = 'none' | 'zen-river' | 'zen-fountain' | 'winter-rain' | 'light-rain' | 'nature-birds' | 'hz-transformation' | 'white-noise' | 'pink-noise' | 'brown-noise' | 'beach' | 'lake' | 'marine' | 'desert' | 'ethereal' | 'forest';
+export type SoundscapeType = 'leaf' | 'zen-river' | 'zen-fountain' | 'winter-rain' | 'light-rain' | 'nature-birds' | 'hz-transformation' | 'white-noise' | 'pink-noise' | 'brown-noise' | 'beach' | 'lake' | 'marine' | 'desert' | 'ethereal' | 'forest';
 
 interface Soundscape {
   id: SoundscapeType;
@@ -11,6 +11,7 @@ interface Soundscape {
 }
 
 export const soundscapes: Soundscape[] = [
+  { id: 'leaf', name: 'Leaf', url: '/music/mdjahidhossain-birds-nature-relax-sounds-110839.mp3' },
   { id: 'zen-river', name: 'Zen River', url: '/music/alex_jauk-calm-zen-river-flowing-228223.mp3' },
   { id: 'zen-fountain', name: 'Zen Fountain', url: '/music/alex_jauk-zen-fountain-ambience-210613.mp3' },
   { id: 'winter-rain', name: 'Winter Rain', url: '/music/fxprosound-winter-rain-in-oak-forest-loop-185672.mp3' },
@@ -29,7 +30,7 @@ export const soundscapes: Soundscape[] = [
 ];
 
 export function useSoundscape(isPlaying: boolean = false) {
-  const [activeSoundscape, setActiveSoundscape] = useState<SoundscapeType>('none');
+  const [activeSoundscape, setActiveSoundscape] = useState<SoundscapeType>('leaf');
   const [volume, setVolume] = useState(0.5);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -110,7 +111,7 @@ export function useSoundscape(isPlaying: boolean = false) {
     const audio = audioRef.current;
     const isNoise = activeSoundscape.includes('noise');
 
-    if (!isPlaying || activeSoundscape === 'none') {
+    if (!isPlaying) {
       audio.pause();
       stopNoise();
       return;
@@ -144,7 +145,7 @@ export function useSoundscape(isPlaying: boolean = false) {
   }, [volume]);
 
   const toggleSoundscape = (id: SoundscapeType) => {
-    setActiveSoundscape(prev => prev === id ? 'none' : id);
+    setActiveSoundscape(prev => prev === id ? 'leaf' : id);
   };
 
   return {
