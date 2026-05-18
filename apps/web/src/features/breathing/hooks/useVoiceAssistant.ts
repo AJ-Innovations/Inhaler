@@ -178,7 +178,7 @@ export function useVoiceAssistant(
   }, [config.profileId, config.isEnabled, config.volume, getVoice]);
 
   useEffect(() => {
-    if (isActive && config.isEnabled && phase && phase !== 'Rest') {
+    if (isActive && config.isEnabled && phase) {
       speak(phase);
     }
   }, [phase, isActive, config.isEnabled, speak]);
