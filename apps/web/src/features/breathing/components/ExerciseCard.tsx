@@ -41,12 +41,11 @@ export function ExerciseCard({
         whileHover={{ y: -6, scale: 1.01 }}
         whileTap={{ scale: 0.98 }}
         onClick={onDetails}
-        className="relative w-full bg-[#0D0D0D] border border-white/[0.06] rounded-[42px] p-8 cursor-pointer group transition-all duration-700 shadow-2xl overflow-hidden"
+        className="relative w-full bg-white/[0.02] backdrop-blur-md border border-white/[0.06] rounded-[42px] p-8 cursor-pointer group transition-all duration-700 shadow-2xl overflow-hidden"
       >
         {/* iOS Style Inner Glow */}
         <div
-          className="absolute -right-20 -top-20 w-60 h-60 rounded-full blur-[100px] opacity-0 group-hover:opacity-[0.07] transition-opacity duration-1000"
-          style={{ background: exercise.gradient.start }}
+          className="absolute -right-20 -top-20 w-60 h-60 bg-white rounded-full blur-[100px] opacity-0 group-hover:opacity-[0.03] transition-opacity duration-1000"
         />
 
         <div className="flex flex-col gap-8 relative z-10">
@@ -54,10 +53,9 @@ export function ExerciseCard({
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-5">
               <div
-                className="w-16 h-16 rounded-[22px] flex items-center justify-center shadow-2xl relative transition-transform duration-700 group-hover:scale-105"
-                style={{ background: `linear-gradient(135deg, ${exercise.gradient.start}, ${exercise.gradient.end})` }}
+                className="w-16 h-16 rounded-[22px] bg-white/[0.04] border border-white/10 flex items-center justify-center shadow-2xl relative transition-transform duration-700 group-hover:scale-105"
               >
-                <div className="absolute inset-0 blur-xl opacity-30 rounded-full" style={{ background: exercise.gradient.start }} />
+                <div className="absolute inset-0 blur-xl opacity-10 bg-white rounded-full" />
                 <Icon className="text-white relative z-10" size={28} />
               </div>
 
@@ -111,12 +109,8 @@ export function ExerciseCard({
           {/* Bottom Row: Level (Left) and Start Button (Right) */}
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-2">
-              <div className={`px-4 py-2 rounded-full border shadow-inner ${exercise.isAdvanced
-                ? 'bg-orange-500/5 border-orange-500/10'
-                : 'bg-emerald-500/5 border-emerald-500/10'
-                }`}>
-                <span className={`text-[9px] uppercase tracking-[0.2em] font-black ${exercise.isAdvanced ? 'text-orange-500' : 'text-emerald-500'
-                  }`}>
+              <div className="px-4 py-2 rounded-full bg-white/[0.04] border border-white/10 shadow-inner">
+                <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/60">
                   {level}
                 </span>
               </div>
