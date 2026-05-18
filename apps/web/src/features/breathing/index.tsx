@@ -19,6 +19,33 @@ import { AchievementsView } from './views/AchievementsView';
 import { SubscriptionView } from './views/SubscriptionView';
 import { AuthView } from './views/AuthView';
 import { OnboardingView } from './views/OnboardingView';
+import { useSoundscape } from './hooks/useSoundscape';
+
+const getAmbientImage = (activeSoundscape: string) => {
+  switch (activeSoundscape) {
+    case 'zen-river':
+      return 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop';
+    case 'zen-fountain':
+      return 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=1600&auto=format&fit=crop';
+    case 'winter-rain':
+      return 'https://images.unsplash.com/photo-1485594050903-8e8ee7b071a8?q=80&w=1600&auto=format&fit=crop';
+    case 'light-rain':
+      return 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?q=80&w=1600&auto=format&fit=crop';
+    case 'nature-birds':
+      return 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?q=80&w=1600&auto=format&fit=crop';
+    case 'hz-transformation':
+      return 'https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=1600&auto=format&fit=crop';
+    case 'white-noise':
+      return 'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?q=80&w=1600&auto=format&fit=crop';
+    case 'pink-noise':
+      return 'https://images.unsplash.com/photo-1532767154073-93e5065788f4?q=80&w=1600&auto=format&fit=crop';
+    case 'brown-noise':
+      return 'https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=1600&auto=format&fit=crop';
+    case 'none':
+    default:
+      return 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=1600&auto=format&fit=crop';
+  }
+};
 
 type ViewType = 'home' | 'exercise' | 'details' | 'setup' | 'complete' | 'builder' | 'subscription' | 'auth';
 
@@ -29,6 +56,26 @@ export function BreathingExercise() {
   const [sessionConfig, setSessionConfig] = useState<SessionConfig | null>(null);
   const [sessionResults, setSessionResults] = useState<{ duration: number; cycles: number } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
+
+  // Global Soundscape Controller
+  const [isAmbientSoundOn, setIsAmbientSoundOn] = useState(false);
+  const soundscape = useSoundscape(isAmbientSoundOn);
+
+  // Persistence of selected ambient
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedAmbient = localStorage.getItem('sparox_active_ambient');
+      if (savedAmbient && savedAmbient !== 'none') {
+        soundscape.setActiveSoundscape(savedAmbient as any);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (soundscape.activeSoundscape) {
+      localStorage.setItem('sparox_active_ambient', soundscape.activeSoundscape);
+    }
+  }, [soundscape.activeSoundscape]);
 
   // Advanced PWA States & Hooks
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -235,7 +282,19 @@ export function BreathingExercise() {
   };
 
   return (
-    <div className="h-screen bg-black text-white selection:bg-white/20 flex flex-col overflow-hidden relative">
+    <div 
+      className="h-screen text-white selection:bg-white/20 flex flex-col overflow-hidden relative bg-cover bg-center transition-all duration-1000"
+      style={{ 
+        backgroundImage: soundscape.activeSoundscape && soundscape.activeSoundscape !== 'none'
+          ? `url(${getAmbientImage(soundscape.activeSoundscape)})`
+          : 'none',
+        backgroundColor: '#000000'
+      }}
+    >
+      {/* Dynamic Ambient Background Overlay to guarantee contrast and glassmorphic premium feel */}
+      {soundscape.activeSoundscape && soundscape.activeSoundscape !== 'none' && (
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-[6px] z-0 pointer-events-none" />
+      )}
       <AnimatePresence mode="wait">
         {showOnboarding === null ? (
           <motion.div
@@ -273,6 +332,9 @@ export function BreathingExercise() {
                       stats={stats}
                       userAvatar={userAvatar}
                       onProfileClick={() => setActiveTab('profile')}
+                      soundscape={soundscape}
+                      isAmbientSoundOn={isAmbientSoundOn}
+                      setIsAmbientSoundOn={setIsAmbientSoundOn}
                     />
                   )}
                   {activeTab === 'library' && (
@@ -389,6 +451,9 @@ export function BreathingExercise() {
                   onBack={() => setView('setup')}
                   onComplete={handleComplete}
                   onRecordSession={recordSession}
+                  soundscape={soundscape}
+                  isAmbientSoundOn={isAmbientSoundOn}
+                  setIsAmbientSoundOn={setIsAmbientSoundOn}
                 />
               </div>
             )}
