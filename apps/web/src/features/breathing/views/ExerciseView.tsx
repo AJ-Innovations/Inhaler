@@ -45,9 +45,21 @@ interface ExerciseViewProps {
   onBack: () => void;
   onComplete: (duration: number, cycles: number) => void;
   onRecordSession: (id: string, duration: number) => void;
+  soundscape: any;
+  isAmbientSoundOn: boolean;
+  setIsAmbientSoundOn: (on: boolean) => void;
 }
 
-export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSession }: ExerciseViewProps) {
+export function ExerciseView({ 
+  exercise, 
+  config, 
+  onBack, 
+  onComplete, 
+  onRecordSession,
+  soundscape,
+  isAmbientSoundOn,
+  setIsAmbientSoundOn
+}: ExerciseViewProps) {
   // Local settings state (Moved up so it can be used by hooks)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
@@ -63,8 +75,12 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
     totalTimeRef.current = timer.totalTime;
   }, [timer.totalTime]);
 
+  // Synchronize the ambient audio playback state with the breathing session activity
+  useEffect(() => {
+    setIsAmbientSoundOn(timer.isActive || isSettingsOpen);
+  }, [timer.isActive, isSettingsOpen, setIsAmbientSoundOn]);
+
   // Audio hooks now play if session is active OR if settings are open (for testing)
-  const soundscape = useSoundscape(timer.isActive || isSettingsOpen);
   const voiceAssistant = useVoiceAssistant(timer.phase, timer.isActive, {
     profileId: selectedVoiceId,
     isEnabled: isVoiceEnabled,
