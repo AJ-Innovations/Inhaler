@@ -58,14 +58,14 @@ export function ExploreView({
     { id: 'desert', name: 'Desert Breeze', image: '/image/ambients/desert3.png' },
     { id: 'ethereal', name: 'Ethereal Loop', image: '/image/ambients/loop.png' },
     { id: 'forest', name: 'Oak Forest', image: '/image/ambients/forest.png' },
-    { id: 'none', name: 'None (Silent Space)', image: '/image/ambients/leaf.png' }
+    { id: 'leaf', name: 'Leaf', image: '/image/ambients/leaf.png' }
   ];
 
   const handleToggleSound = () => {
     if (isAmbientSoundOn) {
       setIsAmbientSoundOn(false);
     } else {
-      if (soundscape.activeSoundscape === 'none') {
+      if (soundscape.activeSoundscape === 'leaf') {
         soundscape.setActiveSoundscape('zen-river');
       }
       setIsAmbientSoundOn(true);
@@ -75,8 +75,9 @@ export function ExploreView({
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) return 'Good Morning';
-    if (hour >= 12 && hour < 18) return 'Good Afternoon';
-    return 'Good Evening';
+    if (hour >= 12 && hour < 17) return 'Good Afternoon';
+    if (hour >= 17 && hour < 21) return 'Good Evening';
+    return 'Good Night';
   };
 
   const currentDayIndex = new Date().getDay();
