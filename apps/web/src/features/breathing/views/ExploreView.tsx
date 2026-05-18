@@ -266,12 +266,12 @@ export function ExploreView({
         </div>
       </div>
       {/* Sticky Top Bar containing Search & Rounded Profile Icon with Streak Badge */}
-      <div className="sticky top-0 z-50 pt-4 pb-2 bg-black/90 backdrop-blur-md flex items-center gap-3 w-full border-b border-white/[0.04]">
+      <div className="sticky top-0 z-50 pt-4 pb-2 bg-black/20 backdrop-blur-md flex items-center gap-3 w-full border-b border-white/[0.04]">
         {/* Search Bar */}
         <div className="relative flex-1">
           <div className="relative flex items-center group">
             <Search
-              className="absolute left-4 text-gray-500 transition-colors group-focus-within:text-white"
+              className="absolute left-4 text-white/40 transition-colors group-focus-within:text-white"
               size={18}
             />
             <input
@@ -279,7 +279,7 @@ export function ExploreView({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search practices, benefits, or goals..."
-              className="w-full h-12 pl-12 pr-10 rounded-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-gray-500 text-sm focus:outline-none focus:border-white/20 focus:bg-white/[0.07] transition-all duration-300 shadow-inner"
+              className="w-full h-12 pl-12 pr-10 rounded-full bg-white/[0.02] backdrop-blur-md border border-white/[0.06] text-white placeholder-white/30 text-sm focus:outline-none focus:border-white/20 focus:bg-white/[0.05] transition-all duration-300 shadow-inner"
             />
             {searchQuery && (
               <button
