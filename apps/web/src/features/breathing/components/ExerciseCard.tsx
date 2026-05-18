@@ -76,15 +76,15 @@ export function ExerciseCard({
                 <button
                   onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }}
                   className={`w-10 h-10 flex items-center justify-center transition-all duration-300 ${isFavorite
-                    ? 'text-red-500 hover:text-red-400'
-                    : 'text-gray-400 hover:text-white'
+                    ? 'text-white font-bold'
+                    : 'text-white/40 hover:text-white'
                     }`}
                 >
                   <Bookmark
                     size={24}
                     style={{
-                      fill: isFavorite ? 'url(#bookmark-red-gradient)' : 'none',
-                      stroke: isFavorite ? 'url(#bookmark-red-gradient)' : 'currentColor'
+                      fill: isFavorite ? '#ffffff' : 'none',
+                      stroke: '#ffffff'
                     }}
                     strokeWidth={2}
                   />
