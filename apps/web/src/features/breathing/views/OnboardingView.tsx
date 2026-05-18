@@ -170,7 +170,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
               </div>
 
               <div className="space-y-3">
-                <h1 className="text-5xl font-extralight tracking-tight text-white">INHALE</h1>
+                <h1 className="text-5xl font-extralight tracking-tight text-white">SPAROX</h1>
                 <p className="text-gray-400 text-xs font-light max-w-[280px] leading-relaxed mx-auto">
                   Take a moment to align your body and mind. Let's calibrate your customized, high-performance breathing journey.
                 </p>
@@ -562,8 +562,8 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                 <h2 className="text-3xl font-light tracking-tight text-white">Sanctuary Unlocked</h2>
                 <p className="text-gray-400 text-xs font-light max-w-[280px] leading-relaxed mx-auto">
                   {chosenPlan === 'free' 
-                    ? 'Welcome to Inhale! Your account is created and free breathing cycles are ready.'
-                    : `Welcome to Inhale Pro! Your premium billing is authorized and all masteries are unlocked.`}
+                    ? 'Welcome to Sparox! Your account is created and free breathing cycles are ready.'
+                    : `Welcome to Sparox Pro! Your premium billing is authorized and all masteries are unlocked.`}
                 </p>
               </div>
 
