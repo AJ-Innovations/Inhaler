@@ -64,7 +64,7 @@ export function ExerciseCard({
                   {exercise.name}
                 </h3>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold">
+                  <span className="text-[10px] text-white/60 uppercase tracking-[0.2em] font-bold">
                     {exercise.subtitle}
                   </span>
                 </div>
@@ -102,7 +102,7 @@ export function ExerciseCard({
           </div>
 
           {/* Description */}
-          <p className="text-gray-400 text-sm leading-relaxed font-light line-clamp-2 pr-4 opacity-60 group-hover:opacity-100 transition-opacity">
+          <p className="text-white/80 text-sm leading-relaxed font-light line-clamp-2 pr-4 transition-colors duration-300">
             {exercise.description}
           </p>
 
@@ -110,7 +110,7 @@ export function ExerciseCard({
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-2">
               <div className="px-4 py-2 rounded-full bg-white/[0.04] border border-white/10 shadow-inner">
-                <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/60">
+                <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/90">
                   {level}
                 </span>
               </div>
