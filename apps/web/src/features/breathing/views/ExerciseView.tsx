@@ -12,29 +12,29 @@ import { BreathingCircle } from '../components/BreathingCircle';
 import { SessionSettings } from '../components/SessionSettings';
 import { SessionConfig } from './SessionSetup';
 
-const getAmbientBg = (activeSoundscape: string, exercise: Exercise) => {
+const getAmbientImage = (activeSoundscape: string) => {
   switch (activeSoundscape) {
     case 'zen-river':
-      return `linear-gradient(-45deg, #021a1e, #063c43, #010e11, #04292e)`;
+      return 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop';
     case 'zen-fountain':
-      return `linear-gradient(-45deg, #011e24, #084050, #010f13, #042f3b)`;
+      return 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=1600&auto=format&fit=crop';
     case 'winter-rain':
-      return `linear-gradient(-45deg, #0b0f19, #1e293b, #030712, #0f172a)`;
+      return 'https://images.unsplash.com/photo-1485594050903-8e8ee7b071a8?q=80&w=1600&auto=format&fit=crop';
     case 'light-rain':
-      return `linear-gradient(-45deg, #110f36, #2d2a75, #08051e, #171545)`;
+      return 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?q=80&w=1600&auto=format&fit=crop';
     case 'nature-birds':
-      return `linear-gradient(-45deg, #022310, #064923, #011208, #033618)`;
+      return 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?q=80&w=1600&auto=format&fit=crop';
     case 'hz-transformation':
-      return `linear-gradient(-45deg, #250854, #44158c, #0e0224, #2e0969)`;
+      return 'https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=1600&auto=format&fit=crop';
     case 'white-noise':
-      return `linear-gradient(-45deg, #121214, #222227, #070708, #18181c)`;
+      return 'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?q=80&w=1600&auto=format&fit=crop';
     case 'pink-noise':
-      return `linear-gradient(-45deg, #3b0314, #6e0b2a, #1a0108, #4f051c)`;
+      return 'https://images.unsplash.com/photo-1532767154073-93e5065788f4?q=80&w=1600&auto=format&fit=crop';
     case 'brown-noise':
-      return `linear-gradient(-45deg, #2d1102, #5c270b, #140700, #3d1704)`;
+      return 'https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=1600&auto=format&fit=crop';
     case 'none':
     default:
-      return `linear-gradient(-45deg, #030206, ${exercise.gradient.start}22, ${exercise.gradient.end}15, #030206)`;
+      return 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=1600&auto=format&fit=crop';
   }
 };
 
@@ -121,30 +121,20 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex flex-col overflow-hidden w-full h-[100dvh]"
+      className="fixed inset-0 z-[100] flex flex-col overflow-hidden w-full h-[100dvh] bg-black text-white selection:bg-white/20"
     >
-      <style>{`
-        @keyframes ambientGradientShift {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-      `}</style>
-
       {/* Immersive Ambient Background Layer */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-black">
         <AnimatePresence mode="wait">
           <motion.div 
             key={soundscape.activeSoundscape}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: 1.0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-            className="absolute inset-0"
+            transition={{ duration: 1.8, ease: "easeInOut" }}
+            className="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-105"
             style={{ 
-              background: getAmbientBg(soundscape.activeSoundscape, exercise),
-              backgroundSize: '400% 400%',
-              animation: 'ambientGradientShift 22s ease infinite'
+              backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape)})`
             }}
           />
         </AnimatePresence>
@@ -152,12 +142,15 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
 
       {/* Header - Fixed Top */}
       <div className="px-6 pt-8 pb-3 flex justify-between items-center bg-gradient-to-b from-black/40 to-transparent relative z-10">
-        <button onClick={onBack} className="p-3 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-all">
+        <button 
+          onClick={onBack} 
+          className="p-3 rounded-full bg-white/[0.04] backdrop-blur-md border border-white/15 text-gray-300 hover:text-white hover:bg-white/[0.08] transition-all active:scale-95 shadow-lg"
+        >
           <ArrowLeft size={20} />
         </button>
         <div className="text-center">
-          <h2 className="text-xl font-light text-white tracking-tight">{exercise.name}</h2>
-          <p className="text-[10px] uppercase tracking-widest text-gray-500 mt-1">{timer.phase}</p>
+          <h2 className="text-xl font-light text-white tracking-tight drop-shadow-md">{exercise.name}</h2>
+          <p className="text-[10px] uppercase tracking-widest text-white/70 mt-1 drop-shadow-sm font-semibold">{timer.phase}</p>
         </div>
         <div className="w-12" /> {/* Spacer to maintain title centering */}
       </div>
@@ -166,9 +159,9 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
       <div className="flex-1 flex flex-col items-center justify-center w-full px-6 relative z-10 overflow-y-auto scrollbar-hide py-4">
         <div className="mb-4">
            {config.mode !== 'infinite' && (
-              <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 flex items-center gap-2">
+              <div className="px-4 py-1.5 rounded-full bg-black/45 backdrop-blur-md border border-white/10 flex items-center gap-2 shadow-lg">
                 <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest">
                   Goal: {config.value} {config.mode === 'duration' ? 'min' : 'cycles'}
                 </span>
               </div>
@@ -178,18 +171,20 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
         <BreathingCircle 
           phase={timer.phase} 
           timer={timer.timeLeft}
+          duration={timer.duration}
+          isActive={timer.isActive}
           gradient={exercise.gradient}
           activeSoundscape={soundscape.activeSoundscape}
         />
 
         {/* Stats Grid - Now in the center flow */}
         <div className="grid grid-cols-2 gap-4 w-full max-w-[340px] mt-8">
-          <div className="bg-white/[0.03] border border-white/5 p-5 rounded-[28px] flex flex-col items-center gap-1 shadow-lg">
-            <span className="text-[9px] uppercase tracking-widest text-gray-600 font-bold">Cycles</span>
+          <div className="bg-black/45 backdrop-blur-[16px] border border-white/10 p-5 rounded-[28px] flex flex-col items-center gap-1 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+            <span className="text-[9px] uppercase tracking-widest text-white/50 font-bold">Cycles</span>
             <span className="text-2xl font-light text-white">{timer.cycles}</span>
           </div>
-          <div className="bg-white/[0.03] border border-white/5 p-5 rounded-[28px] flex flex-col items-center gap-1 shadow-lg">
-            <span className="text-[9px] uppercase tracking-widest text-gray-600 font-bold">Duration</span>
+          <div className="bg-black/45 backdrop-blur-[16px] border border-white/10 p-5 rounded-[28px] flex flex-col items-center gap-1 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+            <span className="text-[9px] uppercase tracking-widest text-white/50 font-bold">Duration</span>
             <span className="text-2xl font-light text-white">
               {Math.floor(timer.totalTime / 60)}:{(timer.totalTime % 60).toString().padStart(2, '0')}
             </span>
@@ -202,21 +197,21 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
         <div className="max-w-[400px] mx-auto flex items-center justify-center gap-10">
           <button 
             onClick={handleReset}
-            className="w-14 h-14 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all active:scale-95 shadow-xl"
+            className="w-14 h-14 flex items-center justify-center rounded-full bg-white/[0.04] backdrop-blur-md border border-white/15 text-gray-300 hover:text-white hover:bg-white/[0.08] transition-all active:scale-95 shadow-lg"
           >
             <RotateCcw size={22} />
           </button>
           
           <button 
             onClick={timer.toggle}
-            className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black hover:scale-105 active:scale-95 transition-all shadow-[0_20px_50px_rgba(255,255,255,0.2)]"
+            className="w-24 h-24 flex items-center justify-center rounded-full bg-white/[0.12] backdrop-blur-lg border border-white/30 text-white hover:scale-105 active:scale-95 hover:bg-white/[0.18] transition-all shadow-[0_8px_32px_rgba(255,255,255,0.08)]"
           >
-            {timer.isActive ? <Pause size={36} fill="black" /> : <Play size={36} className="ml-1" fill="black" />}
+            {timer.isActive ? <Pause size={32} fill="white" /> : <Play size={32} className="ml-1" fill="white" />}
           </button>
-
+          
           <button 
             onClick={() => setIsSettingsOpen(true)}
-            className="w-14 h-14 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all active:scale-95 shadow-xl"
+            className="w-14 h-14 flex items-center justify-center rounded-full bg-white/[0.04] backdrop-blur-md border border-white/15 text-gray-300 hover:text-white hover:bg-white/[0.08] transition-all active:scale-95 shadow-lg"
           >
             <Music size={22} />
           </button>
