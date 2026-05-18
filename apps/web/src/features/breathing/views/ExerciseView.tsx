@@ -179,6 +179,7 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
           phase={timer.phase} 
           timer={timer.timeLeft}
           gradient={exercise.gradient}
+          activeSoundscape={soundscape.activeSoundscape}
         />
 
         {/* Stats Grid - Now in the center flow */}
