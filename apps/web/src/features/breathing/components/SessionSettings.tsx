@@ -128,23 +128,6 @@ export function SessionSettings({
                 {activeTab === 'sound' && (
                   <div className="flex flex-col gap-8">
                     <div className="grid grid-cols-2 gap-4">
-                      <button
-                        onClick={() => onSelectSoundscape('none')}
-                        className={`flex flex-col items-center justify-center p-6 rounded-[28px] border relative transition-all duration-400 ${
-                          activeSoundscape === 'none'
-                            ? 'bg-white/15 border-white/40 text-white shadow-[0_0_20px_rgba(255,255,255,0.1)]'
-                            : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
-                        }`}
-                      >
-                        <X size={24} strokeWidth={1.5} className="mb-2" />
-                        <span className="text-xs font-medium">None</span>
-                        {activeSoundscape === 'none' && (
-                          <div className="absolute top-3 right-3 w-5 h-5 bg-white rounded-full flex items-center justify-center">
-                            <Check size={12} className="text-black" strokeWidth={3} />
-                          </div>
-                        )}
-                      </button>
-
                       {soundscapes.map((s) => {
                         const Icon = IconMap[s.id as keyof typeof IconMap] || Volume2;
                         const isActive = activeSoundscape === s.id;
@@ -295,7 +278,7 @@ export function SessionSettings({
 
               {/* Fixed Bottom Volume Adjuster (Dynamic per Active Tab) */}
               <div className="mt-6 pt-5 border-t border-white/10 relative z-20">
-                {activeTab === 'sound' && activeSoundscape !== 'none' && (
+                {activeTab === 'sound' && (
                   <div className="px-1">
                     <div className="flex justify-between items-center mb-3">
                       <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold">Ambient Volume</span>
