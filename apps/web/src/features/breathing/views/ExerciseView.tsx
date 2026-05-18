@@ -44,7 +44,7 @@ const getAmbientImage = (activeSoundscape: string) => {
       return '/image/ambients/loop.png';
     case 'forest':
       return '/image/ambients/forest.png';
-    case 'none':
+    case 'leaf':
     default:
       return '/image/ambients/leaf.png';
   }
@@ -131,15 +131,24 @@ export function ExerciseView({
     }
   }, [timer.phase, timer.isActive]);
 
+  // Use refs for onRecordSession and exercise.id to prevent infinite loops in cleanup
+  const onRecordSessionRef = useRef(onRecordSession);
+  const exerciseIdRef = useRef(exercise.id);
+
+  useEffect(() => {
+    onRecordSessionRef.current = onRecordSession;
+    exerciseIdRef.current = exercise.id;
+  }, [onRecordSession, exercise.id]);
+
   // Record session on leave if any time was spent
   useEffect(() => {
     return () => {
       // Use the ref value to get the latest time without triggering the effect on change
       if (totalTimeRef.current > 10 && !hasCompletedRef.current) {
-        onRecordSession(exercise.id, totalTimeRef.current);
+        onRecordSessionRef.current(exerciseIdRef.current, totalTimeRef.current);
       }
     };
-  }, [exercise.id, onRecordSession]);
+  }, []);
 
   const handleReset = () => {
     timer.reset();
@@ -187,14 +196,6 @@ export function ExerciseView({
       {/* Main Content Area - Scrollable or Centered */}
       <div className="flex-1 flex flex-col items-center justify-center w-full px-6 relative z-10 overflow-y-auto scrollbar-hide py-4">
         <div className="mb-4">
-          {config.mode !== 'infinite' && (
-            <div className="px-4 py-1.5 rounded-full bg-black/45 backdrop-blur-md border border-white/10 flex items-center gap-2 shadow-lg">
-              <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-              <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest">
-                Goal: {config.value} {config.mode === 'duration' ? 'min' : 'cycles'}
-              </span>
-            </div>
-          )}
         </div>
 
         <BreathingCircle
@@ -206,18 +207,54 @@ export function ExerciseView({
           activeSoundscape={soundscape.activeSoundscape}
         />
 
-        {/* Stats Grid - Now in the center flow */}
-        <div className="grid grid-cols-2 gap-4 w-full max-w-[340px] mt-8">
-          <div className="bg-black/45 backdrop-blur-[16px] border border-white/10 p-5 rounded-[28px] flex flex-col items-center gap-1 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
-            <span className="text-[9px] uppercase tracking-widest text-white/50 font-bold">Cycles</span>
-            <span className="text-2xl font-light text-white">{timer.cycles}</span>
-          </div>
-          <div className="bg-black/45 backdrop-blur-[16px] border border-white/10 p-5 rounded-[28px] flex flex-col items-center gap-1 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
-            <span className="text-[9px] uppercase tracking-widest text-white/50 font-bold">Duration</span>
-            <span className="text-2xl font-light text-white">
-              {Math.floor(timer.totalTime / 60)}:{(timer.totalTime % 60).toString().padStart(2, '0')}
-            </span>
-          </div>
+        {/* Progress Bar - Now dynamically shows either duration or cycles */}
+        <div className="w-full max-w-[340px] mt-12">
+          {config.mode === 'duration' && (
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-end">
+                <span className="text-[9px] uppercase tracking-widest text-white/50 font-bold">Duration</span>
+                <span className="text-xl font-light text-white">
+                  {Math.floor(timer.totalTime / 60)}:{(timer.totalTime % 60).toString().padStart(2, '0')} <span className="text-white/40 text-sm">/ {config.value}:00</span>
+                </span>
+              </div>
+              <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden relative shadow-lg">
+                <motion.div 
+                  className="absolute inset-y-0 left-0 bg-white" 
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min((timer.totalTime / (config.value * 60)) * 100, 100)}%` }} 
+                  transition={{ ease: "linear", duration: 1 }}
+                />
+              </div>
+            </div>
+          )}
+
+          {config.mode === 'cycles' && (
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-end">
+                <span className="text-[9px] uppercase tracking-widest text-white/50 font-bold">Cycles</span>
+                <span className="text-xl font-light text-white">
+                  {timer.cycles} <span className="text-white/40 text-sm">/ {config.value}</span>
+                </span>
+              </div>
+              <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden relative shadow-lg">
+                <motion.div 
+                  className="absolute inset-y-0 left-0 bg-white" 
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min((timer.cycles / config.value) * 100, 100)}%` }} 
+                  transition={{ ease: "easeInOut", duration: 0.5 }}
+                />
+              </div>
+            </div>
+          )}
+
+          {config.mode === 'infinite' && (
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-[9px] uppercase tracking-widest text-white/50 font-bold">Duration</span>
+              <span className="text-2xl font-light text-white">
+                {Math.floor(timer.totalTime / 60)}:{(timer.totalTime % 60).toString().padStart(2, '0')}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
