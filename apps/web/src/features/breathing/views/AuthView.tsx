@@ -141,7 +141,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
                   placeholder="Email Address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-2xl pl-16 pr-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.05] transition-all font-light text-sm"
+                  className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-full pl-16 pr-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.05] transition-all font-light text-sm"
                 />
               </div>
 
@@ -153,7 +153,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
                     alert('Please enter your email address first.');
                   }
                 }}
-                className="w-full h-14 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-indigo-400 transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3"
+                className="w-full h-14 bg-white text-black rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-indigo-400 transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3"
               >
                 Send Verification Code
                 <ArrowRight size={16} strokeWidth={3} />
@@ -207,7 +207,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
                     onChange={(e) => handleOtpChange(idx, e.target.value)}
                     onKeyDown={(e) => handleOtpKeyDown(idx, e)}
                     onPaste={idx === 0 ? handleOtpPaste : undefined}
-                    className="w-14 h-16 bg-white/[0.03] border border-white/10 rounded-2xl text-center text-2xl font-light text-white focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all"
+                    className="w-14 h-16 bg-white/[0.03] border border-white/10 rounded-full text-center text-2xl font-light text-white focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all"
                   />
                 ))}
               </div>
@@ -221,7 +221,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
                     alert('Please enter the complete 4-digit code.');
                   }
                 }}
-                className="w-full h-14 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-400 transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3"
+                className="w-full h-14 bg-white text-black rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-400 transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3"
               >
                 Verify Code
                 <ArrowRight size={16} strokeWidth={3} />
@@ -281,7 +281,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
                     placeholder="New Password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-2xl pl-16 pr-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.05] transition-all font-light text-sm"
+                    className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-full pl-16 pr-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.05] transition-all font-light text-sm"
                   />
                 </div>
 
@@ -294,7 +294,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
                     placeholder="Confirm Password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-2xl pl-16 pr-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.05] transition-all font-light text-sm"
+                    className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-full pl-16 pr-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.05] transition-all font-light text-sm"
                   />
                 </div>
               </div>
@@ -311,7 +311,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
                   }
                   setAuthFlow('forgot_success');
                 }}
-                className="w-full h-14 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-blue-400 transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3"
+                className="w-full h-14 bg-white text-black rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-blue-400 transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3"
               >
                 Save New Password
                 <ArrowRight size={16} strokeWidth={3} />
@@ -348,7 +348,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
                 setOtp(['', '', '', '']);
                 setAuthFlow('form');
               }}
-              className="w-full h-14 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-400 transition-all shadow-2xl active:scale-95"
+              className="w-full h-14 bg-white text-black rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-400 transition-all shadow-2xl active:scale-95"
             >
               Sign In Now
             </button>
@@ -398,7 +398,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
                         placeholder="Full Name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-2xl pl-16 pr-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all font-light text-sm"
+                        className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-full pl-16 pr-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all font-light text-sm"
                       />
                     </motion.div>
                   )}
@@ -413,7 +413,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
                     placeholder="Email Address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-2xl pl-16 pr-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all font-light text-sm"
+                    className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-full pl-16 pr-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all font-light text-sm"
                   />
                 </div>
 
@@ -426,7 +426,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-2xl pl-16 pr-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all font-light text-sm"
+                    className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-full pl-16 pr-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all font-light text-sm"
                   />
                 </div>
 
@@ -451,7 +451,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
               <button 
                 onClick={handleAuth}
                 disabled={loading}
-                className="w-full h-14 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-400 transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-14 bg-white text-black rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-400 transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Processing...' : (mode === 'login' ? 'Sign In' : 'Create Account')}
                 {!loading && <ArrowRight size={16} strokeWidth={3} />}
@@ -467,13 +467,13 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
 
             {/* Social Auth */}
             <div className="grid grid-cols-2 gap-3">
-              <button className="h-14 bg-white/[0.03] border border-white/10 rounded-2xl flex items-center justify-center gap-3 hover:bg-white/5 transition-all active:scale-95 group text-gray-500 hover:text-white">
+              <button className="h-14 bg-white/[0.03] border border-white/10 rounded-full flex items-center justify-center gap-3 hover:bg-white/5 transition-all active:scale-95 group text-gray-500 hover:text-white">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-white group-hover:scale-110 transition-transform">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09zM12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23zM5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.85zM12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
                 </svg>
                 <span className="text-[9px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white transition-colors">Google</span>
               </button>
-              <button className="h-14 bg-white/[0.03] border border-white/10 rounded-2xl flex items-center justify-center gap-3 hover:bg-white/5 transition-all active:scale-95 group text-gray-500 hover:text-white">
+              <button className="h-14 bg-white/[0.03] border border-white/10 rounded-full flex items-center justify-center gap-3 hover:bg-white/5 transition-all active:scale-95 group text-gray-500 hover:text-white">
                 <svg width="15" height="18" viewBox="0 0 256 315" fill="currentColor" className="text-white group-hover:scale-110 transition-transform">
                   <path d="M213.803 167.03c.442 47.58 41.74 63.413 42.147 63.615-.35 1.116-6.599 22.563-21.757 44.716-13.104 19.153-26.705 38.235-48.13 38.63-21.05.394-27.815-12.44-51.848-12.44-24.032 0-31.504 12.047-51.456 12.834-20.741.786-36.64-21.123-49.854-40.215-27.017-39.041-47.652-110.192-19.828-158.451 13.82-24.02 38.53-39.223 65.333-39.617 20.346-.393 39.512 13.71 52.032 13.71 12.522 0 35.844-16.913 60.604-14.44 10.387.43 39.589 4.184 58.293 31.593-1.496.932-34.881 20.32-34.453 60.038zM174.17 49.303c11.091-13.43 18.594-32.131 16.554-50.803-16.038.645-35.414 10.68-46.913 24.11-10.313 11.954-19.34 31.065-16.902 49.336 17.904 1.389 36.174-9.213 47.261-22.643z"/>
                 </svg>
@@ -502,7 +502,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black z-[300] flex flex-col overflow-hidden"
+      className="fixed inset-0 bg-transparent z-[300] flex flex-col overflow-hidden backdrop-blur-2xl"
     >
       <div className="max-w-[480px] mx-auto w-full px-8 py-6 flex flex-col h-full">
         {/* Back Button */}
