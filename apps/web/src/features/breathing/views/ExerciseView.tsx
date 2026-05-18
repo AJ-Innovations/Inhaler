@@ -76,7 +76,7 @@ export function ExerciseView({
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const [voiceVolume, setVoiceVolume] = useState(0.8);
-  const [selectedVoiceId, setSelectedVoiceId] = useState('luna');
+  const [selectedVoiceId, setSelectedVoiceId] = useState('lauren');
 
   const timer = useBreathingTimer(exercise.pattern);
 
