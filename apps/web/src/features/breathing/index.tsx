@@ -24,7 +24,7 @@ import { useSoundscape } from './hooks/useSoundscape';
 const getAmbientImage = (activeSoundscape: string) => {
   switch (activeSoundscape) {
     case 'zen-river':
-      return 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop';
+      return 'image/ambients/river.png';
     case 'zen-fountain':
       return 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=1600&auto=format&fit=crop';
     case 'winter-rain':
@@ -32,7 +32,7 @@ const getAmbientImage = (activeSoundscape: string) => {
     case 'light-rain':
       return 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?q=80&w=1600&auto=format&fit=crop';
     case 'nature-birds':
-      return 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?q=80&w=1600&auto=format&fit=crop';
+      return 'image/ambients/nature2.png';
     case 'hz-transformation':
       return 'https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=1600&auto=format&fit=crop';
     case 'white-noise':
@@ -40,10 +40,10 @@ const getAmbientImage = (activeSoundscape: string) => {
     case 'pink-noise':
       return 'https://images.unsplash.com/photo-1532767154073-93e5065788f4?q=80&w=1600&auto=format&fit=crop';
     case 'brown-noise':
-      return 'https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=1600&auto=format&fit=crop';
+      return 'image/ambients/nature.png';
     case 'none':
     default:
-      return 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=1600&auto=format&fit=crop';
+      return 'image/ambients/leaf.png';
   }
 };
 
@@ -282,18 +282,18 @@ export function BreathingExercise() {
   };
 
   return (
-    <div 
-      className="h-screen text-white selection:bg-white/20 flex flex-col overflow-hidden relative bg-cover bg-center transition-all duration-1000"
-      style={{ 
+    <div
+      className="h-screen text-white selection:bg-white flex flex-col overflow-hidden relative bg-cover bg-center transition-all duration-1000"
+      style={{
         backgroundImage: soundscape.activeSoundscape && soundscape.activeSoundscape !== 'none'
           ? `url(${getAmbientImage(soundscape.activeSoundscape)})`
           : 'none',
-        backgroundColor: '#000000'
+        backgroundColor: '#b2eeffff'
       }}
     >
       {/* Dynamic Ambient Background Overlay to guarantee contrast and glassmorphic premium feel */}
       {soundscape.activeSoundscape && soundscape.activeSoundscape !== 'none' && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-[6px] z-0 pointer-events-none" />
+        <div className="absolute inset-0 bg-black/50 z-0 pointer-events-none" />
       )}
       <AnimatePresence mode="wait">
         {showOnboarding === null ? (
@@ -471,11 +471,11 @@ export function BreathingExercise() {
             )}
             {view === 'details' && selectedExercise && (
               <div className="h-full w-full overflow-y-auto">
-                <DetailsView 
-                  key="details" 
-                  exercise={selectedExercise} 
-                  onBack={handleBack} 
-                  onStart={() => setView('setup')} 
+                <DetailsView
+                  key="details"
+                  exercise={selectedExercise}
+                  onBack={handleBack}
+                  onStart={() => setView('setup')}
                 />
               </div>
             )}
