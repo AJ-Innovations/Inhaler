@@ -381,7 +381,7 @@ export function BreathingExercise() {
               </div>
             )}
             {view === 'exercise' && selectedExercise && sessionConfig && (
-              <div className="h-full w-full overflow-y-auto flex flex-col items-center">
+              <div className="fixed inset-0 overflow-hidden z-[100] w-full h-[100dvh]">
                 <ExerciseView
                   key="exercise"
                   exercise={selectedExercise}

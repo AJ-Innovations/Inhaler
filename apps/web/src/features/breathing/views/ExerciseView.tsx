@@ -121,7 +121,7 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex flex-col relative overflow-hidden w-full h-[100dvh]"
+      className="fixed inset-0 z-[100] flex flex-col overflow-hidden w-full h-[100dvh]"
     >
       <style>{`
         @keyframes ambientGradientShift {
