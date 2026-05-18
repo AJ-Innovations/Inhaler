@@ -16,12 +16,12 @@ interface LibraryViewProps {
   onCreate: () => void;
 }
 
-export function LibraryView({ 
-  onStart, 
-  onDetails, 
-  customExercises, 
-  favorites, 
-  onToggleFavorite, 
+export function LibraryView({
+  onStart,
+  onDetails,
+  customExercises,
+  favorites,
+  onToggleFavorite,
   onDeleteCustom,
   onCreate
 }: LibraryViewProps) {
@@ -36,7 +36,7 @@ export function LibraryView({
     >
       <div className="flex justify-between items-center mb-10">
         <h1 className="text-3xl font-light tracking-tight text-white">My Library</h1>
-        <button 
+        <button
           onClick={onCreate}
           className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all"
         >
@@ -47,10 +47,10 @@ export function LibraryView({
       {customExercises.length === 0 && favoriteExercises.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 text-center opacity-50">
           <Library size={48} strokeWidth={1} className="mb-4 text-gray-500" />
-          <p className="text-sm font-light text-gray-400">Your library is empty.<br/>Create a journey or bookmark a practice.</p>
+          <p className="text-sm font-light text-gray-400">Your library is empty.<br />Create a journey or bookmark a practice.</p>
         </div>
       )}
-      
+
       {customExercises.length > 0 && (
         <>
           <div className="mb-6">
@@ -58,11 +58,11 @@ export function LibraryView({
           </div>
           <div className="flex flex-col gap-4 mb-10">
             {customExercises.map((ex: Exercise) => (
-              <ExerciseCard 
-                key={ex.id} 
-                exercise={ex} 
-                onStart={() => onStart(ex)} 
-                onDetails={() => onDetails(ex)} 
+              <ExerciseCard
+                key={ex.id}
+                exercise={ex}
+                onStart={() => onStart(ex)}
+                onDetails={() => onDetails(ex)}
                 onDelete={() => onDeleteCustom(ex.id)}
                 isCustom
               />
@@ -74,14 +74,14 @@ export function LibraryView({
       {favoriteExercises.length > 0 && (
         <>
           <div className="mb-6">
-            <span className="text-[10px] uppercase tracking-[0.3em] font-medium text-gray-600 px-1">Saved Practices</span>
+            <span className="text-[10px] uppercase tracking-[0.3em] font-medium text-gray-300 px-1">Saved Practices</span>
           </div>
           <div className="flex flex-col gap-4">
             {favoriteExercises.map((ex: Exercise) => (
-              <ExerciseCard 
-                key={ex.id} 
-                exercise={ex} 
-                onStart={() => onStart(ex)} 
+              <ExerciseCard
+                key={ex.id}
+                exercise={ex}
+                onStart={() => onStart(ex)}
                 onDetails={() => onDetails(ex)}
                 isFavorite
                 onToggleFavorite={() => onToggleFavorite(ex.id)}
