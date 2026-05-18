@@ -1,9 +1,12 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useMotionValue, animate } from 'framer-motion';
 import { BreathingPhase } from '../hooks/useBreathingTimer';
 
 interface BreathingCircleProps {
   phase: BreathingPhase;
-  timer: number;
+  timer: number; // this is timeLeft
+  duration: number; // total duration of current phase
+  isActive: boolean;
   gradient?: {
     start: string;
     end: string;
@@ -11,96 +14,76 @@ interface BreathingCircleProps {
   activeSoundscape?: string;
 }
 
-// Organic delay animations for a luxurious liquid lag effect!
-const layer3Variants = {
-  Inhale: { scale: 1.45, opacity: 0.18, transition: { duration: 4.2, ease: "easeInOut" } },
-  Hold: { scale: 1.45, opacity: 0.12, transition: { duration: 4, ease: "linear" } },
-  Exhale: { scale: 1, opacity: 0.06, transition: { duration: 3.8, ease: "easeInOut" } },
-  Rest: { scale: 1, opacity: 0.02, transition: { duration: 4, ease: "linear" } },
-} as const;
+export function BreathingCircle({ 
+  phase, 
+  timer, 
+  duration, 
+  isActive,
+  gradient, 
+  activeSoundscape 
+}: BreathingCircleProps) {
+  // Motion values to animate continuously and support absolute pause/resume controls
+  const scale = useMotionValue(0.85);
+  const opacity = useMotionValue(0.60);
 
-const layer2Variants = {
-  Inhale: { scale: 1.25, opacity: 0.45, transition: { duration: 4.1, ease: "easeInOut" } },
-  Hold: { scale: 1.25, opacity: 0.35, transition: { duration: 4, ease: "linear" } },
-  Exhale: { scale: 1, opacity: 0.22, transition: { duration: 3.9, ease: "easeInOut" } },
-  Rest: { scale: 1, opacity: 0.1, transition: { duration: 4, ease: "linear" } },
-} as const;
+  // Keep a ref of the remaining timer seconds to avoid re-triggering the continuous animation on every clock tick
+  const timerRef = useRef(timer);
+  useEffect(() => {
+    timerRef.current = timer;
+  }, [timer]);
 
-const circleVariants = {
-  Inhale: { scale: 1.15, opacity: 1, transition: { duration: 4, ease: "easeInOut" } },
-  Hold: { scale: 1.15, opacity: 0.85, transition: { duration: 4, ease: "linear" } },
-  Exhale: { scale: 0.9, opacity: 0.7, transition: { duration: 4, ease: "easeInOut" } },
-  Rest: { scale: 0.9, opacity: 0.5, transition: { duration: 4, ease: "linear" } },
-} as const;
+  useEffect(() => {
+    // Determine the final targets for this phase
+    // Max scale increased to 1.45, min scale to 0.80 for more dramatic breathing range
+    const targetScale = (phase === 'Inhale' || phase === 'Hold') ? 1.45 : 0.80;
+    const targetOpacity = (phase === 'Inhale' || phase === 'Hold') ? 0.85 : 0.60;
 
-// Convert selected Ambients to stunning corresponding gradient colors!
-const getAmbientCircleGradient = (activeSoundscape?: string) => {
-  switch (activeSoundscape) {
-    case 'zen-river':
-      return { start: '#0ea5e9', end: '#10b981' }; // Beautiful teal to emerald green
-    case 'zen-fountain':
-      return { start: '#3b82f6', end: '#06b6d4' }; // Calm blue to sparkling cyan
-    case 'winter-rain':
-      return { start: '#64748b', end: '#cbd5e1' }; // Slate storm to misty grey
-    case 'light-rain':
-      return { start: '#6366f1', end: '#a855f7' }; // Indigo to violet purple
-    case 'nature-birds':
-      return { start: '#10b981', end: '#84cc16' }; // Forest emerald to lime green
-    case 'hz-transformation':
-      return { start: '#8b5cf6', end: '#ec4899' }; // Spiritual purple to cosmic pink
-    case 'white-noise':
-      return { start: '#e2e8f0', end: '#94a3b8' }; // Soft glowing cloud white to slate
-    case 'pink-noise':
-      return { start: '#f43f5e', end: '#be123c' }; // Heart-healing rose pink to dark ruby
-    case 'brown-noise':
-      return { start: '#f59e0b', end: '#78350f' }; // Grounding warm amber to earth brown
-    case 'none':
-    default:
-      return null;
-  }
-};
+    if (isActive) {
+      // Add a slight padding (+0.3s) to the duration. This ensures that the GPU-accelerated
+      // animation is still in motion when the naturally slower JS setInterval ticks,
+      // completely eliminating the split-second pause at the end of a phase.
+      const remainingDuration = timerRef.current > 0 ? timerRef.current + 0.3 : 4.3;
 
-export function BreathingCircle({ phase, timer, gradient, activeSoundscape }: BreathingCircleProps) {
-  // Determine gradient color mapping based on Ambient
-  const ambientGrad = getAmbientCircleGradient(activeSoundscape);
-  const activeStart = ambientGrad ? ambientGrad.start : (gradient ? gradient.start : '#0082ff');
-  const activeEnd = ambientGrad ? ambientGrad.end : (gradient ? gradient.end : '#00ffd5');
+      const animScale = animate(scale, targetScale, {
+        duration: remainingDuration,
+        ease: phase === 'Hold' || phase === 'Rest' ? 'linear' : 'easeInOut',
+      });
 
-  const bgGradient = `linear-gradient(135deg, ${activeStart} 0%, ${activeEnd} 100%)`;
-  const shadowColor = activeStart;
+      const animOpacity = animate(opacity, targetOpacity, {
+        duration: remainingDuration,
+        ease: phase === 'Hold' || phase === 'Rest' ? 'linear' : 'easeInOut',
+      });
+
+      return () => {
+        animScale.stop();
+        animOpacity.stop();
+      };
+    } else {
+      scale.stop();
+      opacity.stop();
+
+      // If the session is reset or not active at Rest, ensure it is at resting bounds
+      if (phase === 'Rest') {
+        scale.set(0.80);
+        opacity.set(0.60);
+      }
+    }
+  }, [phase, isActive, scale, opacity]);
 
   return (
     <div className="relative my-6 flex items-center justify-center w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] pointer-events-none select-none">
       
-      {/* LAYER 3: Outer Soft Glowing Aura Ripple */}
+      {/* SINGLE LAYER CORE BREATHING CIRCLE: Frosted glassmorphism, no borders, animated continuously */}
       <motion.div
-        className="absolute w-[210px] h-[210px] sm:w-[250px] sm:h-[250px] rounded-full blur-xl pointer-events-none"
+        className="w-[170px] h-[170px] sm:w-[205px] sm:h-[205px] rounded-full flex items-center justify-center relative pointer-events-none"
         style={{
-          background: bgGradient,
+          background: 'rgba(255, 255, 255, 0.03)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 0 25px rgba(255, 255, 255, 0.05)',
+          scale,
+          opacity,
         }}
-        animate={phase}
-        variants={layer3Variants}
-      />
-
-      {/* LAYER 2: Middle Delicate Inner-Shadow Border Ring */}
-      <motion.div
-        className="absolute w-[230px] h-[230px] sm:w-[275px] sm:h-[275px] rounded-full border border-white/10 pointer-events-none"
-        style={{
-          boxShadow: `0 0 35px ${shadowColor}22, inset 0 0 20px ${shadowColor}11`,
-        }}
-        animate={phase}
-        variants={layer2Variants}
-      />
-
-      {/* LAYER 1: Core Gradient Breathing Circle (Houses the countdown) */}
-      <motion.div
-        className="w-[170px] h-[170px] sm:w-[205px] sm:h-[205px] rounded-full flex items-center justify-center relative shadow-2xl transition-all duration-700"
-        style={{
-          background: bgGradient,
-          boxShadow: `0 0 80px ${shadowColor}33, inset 0 0 30px rgba(255, 255, 255, 0.2)`
-        }}
-        animate={phase}
-        variants={circleVariants}
       />
       
       {/* Floating Timer Countdown (Super-centered) */}
