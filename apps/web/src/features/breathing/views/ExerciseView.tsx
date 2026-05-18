@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, RotateCcw, Pause, Play, Music } from 'lucide-react';
 import { Exercise } from '../data';
 import { useBreathingTimer } from '../hooks/useBreathingTimer';
@@ -11,6 +11,33 @@ import { useBinauralBeats } from '../hooks/useBinauralBeats';
 import { BreathingCircle } from '../components/BreathingCircle';
 import { SessionSettings } from '../components/SessionSettings';
 import { SessionConfig } from './SessionSetup';
+
+const getAmbientBg = (activeSoundscape: string, exercise: Exercise) => {
+  switch (activeSoundscape) {
+    case 'zen-river':
+      return `radial-gradient(circle at 50% 35%, rgba(20, 110, 120, 0.22) 0%, rgba(10, 40, 50, 0.06) 45%, #000000 85%)`;
+    case 'zen-fountain':
+      return `radial-gradient(circle at 50% 35%, rgba(14, 165, 233, 0.22) 0%, rgba(3, 105, 161, 0.06) 45%, #000000 85%)`;
+    case 'winter-rain':
+      return `radial-gradient(circle at 50% 35%, rgba(71, 85, 105, 0.25) 0%, rgba(30, 41, 59, 0.06) 45%, #000000 85%)`;
+    case 'light-rain':
+      return `radial-gradient(circle at 50% 35%, rgba(99, 102, 241, 0.22) 0%, rgba(49, 46, 129, 0.06) 45%, #000000 85%)`;
+    case 'nature-birds':
+      return `radial-gradient(circle at 50% 35%, rgba(16, 185, 129, 0.22) 0%, rgba(6, 95, 70, 0.06) 45%, #000000 85%)`;
+    case 'hz-transformation':
+      return `radial-gradient(circle at 50% 35%, rgba(217, 70, 239, 0.22) 0%, rgba(124, 58, 237, 0.06) 45%, #000000 85%)`;
+    case 'white-noise':
+      return `radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.08) 0%, rgba(100, 116, 139, 0.03) 45%, #000000 85%)`;
+    case 'pink-noise':
+      return `radial-gradient(circle at 50% 35%, rgba(244, 63, 94, 0.15) 0%, rgba(159, 18, 57, 0.03) 45%, #000000 85%)`;
+    case 'brown-noise':
+      return `radial-gradient(circle at 50% 35%, rgba(245, 158, 11, 0.15) 0%, rgba(120, 53, 4, 0.03) 45%, #000000 85%)`;
+    case 'none':
+    default:
+      return `radial-gradient(circle at 50% 35%, ${exercise.gradient.start}25 0%, ${exercise.gradient.end}05 45%, #000000 85%)`;
+  }
+};
+
 
 interface ExerciseViewProps {
   exercise: Exercise;
@@ -94,10 +121,27 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black z-[100] flex flex-col"
+      className="fixed inset-0 bg-black z-[100] flex flex-col relative overflow-hidden"
     >
+      {/* Immersive Ambient Background Layer */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={soundscape.activeSoundscape}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+            className="absolute inset-0"
+            style={{ 
+              background: getAmbientBg(soundscape.activeSoundscape, exercise)
+            }}
+          />
+        </AnimatePresence>
+      </div>
+
       {/* Header - Fixed Top */}
-      <div className="px-6 pt-12 pb-6 flex justify-between items-center bg-gradient-to-b from-black to-transparent">
+      <div className="px-6 pt-12 pb-6 flex justify-between items-center bg-gradient-to-b from-black to-transparent relative z-10">
         <button onClick={onBack} className="p-3 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-all">
           <ArrowLeft size={20} />
         </button>
@@ -109,7 +153,7 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
       </div>
 
       {/* Main Content Area - Scrollable or Centered */}
-      <div className="flex-1 flex flex-col items-center justify-center w-full px-6 relative overflow-y-auto scrollbar-hide py-10">
+      <div className="flex-1 flex flex-col items-center justify-center w-full px-6 relative z-10 overflow-y-auto scrollbar-hide py-10">
         <div className="mb-12">
            {config.mode !== 'infinite' && (
              <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 flex items-center gap-2">
@@ -143,7 +187,7 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
       </div>
 
       {/* Sticky Bottom Controls */}
-      <div className="px-8 pt-8 pb-12 bg-gradient-to-t from-black via-black/90 to-transparent">
+      <div className="px-8 pt-8 pb-12 bg-gradient-to-t from-black via-black/90 to-transparent relative z-10">
         <div className="max-w-[400px] mx-auto flex items-center justify-center gap-10">
           <button 
             onClick={handleReset}

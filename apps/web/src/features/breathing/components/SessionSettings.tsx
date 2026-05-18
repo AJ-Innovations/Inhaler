@@ -95,7 +95,7 @@ export function SessionSettings({
                     onClick={() => setActiveTab('sound')}
                     className={`px-5 py-2 rounded-full text-[11px] font-medium transition-all duration-400 whitespace-nowrap ${activeTab === 'sound' ? 'bg-white text-black shadow-md' : 'text-gray-300'}`}
                   >
-                    Ambience
+                    Ambients
                   </button>
                   <button 
                     onClick={() => setActiveTab('voice')}
