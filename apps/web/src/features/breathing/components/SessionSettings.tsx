@@ -165,23 +165,7 @@ export function SessionSettings({
                       })}
                     </div>
 
-                    {activeSoundscape !== 'none' && (
-                      <div className="px-2">
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Volume</span>
-                          <span className="text-[10px] text-white font-medium">{Math.round(soundscapeVolume * 100)}%</span>
-                        </div>
-                        <input 
-                          type="range" 
-                          min="0" 
-                          max="1" 
-                          step="0.01" 
-                          value={soundscapeVolume} 
-                          onChange={(e) => onSetSoundscapeVolume(parseFloat(e.target.value))}
-                          className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white"
-                        />
-                      </div>
-                    )}
+
                   </div>
                 )}
 
@@ -200,23 +184,7 @@ export function SessionSettings({
                       </button>
                     </div>
 
-                    {isVoiceEnabled && (
-                      <div className="px-2 mb-4">
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Voice Volume</span>
-                          <span className="text-[10px] text-white font-medium">{Math.round(voiceVolume * 100)}%</span>
-                        </div>
-                        <input 
-                          type="range" 
-                          min="0" 
-                          max="1" 
-                          step="0.01" 
-                          value={voiceVolume} 
-                          onChange={(e) => onSetVoiceVolume(parseFloat(e.target.value))}
-                          className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white"
-                        />
-                      </div>
-                    )}
+
 
                     <div className="flex flex-col gap-3">
                       {voiceProfiles.map((v) => {
@@ -311,28 +279,71 @@ export function SessionSettings({
                     </div>
 
                     {activeBinaural !== 'none' && (
-                      <div className="px-2">
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Frequency Volume</span>
-                          <span className="text-[10px] text-white font-medium">{Math.round(binauralVolume * 100)}%</span>
-                        </div>
-                        <input 
-                          type="range" 
-                          min="0" 
-                          max="1" 
-                          step="0.01" 
-                          value={binauralVolume} 
-                          onChange={(e) => onSetBinauralVolume(parseFloat(e.target.value))}
-                          className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white"
-                        />
-                        <p className="text-[9px] text-gray-500 mt-4 text-center leading-relaxed">
-                          Best experienced with headphones. Binaural beats work by playing slightly different frequencies in each ear to stimulate specific brainwave states.
-                        </p>
-                      </div>
+                      <p className="text-[9px] text-gray-500 mt-4 px-2 text-center leading-relaxed">
+                        Best experienced with headphones. Binaural beats work by playing slightly different frequencies in each ear to stimulate specific brainwave states.
+                      </p>
                     )}
                   </div>
                 )}
               </div>
+
+              {/* Fixed Bottom Volume Adjuster (Dynamic per Active Tab) */}
+              <div className="mt-6 pt-5 border-t border-white/10 relative z-20">
+                {activeTab === 'sound' && activeSoundscape !== 'none' && (
+                  <div className="px-1">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold">Ambient Volume</span>
+                      <span className="text-[10px] text-white font-medium">{Math.round(soundscapeVolume * 100)}%</span>
+                    </div>
+                    <input 
+                      type="range" 
+                      min="0" 
+                      max="1" 
+                      step="0.01" 
+                      value={soundscapeVolume} 
+                      onChange={(e) => onSetSoundscapeVolume(parseFloat(e.target.value))}
+                      className="w-full h-1 bg-white/15 rounded-lg appearance-none cursor-pointer accent-white"
+                    />
+                  </div>
+                )}
+
+                {activeTab === 'voice' && isVoiceEnabled && (
+                  <div className="px-1">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold">Guide Volume</span>
+                      <span className="text-[10px] text-white font-medium">{Math.round(voiceVolume * 100)}%</span>
+                    </div>
+                    <input 
+                      type="range" 
+                      min="0" 
+                      max="1" 
+                      step="0.01" 
+                      value={voiceVolume} 
+                      onChange={(e) => onSetVoiceVolume(parseFloat(e.target.value))}
+                      className="w-full h-1 bg-white/15 rounded-lg appearance-none cursor-pointer accent-white"
+                    />
+                  </div>
+                )}
+
+                {activeTab === 'binaural' && activeBinaural !== 'none' && (
+                  <div className="px-1">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold">Frequency Volume</span>
+                      <span className="text-[10px] text-white font-medium">{Math.round(binauralVolume * 100)}%</span>
+                    </div>
+                    <input 
+                      type="range" 
+                      min="0" 
+                      max="1" 
+                      step="0.01" 
+                      value={binauralVolume} 
+                      onChange={(e) => onSetBinauralVolume(parseFloat(e.target.value))}
+                      className="w-full h-1 bg-white/15 rounded-lg appearance-none cursor-pointer accent-white"
+                    />
+                  </div>
+                )}
+              </div>
+
             </div>
           </motion.div>
         </>

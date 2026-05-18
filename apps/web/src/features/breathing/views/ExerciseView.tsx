@@ -15,26 +15,26 @@ import { SessionConfig } from './SessionSetup';
 const getAmbientBg = (activeSoundscape: string, exercise: Exercise) => {
   switch (activeSoundscape) {
     case 'zen-river':
-      return `radial-gradient(circle at 50% 35%, rgba(20, 110, 120, 0.22) 0%, rgba(10, 40, 50, 0.06) 45%, #000000 85%)`;
+      return `linear-gradient(-45deg, #021a1e, #063c43, #010e11, #04292e)`;
     case 'zen-fountain':
-      return `radial-gradient(circle at 50% 35%, rgba(14, 165, 233, 0.22) 0%, rgba(3, 105, 161, 0.06) 45%, #000000 85%)`;
+      return `linear-gradient(-45deg, #011e24, #084050, #010f13, #042f3b)`;
     case 'winter-rain':
-      return `radial-gradient(circle at 50% 35%, rgba(71, 85, 105, 0.25) 0%, rgba(30, 41, 59, 0.06) 45%, #000000 85%)`;
+      return `linear-gradient(-45deg, #0b0f19, #1e293b, #030712, #0f172a)`;
     case 'light-rain':
-      return `radial-gradient(circle at 50% 35%, rgba(99, 102, 241, 0.22) 0%, rgba(49, 46, 129, 0.06) 45%, #000000 85%)`;
+      return `linear-gradient(-45deg, #110f36, #2d2a75, #08051e, #171545)`;
     case 'nature-birds':
-      return `radial-gradient(circle at 50% 35%, rgba(16, 185, 129, 0.22) 0%, rgba(6, 95, 70, 0.06) 45%, #000000 85%)`;
+      return `linear-gradient(-45deg, #022310, #064923, #011208, #033618)`;
     case 'hz-transformation':
-      return `radial-gradient(circle at 50% 35%, rgba(217, 70, 239, 0.22) 0%, rgba(124, 58, 237, 0.06) 45%, #000000 85%)`;
+      return `linear-gradient(-45deg, #250854, #44158c, #0e0224, #2e0969)`;
     case 'white-noise':
-      return `radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.08) 0%, rgba(100, 116, 139, 0.03) 45%, #000000 85%)`;
+      return `linear-gradient(-45deg, #121214, #222227, #070708, #18181c)`;
     case 'pink-noise':
-      return `radial-gradient(circle at 50% 35%, rgba(244, 63, 94, 0.15) 0%, rgba(159, 18, 57, 0.03) 45%, #000000 85%)`;
+      return `linear-gradient(-45deg, #3b0314, #6e0b2a, #1a0108, #4f051c)`;
     case 'brown-noise':
-      return `radial-gradient(circle at 50% 35%, rgba(245, 158, 11, 0.15) 0%, rgba(120, 53, 4, 0.03) 45%, #000000 85%)`;
+      return `linear-gradient(-45deg, #2d1102, #5c270b, #140700, #3d1704)`;
     case 'none':
     default:
-      return `radial-gradient(circle at 50% 35%, ${exercise.gradient.start}25 0%, ${exercise.gradient.end}05 45%, #000000 85%)`;
+      return `linear-gradient(-45deg, #030206, ${exercise.gradient.start}22, ${exercise.gradient.end}15, #030206)`;
   }
 };
 
@@ -121,8 +121,16 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black z-[100] flex flex-col relative overflow-hidden"
+      className="fixed inset-0 z-[100] flex flex-col relative overflow-hidden w-full h-[100dvh]"
     >
+      <style>{`
+        @keyframes ambientGradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
+
       {/* Immersive Ambient Background Layer */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <AnimatePresence mode="wait">
@@ -131,17 +139,19 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
             className="absolute inset-0"
             style={{ 
-              background: getAmbientBg(soundscape.activeSoundscape, exercise)
+              background: getAmbientBg(soundscape.activeSoundscape, exercise),
+              backgroundSize: '400% 400%',
+              animation: 'ambientGradientShift 22s ease infinite'
             }}
           />
         </AnimatePresence>
       </div>
 
       {/* Header - Fixed Top */}
-      <div className="px-6 pt-12 pb-6 flex justify-between items-center bg-gradient-to-b from-black to-transparent relative z-10">
+      <div className="px-6 pt-8 pb-3 flex justify-between items-center bg-gradient-to-b from-black/40 to-transparent relative z-10">
         <button onClick={onBack} className="p-3 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-all">
           <ArrowLeft size={20} />
         </button>
@@ -153,15 +163,15 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
       </div>
 
       {/* Main Content Area - Scrollable or Centered */}
-      <div className="flex-1 flex flex-col items-center justify-center w-full px-6 relative z-10 overflow-y-auto scrollbar-hide py-10">
-        <div className="mb-12">
+      <div className="flex-1 flex flex-col items-center justify-center w-full px-6 relative z-10 overflow-y-auto scrollbar-hide py-4">
+        <div className="mb-4">
            {config.mode !== 'infinite' && (
-             <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 flex items-center gap-2">
-               <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                 Goal: {config.value} {config.mode === 'duration' ? 'min' : 'cycles'}
-               </span>
-             </div>
+              <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                  Goal: {config.value} {config.mode === 'duration' ? 'min' : 'cycles'}
+                </span>
+              </div>
            )}
         </div>
         
@@ -172,7 +182,7 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
         />
 
         {/* Stats Grid - Now in the center flow */}
-        <div className="grid grid-cols-2 gap-4 w-full max-w-[340px] mt-16">
+        <div className="grid grid-cols-2 gap-4 w-full max-w-[340px] mt-8">
           <div className="bg-white/[0.03] border border-white/5 p-5 rounded-[28px] flex flex-col items-center gap-1 shadow-lg">
             <span className="text-[9px] uppercase tracking-widest text-gray-600 font-bold">Cycles</span>
             <span className="text-2xl font-light text-white">{timer.cycles}</span>
@@ -187,7 +197,7 @@ export function ExerciseView({ exercise, config, onBack, onComplete, onRecordSes
       </div>
 
       {/* Sticky Bottom Controls */}
-      <div className="px-8 pt-8 pb-12 bg-gradient-to-t from-black via-black/90 to-transparent relative z-10">
+      <div className="px-8 pt-4 pb-6 bg-gradient-to-t from-black/50 via-black/20 to-transparent relative z-10">
         <div className="max-w-[400px] mx-auto flex items-center justify-center gap-10">
           <button 
             onClick={handleReset}
