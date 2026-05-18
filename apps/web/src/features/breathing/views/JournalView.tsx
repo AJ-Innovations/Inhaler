@@ -75,11 +75,11 @@ const HealthTrendGraph = ({ sessions }: { sessions: Session[] }) => {
   }, [sessions]);
 
   const metrics = [
-    { id: 'vagal', label: 'Vagal Tone', icon: ShieldCheck, color: '#A5B4FC', desc: 'Stress Resilience', longDesc: 'Vagal Tone measures your nervous system\'s "braking" speed. A higher score means your body recovers from stress faster.' },
-    { id: 'cardiac', label: 'Coherence', icon: Activity, color: '#F87171', desc: 'Heart Balance', longDesc: 'Cardiac Coherence tracks the synchronization of heart rhythm and breath, reducing emotional volatility.' },
-    { id: 'lung', label: 'Lung Capacity', icon: Wind, color: '#34D399', desc: 'Oxygen Uptake', longDesc: 'Physical lung elasticity and diaphragm strength, allowing for deeper oxygen saturation in tissues.' },
-    { id: 'apnea', label: 'CO2 Tolerance', icon: Timer, color: '#F472B6', desc: 'Breath Hold Stamina', longDesc: 'Measures your resilience to CO2 buildup. Training this increases red blood cell count and cellular energy production.' },
-    { id: 'focus', label: 'Neural Calm', icon: Brain, color: '#FBBF24', desc: 'Focus Clarity', longDesc: 'The reduction of cortisol-induced brain fog, improving your ability to maintain single-pointed focus.' }
+    { id: 'vagal', label: 'Vagal Tone', icon: ShieldCheck, desc: 'Stress Resilience', longDesc: 'Vagal Tone measures your nervous system\'s "braking" speed. A higher score means your body recovers from stress faster.' },
+    { id: 'cardiac', label: 'Coherence', icon: Activity, desc: 'Heart Balance', longDesc: 'Cardiac Coherence tracks the synchronization of heart rhythm and breath, reducing emotional volatility.' },
+    { id: 'lung', label: 'Lung Capacity', icon: Wind, desc: 'Oxygen Uptake', longDesc: 'Physical lung elasticity and diaphragm strength, allowing for deeper oxygen saturation in tissues.' },
+    { id: 'apnea', label: 'CO2 Tolerance', icon: Timer, desc: 'Breath Hold Stamina', longDesc: 'Measures your resilience to CO2 buildup. Training this increases red blood cell count and cellular energy production.' },
+    { id: 'focus', label: 'Neural Calm', icon: Brain, desc: 'Focus Clarity', longDesc: 'The reduction of cortisol-induced brain fog, improving your ability to maintain single-pointed focus.' }
   ] as const;
 
   const currentMetric = metrics.find(m => m.id === activeMetric)!;
@@ -89,7 +89,12 @@ const HealthTrendGraph = ({ sessions }: { sessions: Session[] }) => {
   const getPoints = (data: number[]) => data.map((d, i) => `${(i / (data.length - 1)) * 100},${100 - d}`).join(' ');
 
   return (
-    <div className="w-full bg-[#0D0D0D] border border-white/[0.06] rounded-[42px] p-8 shadow-2xl relative overflow-hidden group">
+    <div className="w-full bg-white/[0.02] backdrop-blur-md border border-white/[0.06] rounded-[42px] p-8 shadow-2xl relative overflow-hidden group">
+      {/* iOS Style Inner Glow */}
+      <div
+        className="absolute -right-20 -top-20 w-60 h-60 bg-white rounded-full blur-[100px] opacity-0 group-hover:opacity-[0.03] transition-opacity duration-1000"
+      />
+
       {/* Dynamic Headline */}
       <div className="flex justify-between items-start mb-10 px-1 relative z-10">
         <div className="flex items-center gap-5">
@@ -97,9 +102,10 @@ const HealthTrendGraph = ({ sessions }: { sessions: Session[] }) => {
             key={currentMetric.id}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center shadow-2xl"
+            className="w-14 h-14 rounded-[20px] bg-white/[0.04] border border-white/10 flex items-center justify-center shadow-2xl"
           >
-            <currentMetric.icon size={28} style={{ color: currentMetric.color }} />
+            <div className="absolute inset-0 blur-xl opacity-10 bg-white rounded-full" />
+            <currentMetric.icon size={26} className="text-white relative z-10" />
           </motion.div>
           <div className="space-y-1">
             <AnimatePresence mode="wait">
@@ -112,7 +118,7 @@ const HealthTrendGraph = ({ sessions }: { sessions: Session[] }) => {
                 {currentMetric.label}
               </motion.h3>
             </AnimatePresence>
-            <p className="text-[10px] uppercase tracking-[0.3em] font-black text-gray-600">{currentMetric.desc}</p>
+            <p className="text-[10px] uppercase tracking-[0.3em] font-black text-white/50">{currentMetric.desc}</p>
           </div>
         </div>
         <div className="text-right">
@@ -125,9 +131,9 @@ const HealthTrendGraph = ({ sessions }: { sessions: Session[] }) => {
             >
               {currentScore}
             </motion.span>
-            <span className="text-[10px] text-gray-600 font-bold uppercase tracking-widest mt-2">pts</span>
+            <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest mt-2">pts</span>
           </div>
-          <p className={`text-[8px] uppercase tracking-[0.2em] font-black mt-1 ${isNewUser ? 'text-blue-400' : 'text-emerald-400'}`}>
+          <p className={`text-[8px] uppercase tracking-[0.2em] font-black mt-1 ${isNewUser ? 'text-blue-400/90' : 'text-emerald-400/90'}`}>
             {isNewUser ? 'Baseline State' : 'Improving'}
           </p>
         </div>
@@ -142,13 +148,13 @@ const HealthTrendGraph = ({ sessions }: { sessions: Session[] }) => {
               <motion.polyline
                 key={m.id}
                 fill="none"
-                stroke={m.color}
+                stroke={isActive ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0.15)'}
                 strokeWidth={isActive ? 2 : 0.75}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeDasharray={m.id === 'apnea' ? '4 2' : 'none'}
                 points={getPoints(multiTrendData[m.id])}
-                className={`transition-all duration-700 ${isActive ? 'opacity-100' : 'opacity-30'}`}
+                className={`transition-all duration-700 ${isActive ? 'opacity-100' : 'opacity-40'}`}
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -159,7 +165,7 @@ const HealthTrendGraph = ({ sessions }: { sessions: Session[] }) => {
           <motion.polyline
             key={`${activeMetric}-glow`}
             fill="none"
-            stroke={currentMetric.color}
+            stroke="rgba(255, 255, 255, 0.4)"
             strokeWidth={4}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -180,15 +186,16 @@ const HealthTrendGraph = ({ sessions }: { sessions: Session[] }) => {
               <button 
                 key={m.id} 
                 onClick={() => setActiveMetric(m.id)}
-                className={`flex items-center gap-3 p-3.5 rounded-[28px] border transition-all duration-500 text-left ${isActive ? 'bg-white/[0.05] border-white/20 shadow-xl' : 'bg-transparent border-transparent opacity-40 hover:opacity-100'}`}
+                className={`flex items-center gap-3 p-3.5 rounded-[28px] border transition-all duration-500 text-left ${isActive ? 'bg-white/[0.08] border-white/20 shadow-2xl' : 'bg-white/[0.02] border-white/[0.05] hover:border-white/10 hover:bg-white/[0.04] opacity-40 hover:opacity-100'}`}
               >
-                <div className={`w-9 h-9 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-center shadow-inner shrink-0`}>
-                  <m.icon size={16} style={{ color: m.color }} />
+                <div className="w-9 h-9 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center shadow-inner shrink-0 relative overflow-hidden">
+                  <div className="absolute inset-0 blur-xl opacity-10 bg-white rounded-full" />
+                  <m.icon size={16} className="text-white relative z-10" />
                 </div>
                 <div className="flex flex-col min-w-0">
                   <div className="flex items-center gap-1.5 overflow-hidden">
-                    <div className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: m.color }} />
-                    <span className="text-[8px] uppercase tracking-widest font-black text-gray-500 truncate">{m.label}</span>
+                    <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${isActive ? 'bg-white' : 'bg-white/30'}`} />
+                    <span className="text-[8px] uppercase tracking-widest font-black text-white/50 truncate">{m.label}</span>
                   </div>
                   <span className="text-[10px] font-medium text-white tracking-tight leading-none mt-1">{isActive ? 'Active' : 'Analyze'}</span>
                 </div>
@@ -204,16 +211,16 @@ const HealthTrendGraph = ({ sessions }: { sessions: Session[] }) => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="bg-white/[0.02] border border-white/[0.05] rounded-[36px] p-7 space-y-4 shadow-inner"
+            className="bg-white/[0.02] border border-white/[0.06] rounded-[36px] p-7 space-y-4 shadow-inner"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Info size={14} style={{ color: currentMetric.color }} />
-                <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-600">Training Insight</span>
+                <Info size={14} className="text-white" />
+                <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-white/50">Training Insight</span>
               </div>
-              <ChevronRight size={14} className="text-gray-700" />
+              <ChevronRight size={14} className="text-white/40" />
             </div>
-            <p className="text-[11px] text-gray-400 font-light leading-relaxed">
+            <p className="text-[11px] text-white/70 font-light leading-relaxed">
               {isNewUser ? `Welcome. Your current ${currentMetric.label} is at a baseline of ${currentScore}pts. Complete 3 sessions of breath-holding exercises to see your training curve evolve.` : currentMetric.longDesc}
             </p>
           </motion.div>
@@ -279,12 +286,6 @@ export function JournalView({ sessions, stats }: JournalViewProps) {
         const dateKey = targetDate.toISOString().split('T')[0];
         const duration = activityMap[dateKey] || 0;
         
-        // UPDATED LEVEL LOGIC:
-        // Level 1: > 0 (Started)
-        // Level 2: >= 5 min (300s)
-        // Level 3: >= 10 min (600s)
-        // Level 4: >= 15 min (900s)
-        // Level 5: >= 20 min (1200s)
         let level = 0;
         if (duration > 0 && duration < 300) level = 1;
         else if (duration >= 300 && duration < 600) level = 2;
@@ -319,11 +320,11 @@ export function JournalView({ sessions, stats }: JournalViewProps) {
 
   const levelColors: Record<number, string> = {
     0: 'bg-white/[0.03] border-transparent',
-    1: 'bg-indigo-900 border-indigo-500/10',
-    2: 'bg-indigo-700 border-indigo-400/20',
-    3: 'bg-indigo-500 border-indigo-300/30',
-    4: 'bg-indigo-400 border-indigo-200/40',
-    5: 'bg-indigo-300 border-indigo-100/50',
+    1: 'bg-white/10 border-white/5',
+    2: 'bg-white/20 border-white/10',
+    3: 'bg-white/40 border-white/15',
+    4: 'bg-white/60 border-white/20',
+    5: 'bg-white/80 border-white/25',
     '-1': 'bg-transparent border-white/[0.05] pointer-events-none'
   };
 
@@ -338,25 +339,30 @@ export function JournalView({ sessions, stats }: JournalViewProps) {
       <div className="w-full flex justify-between items-start mb-2 px-1">
         <div className="space-y-1">
           <h1 className="text-3xl font-light tracking-tight text-white/90">Journal</h1>
-          <p className="text-gray-500 text-[10px] uppercase tracking-[0.4em] font-bold">Progress Analytics</p>
+          <p className="text-white/40 text-[10px] uppercase tracking-[0.4em] font-bold">Progress Analytics</p>
         </div>
-        <div className="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-indigo-400">
+        <div className="w-11 h-11 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center text-white">
           <Calendar size={20} />
         </div>
       </div>
 
       {/* Contribution Heatmap Card */}
-      <div className="w-full bg-[#0D0D0D] border border-white/[0.06] rounded-[42px] p-5 shadow-2xl relative overflow-hidden group">
+      <div className="w-full bg-white/[0.02] backdrop-blur-md border border-white/[0.06] rounded-[42px] p-5 shadow-2xl relative overflow-hidden group">
+        {/* iOS Style Inner Glow */}
+        <div
+          className="absolute -right-20 -top-20 w-60 h-60 bg-white rounded-full blur-[100px] opacity-0 group-hover:opacity-[0.03] transition-opacity duration-1000"
+        />
+
         <div className="flex justify-between items-center mb-8 px-1">
-          <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600">Yearly Activity</span>
+          <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-white/50">Yearly Activity</span>
           <div className="flex items-center gap-2">
-            <span className="text-[8px] uppercase tracking-widest text-gray-700 font-bold">Less</span>
+            <span className="text-[8px] uppercase tracking-widest text-white/40 font-bold">Less</span>
             <div className="flex gap-1">
               {[0, 1, 2, 3, 4, 5].map(l => (
                 <div key={l} className={`w-2.5 h-2.5 rounded-sm ${levelColors[l]}`} />
               ))}
             </div>
-            <span className="text-[8px] uppercase tracking-widest text-gray-700 font-bold">More</span>
+            <span className="text-[8px] uppercase tracking-widest text-white/40 font-bold">More</span>
           </div>
         </div>
 
@@ -365,11 +371,11 @@ export function JournalView({ sessions, stats }: JournalViewProps) {
             ref={scrollContainerRef}
             className="overflow-x-auto pb-4 scrollbar-hide flex gap-4 mask-fade-edges"
           >
-            <div className="grid grid-rows-7 gap-1.5 pt-6 pr-1 sticky left-0 bg-[#0D0D0D] z-20">
+            <div className="grid grid-rows-7 gap-1.5 pt-6 pr-1 sticky left-0 bg-transparent z-20">
               {[0, 1, 2, 3, 4, 5, 6].map(d => (
                 <div key={d} className="h-3.5 flex items-center justify-end">
                   {[1, 3, 5].includes(d) && (
-                    <span className="text-[8px] font-black uppercase tracking-tighter text-gray-700 mr-1">
+                    <span className="text-[8px] font-black uppercase tracking-tighter text-white/40 mr-1">
                       {['Mon', 'Wed', 'Fri'][Math.floor(d / 2)]}
                     </span>
                   )}
@@ -382,7 +388,7 @@ export function JournalView({ sessions, stats }: JournalViewProps) {
                 {monthLabels.map((m, i) => (
                   <span 
                     key={i} 
-                    className="absolute text-[8px] font-black uppercase tracking-widest text-gray-600 whitespace-nowrap"
+                    className="absolute text-[8px] font-black uppercase tracking-widest text-white/50 whitespace-nowrap"
                     style={{ left: `${m.index * 20}px` }}
                   >
                     {m.label}
@@ -413,14 +419,14 @@ export function JournalView({ sessions, stats }: JournalViewProps) {
           </div>
         </div>
 
-        <div className="mt-8 flex justify-between px-1 border-t border-white/5 pt-6">
+        <div className="mt-8 flex justify-between px-1 border-t border-white/10 pt-6">
           <div className="flex flex-col">
             <span className="text-xl font-light text-white">{stats.sessionCount}</span>
-            <span className="text-[8px] uppercase tracking-widest text-gray-600 font-bold">Total Sessions</span>
+            <span className="text-[8px] uppercase tracking-widest text-white/40 font-bold">Total Sessions</span>
           </div>
           <div className="flex flex-col text-right">
             <span className="text-xl font-light text-white">{stats.streak} Days</span>
-            <span className="text-[8px] uppercase tracking-widest text-gray-600 font-bold">Current Streak</span>
+            <span className="text-[8px] uppercase tracking-widest text-white/40 font-bold">Current Streak</span>
           </div>
         </div>
       </div>
@@ -436,11 +442,15 @@ export function JournalView({ sessions, stats }: JournalViewProps) {
       </motion.div>
 
       {/* Model Breakdown Section */}
-      <div className="w-full bg-[#0D0D0D] border border-white/[0.06] rounded-[42px] p-8 shadow-xl relative overflow-hidden group">
+      <div className="w-full bg-white/[0.02] backdrop-blur-md border border-white/[0.06] rounded-[42px] p-8 shadow-xl relative overflow-hidden group">
+        {/* iOS Style Inner Glow */}
+        <div
+          className="absolute -right-20 -top-20 w-60 h-60 bg-white rounded-full blur-[100px] opacity-0 group-hover:opacity-[0.03] transition-opacity duration-1000"
+        />
         <div className="absolute inset-0 bg-white/[0.01] pointer-events-none" />
         <div className="flex justify-between items-center mb-8 px-1 relative z-10">
-          <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600">Technique Breakdown</span>
-          <PieChart size={14} className="text-gray-700" />
+          <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-white/50">Technique Breakdown</span>
+          <PieChart size={14} className="text-white/40" />
         </div>
         <div className="space-y-8 relative z-10">
           {(() => {
@@ -451,21 +461,20 @@ export function JournalView({ sessions, stats }: JournalViewProps) {
                 <div key={item.exercise.id} className="space-y-3">
                   <div className="flex justify-between items-center px-1">
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.exercise.gradient.start }} />
+                      <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
                       <div className="flex items-baseline gap-2">
                         <span className="text-base font-light text-white/90 tracking-tight">{item.exercise.name}</span>
-                        <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">{percentage}%</span>
+                        <span className="text-[10px] font-black text-white/50 uppercase tracking-widest">{percentage}%</span>
                       </div>
                     </div>
-                    <span className="text-sm font-bold text-gray-500 tracking-tighter">{item.minutes} min</span>
+                    <span className="text-sm font-bold text-white/60 tracking-tighter">{item.minutes} min</span>
                   </div>
-                  <div className="w-full h-2 bg-white/[0.04] rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-white/[0.04] border border-white/10 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${percentage}%` }}
                       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                      className="h-full rounded-full"
-                      style={{ background: `linear-gradient(90deg, ${item.exercise.gradient.start}, ${item.exercise.gradient.end})` }}
+                      className="h-full rounded-full bg-gradient-to-r from-white/20 to-white/60"
                     />
                   </div>
                 </div>
@@ -478,28 +487,33 @@ export function JournalView({ sessions, stats }: JournalViewProps) {
       {/* Session History */}
       <div className="space-y-6 pb-4 w-full">
         <div className="flex justify-between items-center px-2">
-          <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600">Recent Sessions</span>
-          <Zap size={16} className="text-gray-800" />
+          <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-white/50">Recent Sessions</span>
+          <Zap size={16} className="text-white/40" />
         </div>
         <div className="flex flex-col gap-4">
           {recentSessions.map((session, i) => {
             const ex = exercises.find(e => e.id === session.exerciseId) || exercises[0];
             const date = new Date(session.date);
             return (
-              <motion.div key={i} className="bg-[#0D0D0D] border border-white/[0.06] rounded-[42px] p-8 flex items-center justify-between group shadow-xl">
+              <motion.div key={i} className="bg-white/[0.02] backdrop-blur-md border border-white/[0.06] rounded-[42px] p-8 flex items-center justify-between group shadow-xl relative overflow-hidden">
+                {/* iOS Style Inner Glow */}
+                <div
+                  className="absolute -right-20 -top-20 w-60 h-60 bg-white rounded-full blur-[100px] opacity-0 group-hover:opacity-[0.03] transition-opacity duration-1000"
+                />
+                
                 <div className="flex items-center gap-6">
-                  <div className="w-14 h-14 rounded-[22px] flex items-center justify-center relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${ex.gradient.start}, ${ex.gradient.end})` }}>
+                  <div className="w-14 h-14 rounded-[20px] bg-white/[0.04] border border-white/10 flex items-center justify-center relative overflow-hidden">
                     <Zap size={24} className="text-white relative z-10" />
-                    <div className="absolute inset-0 blur-xl opacity-30 bg-white" />
+                    <div className="absolute inset-0 blur-xl opacity-10 bg-white rounded-full" />
                   </div>
                   <div>
                     <h4 className="text-lg font-light text-white tracking-tight leading-none mb-1">{ex.name}</h4>
-                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
+                    <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest">{date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <span className="text-xl font-light text-white tracking-tighter">{Math.floor(session.duration / 60)}:{(session.duration % 60).toString().padStart(2, '0')}</span>
-                  <p className="text-[9px] text-gray-700 uppercase tracking-[0.2em] font-black mt-1">Duration</p>
+                  <p className="text-[9px] text-white/40 uppercase tracking-[0.2em] font-black mt-1">Duration</p>
                 </div>
               </motion.div>
             );
