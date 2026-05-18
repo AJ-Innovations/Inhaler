@@ -75,7 +75,7 @@ export function ExploreView({
     return 'Good Evening';
   };
 
-  const currentDayIndex = new Date().getDay(); // 0 is Sunday, 1 is Monday, etc.
+  const currentDayIndex = new Date().getDay();
   const weekDays = [
     { name: 'Monday', label: 'M', value: 1 },
     { name: 'Tuesday', label: 'T', value: 2 },
@@ -84,6 +84,45 @@ export function ExploreView({
     { name: 'Friday', label: 'F', value: 5 },
     { name: 'Saturday', label: 'S', value: 6 },
     { name: 'Sunday', label: 'S', value: 0 }
+  ];
+
+  const categories = [
+    {
+      id: 'stress-relief',
+      title: 'Stress Relief & Reset',
+      desc: 'Soothe the nervous system instantly',
+      exerciseIds: ['calm', '478', 'bhramari', 'anulom']
+    },
+    {
+      id: 'sleep-calm',
+      title: 'Sleep & Calm',
+      desc: 'Slow down and drift into deep peace',
+      exerciseIds: ['478', 'calm', 'bhramari', 'sitali']
+    },
+    {
+      id: 'focus-balance',
+      title: 'Focus & Balance',
+      desc: 'Align your mind and center your cognitive state',
+      exerciseIds: ['box', 'nadi', 'anulom', 'buteyko']
+    },
+    {
+      id: 'athletic-performance',
+      title: 'Athletic Performance',
+      desc: 'Expand lung capacity and boost oxygen efficiency',
+      exerciseIds: ['box', 'deep-hold', 'wim-hof', 'buteyko']
+    },
+    {
+      id: 'pranayama-mastery',
+      title: 'Pranayama Mastery',
+      desc: 'Traditional yogic breathing techniques',
+      exerciseIds: ['nadi', 'kapalbhati', 'anulom', 'bhastrika', 'sitali', 'sudarshan']
+    },
+    {
+      id: 'advanced-power',
+      title: 'Advanced & Power',
+      desc: 'Build endurance, heat, and internal force',
+      exerciseIds: ['kapalbhati', 'ibuki', 'deep-hold', 'bhastrika', 'wim-hof']
+    }
   ];
 
   const heroSlides = useMemo(() => {
@@ -151,7 +190,7 @@ export function ExploreView({
   }, []);
 
   useEffect(() => {
-    if (searchQuery.trim()) return; // Don't run the hero slider if searching
+    if (searchQuery.trim()) return;
 
     const startTime = Date.now();
     const interval = setInterval(() => {
@@ -181,7 +220,6 @@ export function ExploreView({
 
   const activeSlide = heroSlides[heroIndex];
 
-  // Filtering logic
   const filteredCustomExercises = useMemo(() => {
     if (!searchQuery.trim()) return customExercises;
     const query = searchQuery.toLowerCase().trim();
@@ -211,11 +249,11 @@ export function ExploreView({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="w-full"
+      className="w-full animate-fadeIn"
     >
       {!hasActiveSearch ? (
         <div className="w-full">
-          {/* Explore Hero Section Fold (Takes up exactly 100vh minus BottomNav padding) */}
+          {/* Explore Hero Section Fold */}
           <div className="h-[calc(100vh-96px)] flex flex-col justify-between pb-4">
             {/* Dynamic Greeting & Weekly Calendar Widget */}
             <div className="pt-6 pb-4 px-1 flex flex-col gap-3">
@@ -226,7 +264,6 @@ export function ExploreView({
 
                 {/* Quick Ambient Sanctuary Icons in the same row */}
                 <div className="flex items-center gap-2">
-                  {/* Sound Toggle Button (Icon only) */}
                   <button
                     onClick={handleToggleSound}
                     className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all active:scale-90 shadow-md backdrop-blur-md ${isAmbientSoundOn
@@ -238,7 +275,6 @@ export function ExploreView({
                     {isAmbientSoundOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
                   </button>
 
-                  {/* Selector Button (Icon only) */}
                   <button
                     onClick={() => setIsAmbientSelectorOpen(true)}
                     className="w-10 h-10 rounded-full bg-white/[0.03] border border-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.06] transition-all active:scale-90 shadow-md backdrop-blur-md"
@@ -268,7 +304,7 @@ export function ExploreView({
               </div>
             </div>
 
-            {/* Sticky Top Bar containing Search & Rounded Profile Icon with Streak Badge */}
+            {/* Sticky Top Bar containing Search & Rounded Profile Icon */}
             <div className="sticky top-0 z-50 pt-4 pb-2 flex items-center gap-3 w-full">
               {/* Search Bar */}
               <div className="relative flex-1 z-50">
@@ -312,7 +348,7 @@ export function ExploreView({
               </motion.button>
             </div>
 
-            {/* Hero Section - Static Positioned Gestures (Pan-based navigation) - Flex remaining fold height */}
+            {/* Hero Section */}
             <section className="relative w-full flex-1 min-h-0 rounded-[48px] overflow-hidden group touch-pan-y mt-4">
               <AnimatePresence mode="wait">
                 <motion.div
@@ -327,7 +363,6 @@ export function ExploreView({
                   }}
                   className="absolute inset-0 rounded-[48px] p-8 flex flex-col items-center justify-center text-center gap-6 shadow-2xl overflow-hidden z-10"
                 >
-                  {/* Background Glow */}
                   <div
                     className={`absolute inset-0 opacity-30 blur-[120px] transition-all duration-1000 bg-gradient-to-br ${activeSlide.bg}`}
                   />
@@ -336,13 +371,13 @@ export function ExploreView({
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.2 }}
-                    className={`w-24 h-24 rounded-[32px] flex items-center justify-center shadow-inner relative z-10 ${activeSlide.color}`}
+                    className={`w-20 h-20 rounded-[28px] flex items-center justify-center shadow-inner relative z-10 ${activeSlide.color}`}
                   >
-                    <activeSlide.icon size={44} strokeWidth={1.5} />
+                    <activeSlide.icon size={36} strokeWidth={1.5} />
                     <div className="absolute inset-0 blur-3xl opacity-10 bg-white rounded-full" />
                   </motion.div>
 
-                  <div className="space-y-3 relative z-10 pointer-events-none">
+                  <div className="space-y-2 relative z-10 pointer-events-none">
                     <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/70">
                       {activeSlide.label}
                     </span>
@@ -359,15 +394,14 @@ export function ExploreView({
                       e.stopPropagation();
                       onStart(activeSlide.exercise);
                     }}
-                    className="group relative h-11 px-10 rounded-full bg-white text-black font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-[0_25px_50px_rgba(255,255,255,0.15)] hover:scale-105 active:scale-95 transition-all mt-1 z-20"
+                    className="group relative h-10 px-8 rounded-full bg-white text-black font-bold text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 shadow-[0_20px_40px_rgba(255,255,255,0.12)] hover:scale-105 active:scale-95 transition-all mt-1 z-20"
                   >
-                    <Play size={14} fill="currentColor" />
+                    <Play size={10} fill="currentColor" />
                     <span>Begin Session</span>
                   </button>
                 </motion.div>
               </AnimatePresence>
 
-              {/* Persistent Activation Signal Container */}
               <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-3 z-40 pointer-events-none">
                 {heroSlides.map((_, i) => (
                   <div
@@ -388,59 +422,72 @@ export function ExploreView({
             </section>
           </div>
 
-          {/* Scrollable sections below the 100vh fold */}
-          <div className="space-y-10 mt-10 w-full">
-            {/* Custom Section */}
+          {/* Scrollable category-based carousels below the 100vh fold */}
+          <div className="space-y-8 mt-8 w-full pb-8">
+            {/* Personal Journeys Carousel */}
             {customExercises.length > 0 && (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="flex justify-between items-center px-1">
-                  <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600">Personal Journeys</span>
-                  <span className="text-[10px] text-gray-500 font-medium">{customExercises.length} sessions</span>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[10px] uppercase tracking-[0.3em] font-black text-white/80">Personal Journeys</span>
+                    <span className="text-[8px] uppercase tracking-widest text-white/30 font-bold">Your custom practices</span>
+                  </div>
+                  <span className="text-[9px] text-white/40 font-bold uppercase tracking-widest">{customExercises.length} sessions</span>
                 </div>
 
-                <div className="flex flex-col gap-5">
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory mask-fade-edges -mx-1 px-1">
                   {customExercises.map((ex) => (
-                    <ExerciseCard
-                      key={ex.id}
-                      exercise={ex}
-                      onStart={() => onStart(ex)}
-                      onDetails={() => onDetails(ex)}
-                      isFavorite={favorites.includes(ex.id)}
-                      onToggleFavorite={() => onToggleFavorite(ex.id)}
-                    />
+                    <div key={ex.id} className="snap-center shrink-0 w-[95vw] sm:w-[420px]">
+                      <ExerciseCard
+                        exercise={ex}
+                        onStart={() => onStart(ex)}
+                        onDetails={() => onDetails(ex)}
+                        isFavorite={favorites.includes(ex.id)}
+                        onToggleFavorite={() => onToggleFavorite(ex.id)}
+                      />
+                    </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Global Collection */}
-            <div className="space-y-6">
-              <div className="flex justify-between items-center px-1">
-                <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-300">Global Collection</span>
-                <span className="text-[10px] text-gray-300 font-medium">{exercises.length} practices</span>
-              </div>
+            {/* Category Carousels */}
+            {categories.map((cat) => {
+              const catExercises = exercises.filter(ex => cat.exerciseIds.includes(ex.id));
+              if (catExercises.length === 0) return null;
 
-              <div className="flex flex-col gap-5">
-                {exercises.map((ex: Exercise) => (
-                  <ExerciseCard
-                    key={ex.id}
-                    exercise={ex}
-                    onStart={() => onStart(ex)}
-                    onDetails={() => onDetails(ex)}
-                    isFavorite={favorites.includes(ex.id)}
-                    onToggleFavorite={() => onToggleFavorite(ex.id)}
-                  />
-                ))}
-              </div>
-            </div>
+              return (
+                <div key={cat.id} className="space-y-4">
+                  <div className="flex justify-between items-center px-1">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[10px] uppercase tracking-[0.3em] font-black text-white">{cat.title}</span>
+                      <span className="text-[8px] uppercase tracking-widest text-white/40 font-bold">{cat.desc}</span>
+                    </div>
+                    <span className="text-[9px] text-white/40 font-bold uppercase tracking-widest">{catExercises.length} practices</span>
+                  </div>
+
+                  <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory mask-fade-edges -mx-1 px-1">
+                    {catExercises.map((ex) => (
+                      <div key={ex.id} className="snap-center shrink-0 w-[95vw] sm:w-[420px]">
+                        <ExerciseCard
+                          exercise={ex}
+                          onStart={() => onStart(ex)}
+                          onDetails={() => onDetails(ex)}
+                          isFavorite={favorites.includes(ex.id)}
+                          onToggleFavorite={() => onToggleFavorite(ex.id)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       ) : (
         /* Search Results View */
         <div className="space-y-10 mt-4 w-full">
-          {/* Sticky Top Bar containing Search & Rounded Profile Icon with Streak Badge */}
           <div className="sticky top-0 z-50 pt-4 pb-2 flex items-center gap-3 w-full">
-            {/* Search Bar */}
             <div className="relative flex-1 z-50">
               <div className="relative flex items-center group">
                 <Search
@@ -465,7 +512,6 @@ export function ExploreView({
               </div>
             </div>
 
-            {/* Profile Avatar Trigger Button */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -496,8 +542,8 @@ export function ExploreView({
               {filteredCustomExercises.length > 0 && (
                 <div className="space-y-6">
                   <div className="flex justify-between items-center px-1">
-                    <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600">Personal Journeys</span>
-                    <span className="text-[10px] text-gray-500 font-medium">{filteredCustomExercises.length} found</span>
+                    <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-white/50">Personal Journeys</span>
+                    <span className="text-[10px] text-white/40 font-medium">{filteredCustomExercises.length} found</span>
                   </div>
                   <div className="flex flex-col gap-5">
                     {filteredCustomExercises.map((ex) => (
@@ -517,8 +563,8 @@ export function ExploreView({
               {filteredGlobalExercises.length > 0 && (
                 <div className="space-y-6">
                   <div className="flex justify-between items-center px-1">
-                    <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600">Global Collection</span>
-                    <span className="text-[10px] text-gray-500 font-medium">{filteredGlobalExercises.length} found</span>
+                    <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-white/50">Global Collection</span>
+                    <span className="text-[10px] text-white/40 font-medium">{filteredGlobalExercises.length} found</span>
                   </div>
                   <div className="flex flex-col gap-5">
                     {filteredGlobalExercises.map((ex) => (
@@ -549,11 +595,10 @@ export function ExploreView({
             className="fixed inset-0 z-[600] bg-black/85 backdrop-blur-3xl flex flex-col p-6 overflow-y-auto"
           >
             <div className="max-w-[480px] mx-auto w-full flex-1 flex flex-col pt-8">
-              {/* Header */}
               <div className="flex justify-between items-center mb-8">
                 <div className="space-y-1">
                   <h2 className="text-2xl font-light text-white tracking-tight">Ambient Sanctuary</h2>
-                  <p className="text-xs text-gray-500 font-light">Set your visual & auditory environment</p>
+                  <p className="text-xs text-white/40 font-light">Set your visual & auditory environment</p>
                 </div>
                 <button
                   onClick={() => setIsAmbientSelectorOpen(false)}
@@ -563,7 +608,6 @@ export function ExploreView({
                 </button>
               </div>
 
-              {/* Grid of Ambients */}
               <div className="grid grid-cols-2 gap-4 pb-12">
                 {ambientList.map((item) => {
                   const isActive = soundscape.activeSoundscape === item.id;
@@ -579,25 +623,22 @@ export function ExploreView({
                         }
                       }}
                       className={`group relative rounded-2xl overflow-hidden border aspect-[3/4] flex flex-col text-left transition-all duration-300 active:scale-95 shadow-md ${isActive
-                        ? 'border-white ring-1 ring-emerald-400/30 shadow-[0_0_15px_rgba(52,211,153,0.2)]'
+                        ? 'border-white ring-1 ring-white/30 shadow-[0_0_15px_rgba(255,255,255,0.15)]'
                         : 'border-white/10 hover:border-white/20'
                         }`}
                     >
-                      {/* Wallpaper image background */}
                       <img
                         src={item.image}
                         alt={item.name}
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-80"
                       />
-                      {/* Subtle dark gradient overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
-                      {/* Name */}
                       <div className="mt-auto p-3.5 relative z-10 space-y-0.5">
                         <span className="text-[10px] font-bold text-white tracking-wide block truncate">
                           {item.name}
                         </span>
-                        <span className="text-[8px] text-gray-400 font-medium uppercase tracking-widest block">
+                        <span className="text-[8px] text-white/40 font-medium uppercase tracking-widest block">
                           {item.id === 'none' ? 'Silent' : 'Audio + Visual'}
                         </span>
                       </div>
