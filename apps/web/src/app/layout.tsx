@@ -2,13 +2,13 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Inhaler | Breathing Exercises",
+  title: "Sparox | Breathing Exercises",
   description: "A premium breathing exercise app for mindfulness and relaxation.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black",
-    title: "Inhaler",
+    title: "Sparox",
   },
 };
 
