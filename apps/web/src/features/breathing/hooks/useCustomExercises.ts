@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { Exercise } from '../data';
+import { supabase } from '../../../lib/supabaseClient';
+
 
 const STORAGE_KEY = 'inhale_custom_exercises';
 
@@ -36,6 +38,52 @@ export function useLibrary() {
   const [customGoals, setCustomGoals] = useState<CustomGoal[]>([]);
   const [userName, setUserName] = useState('Zen Practitioner');
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
+
+  // Sync user profile from Supabase
+  useEffect(() => {
+    // 1. Fetch current active session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUserProfile(session.user.id);
+      }
+    });
+
+    // 2. Listen to auth changes in real-time
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUserProfile(session.user.id);
+      } else {
+        // Fallback to local storage if logged out
+        const savedName = localStorage.getItem('inhale_user_name') || 'Zen Practitioner';
+        const savedAvatar = localStorage.getItem('inhale_user_avatar');
+        setUserName(savedName);
+        setUserAvatar(savedAvatar);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username, avatar_url')
+        .eq('id', userId)
+        .single();
+      
+      if (error) throw error;
+      if (data) {
+        if (data.username) setUserName(data.username);
+        if (data.avatar_url) setUserAvatar(data.avatar_url);
+      }
+    } catch (err) {
+      console.error('Error fetching user profile from database:', err);
+    }
+  };
 
   useEffect(() => {
     const savedCustom = localStorage.getItem(STORAGE_KEY);
@@ -106,15 +154,39 @@ export function useLibrary() {
     localStorage.setItem('inhale_custom_goals', JSON.stringify(updated));
   };
 
-  const updateUserName = (name: string) => {
+  const updateUserName = async (name: string) => {
     setUserName(name);
     localStorage.setItem('inhale_user_name', name);
+
+    if (user) {
+      try {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ username: name })
+          .eq('id', user.id);
+        if (error) throw error;
+      } catch (err) {
+        console.error('Error updating username in database:', err);
+      }
+    }
   };
 
-  const updateAvatar = (avatar: string | null) => {
+  const updateAvatar = async (avatar: string | null) => {
     setUserAvatar(avatar);
     if (avatar) localStorage.setItem('inhale_user_avatar', avatar);
     else localStorage.removeItem('inhale_user_avatar');
+
+    if (user) {
+      try {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ avatar_url: avatar })
+          .eq('id', user.id);
+        if (error) throw error;
+      } catch (err) {
+        console.error('Error updating avatar in database:', err);
+      }
+    }
   };
 
   const clearAllData = () => {
