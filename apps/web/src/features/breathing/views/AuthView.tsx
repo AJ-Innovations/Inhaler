@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, ArrowRight, ChevronLeft, User, CheckCircle, Key } from 'lucide-react';
+import { supabase } from '../../../lib/supabaseClient';
 
 interface AuthViewProps {
   onBack: () => void;
@@ -14,6 +15,9 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
 
   // Forgot Password Flow States
   const [authFlow, setAuthFlow] = useState<'form' | 'forgot_email' | 'forgot_otp' | 'forgot_reset' | 'forgot_success'>('form');
@@ -57,6 +61,50 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
       // Auto-focus last box
       const lastInput = document.getElementById('otp-3') as HTMLInputElement | null;
       if (lastInput) lastInput.focus();
+    }
+  };
+
+  const handleAuth = async () => {
+    if (!email.trim() || !password.trim()) {
+      setErrorMessage('Please enter both email and password.');
+      return;
+    }
+    if (mode === 'signup' && !name.trim()) {
+      setErrorMessage('Please enter your full name.');
+      return;
+    }
+
+    setLoading(true);
+    setErrorMessage(null);
+
+    try {
+      if (mode === 'signup') {
+        const { error } = await supabase.auth.signUp({
+          email: email.trim(),
+          password: password.trim(),
+          options: {
+            data: {
+              full_name: name.trim()
+            }
+          }
+        });
+        if (error) throw error;
+        alert('Verification email sent! Please check your inbox (or spam folder) to verify your account, then log in.');
+        setMode('login');
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password: password.trim()
+        });
+        if (error) throw error;
+        
+        // Successfully logged in!
+        onSuccess();
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'An error occurred during authentication.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -394,12 +442,19 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
                 )}
               </div>
 
+              {errorMessage && (
+                <div className="text-red-400 text-xs font-light text-center bg-red-500/10 border border-red-500/20 py-3 px-4 rounded-xl shrink-0">
+                  {errorMessage}
+                </div>
+              )}
+
               <button 
-                onClick={onSuccess}
-                className="w-full h-14 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-400 transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3"
+                onClick={handleAuth}
+                disabled={loading}
+                className="w-full h-14 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-400 transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {mode === 'login' ? 'Sign In' : 'Create Account'}
-                <ArrowRight size={16} strokeWidth={3} />
+                {loading ? 'Processing...' : (mode === 'login' ? 'Sign In' : 'Create Account')}
+                {!loading && <ArrowRight size={16} strokeWidth={3} />}
               </button>
             </div>
 
