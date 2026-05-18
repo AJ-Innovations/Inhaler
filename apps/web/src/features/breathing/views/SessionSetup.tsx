@@ -1,14 +1,37 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Timer, RotateCcw, Infinity, Check, Sparkles } from 'lucide-react';
 import { Exercise } from '../data';
+
+const getAmbientImage = (activeSoundscape: string) => {
+  switch (activeSoundscape) {
+    case 'zen-river': return '/image/ambients/river.png';
+    case 'zen-fountain': return '/image/ambients/whaterfalls.png';
+    case 'winter-rain': return '/image/ambients/rain.png';
+    case 'light-rain': return '/image/ambients/rain2.png';
+    case 'nature-birds': return '/image/ambients/nature2.png';
+    case 'hz-transformation': return '/image/ambients/galaxy.png';
+    case 'white-noise': return '/image/ambients/galaxy2.png';
+    case 'pink-noise': return '/image/ambients/galaxy3.png';
+    case 'brown-noise': return '/image/ambients/nature.png';
+    case 'beach': return '/image/ambients/beach.png';
+    case 'lake': return '/image/ambients/lake4.png';
+    case 'marine': return '/image/ambients/marain.png';
+    case 'desert': return '/image/ambients/desert3.png';
+    case 'ethereal': return '/image/ambients/loop.png';
+    case 'forest': return '/image/ambients/forest.png';
+    case 'leaf':
+    default: return '/image/ambients/leaf.png';
+  }
+};
 
 interface SessionSetupProps {
   exercise: Exercise;
   onBack: () => void;
   onConfirm: (config: SessionConfig) => void;
+  soundscape: any;
 }
 
 export interface SessionConfig {
@@ -16,7 +39,7 @@ export interface SessionConfig {
   value: number;
 }
 
-export function SessionSetup({ exercise, onBack, onConfirm }: SessionSetupProps) {
+export function SessionSetup({ exercise, onBack, onConfirm, soundscape }: SessionSetupProps) {
   const [mode, setMode] = useState<'duration' | 'cycles' | 'infinite'>('duration');
   const [value, setValue] = useState(5);
 
@@ -28,15 +51,25 @@ export function SessionSetup({ exercise, onBack, onConfirm }: SessionSetupProps)
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black z-[200] overflow-y-auto scrollbar-hide"
+      className="fixed inset-0 z-[200] overflow-y-auto scrollbar-hide bg-black text-white"
     >
-      {/* Dynamic Background */}
-      <div 
-        className="fixed inset-0 opacity-20 blur-[120px] pointer-events-none"
-        style={{ 
-          background: `radial-gradient(circle at 50% 20%, ${exercise.gradient.start} 0%, transparent 60%)` 
-        }}
-      />
+      {/* Cinematic Natural Background */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-black">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={soundscape.activeSoundscape}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1.0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.8, ease: "easeInOut" }}
+            className="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-110 blur-[10px]"
+            style={{
+              backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape)})`
+            }}
+          />
+        </AnimatePresence>
+      </div>
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/20 via-black/40 to-black/80 pointer-events-none" />
 
       <div className="relative z-10 max-w-[480px] mx-auto px-6 py-12 flex flex-col min-h-screen">
         {/* Header */}
@@ -59,17 +92,15 @@ export function SessionSetup({ exercise, onBack, onConfirm }: SessionSetupProps)
           <motion.div 
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="w-24 h-24 rounded-[32px] flex items-center justify-center relative shadow-2xl"
-            style={{ background: `linear-gradient(135deg, ${exercise.gradient.start}, ${exercise.gradient.end})` }}
+            className="w-24 h-24 rounded-full flex items-center justify-center relative shadow-[0_0_50px_rgba(255,255,255,0.4)] border border-white bg-white backdrop-blur-2xl"
           >
-            <div className="absolute inset-0 blur-2xl opacity-40" style={{ background: exercise.gradient.start }} />
-            <Sparkles className="text-white relative z-10" size={40} strokeWidth={1.5} />
+            <Sparkles className="text-black relative z-10 animate-pulse" size={40} strokeWidth={1.5} />
           </motion.div>
           <h1 className="text-4xl font-light text-white mt-8 tracking-tight">Set Your Goal</h1>
         </div>
 
         {/* Mode Selector (iOS Sliding Tab) */}
-        <div className="bg-white/[0.03] border border-white/[0.05] rounded-[36px] p-1.5 flex items-center mb-10 shadow-2xl backdrop-blur-3xl">
+        <div className="bg-white/[0.03] border border-white/[0.05] rounded-full p-1.5 flex items-center mb-10 shadow-2xl backdrop-blur-3xl">
           {[
             { id: 'duration', icon: Timer, label: 'Duration' },
             { id: 'cycles', icon: RotateCcw, label: 'Cycles' },
@@ -84,14 +115,14 @@ export function SessionSetup({ exercise, onBack, onConfirm }: SessionSetupProps)
                   if (item.id === 'duration') setValue(5);
                   if (item.id === 'cycles') setValue(20);
                 }}
-                className={`flex-1 relative py-4 rounded-[30px] flex flex-col items-center gap-1.5 transition-all duration-500 ${
-                  isActive ? 'text-white' : 'text-gray-500 hover:text-gray-300'
+                className={`flex-1 relative py-4 rounded-full flex flex-col items-center gap-1.5 transition-all duration-500 ${
+                  isActive ? 'text-white' : 'text-gray-400 hover:text-white'
                 }`}
               >
                 {isActive && (
                   <motion.div 
                     layoutId="setup-mode-bg"
-                    className="absolute inset-0 bg-white/10 border border-white/10 rounded-[30px] shadow-lg"
+                    className="absolute inset-0 bg-white/10 border border-white/10 rounded-full shadow-lg"
                     transition={{ type: 'spring', duration: 0.6, bounce: 0.2 }}
                   />
                 )}
@@ -125,10 +156,10 @@ export function SessionSetup({ exercise, onBack, onConfirm }: SessionSetupProps)
                   <button
                     key={opt}
                     onClick={() => setValue(opt)}
-                    className={`aspect-square rounded-3xl flex items-center justify-center text-sm font-medium transition-all duration-500 border ${
+                    className={`aspect-square rounded-full flex items-center justify-center text-sm font-medium transition-all duration-500 border backdrop-blur-md ${
                       value === opt 
-                        ? 'bg-white border-white text-black shadow-[0_15px_30px_rgba(255,255,255,0.2)] scale-110' 
-                        : 'bg-white/5 border-white/10 text-gray-500 hover:bg-white/10 hover:border-white/20'
+                        ? 'bg-white border-white text-black shadow-[0_0_30px_rgba(255,255,255,0.4)] scale-110' 
+                        : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:border-white/20'
                     }`}
                   >
                     {opt}
@@ -140,9 +171,9 @@ export function SessionSetup({ exercise, onBack, onConfirm }: SessionSetupProps)
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white/[0.03] border border-white/[0.05] rounded-[48px] p-12 flex flex-col items-center text-center gap-6"
+              className="bg-white/[0.03] border border-white/10 rounded-[36px] p-12 flex flex-col items-center text-center gap-6 backdrop-blur-2xl"
             >
-              <div className="w-20 h-20 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+              <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20">
                 <Infinity size={40} strokeWidth={1} />
               </div>
               <div className="space-y-2">
@@ -159,10 +190,10 @@ export function SessionSetup({ exercise, onBack, onConfirm }: SessionSetupProps)
         <div className="pt-12 pb-8">
           <button 
             onClick={() => onConfirm({ mode, value })}
-            className="w-full h-20 rounded-[36px] bg-white text-black font-black text-lg uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 shadow-[0_30px_60px_rgba(255,255,255,0.25)] group"
+            className="w-full h-16 rounded-full bg-white text-black font-black text-sm uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(255,255,255,0.15)] group relative overflow-hidden"
           >
-            Confirm Journey
-            <Check size={24} className="group-hover:translate-x-1 transition-transform" />
+            <span className="relative z-10">Confirm Journey</span>
+            <Check size={20} className="relative z-10 group-hover:scale-110 transition-transform" />
           </button>
         </div>
       </div>
