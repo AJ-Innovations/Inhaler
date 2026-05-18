@@ -15,26 +15,26 @@ import { SessionConfig } from './SessionSetup';
 const getAmbientImage = (activeSoundscape: string) => {
   switch (activeSoundscape) {
     case 'zen-river':
-      return 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop';
+      return '/image/ambients/river.png';
     case 'zen-fountain':
-      return 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=1600&auto=format&fit=crop';
+      return '/image/ambients/whaterfalls.png';
     case 'winter-rain':
-      return 'https://images.unsplash.com/photo-1485594050903-8e8ee7b071a8?q=80&w=1600&auto=format&fit=crop';
+      return '/image/ambients/rain.png';
     case 'light-rain':
-      return 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?q=80&w=1600&auto=format&fit=crop';
+      return '/image/ambients/rain2.png';
     case 'nature-birds':
-      return 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?q=80&w=1600&auto=format&fit=crop';
+      return '/image/ambients/nature2.png';
     case 'hz-transformation':
-      return 'https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=1600&auto=format&fit=crop';
+      return '/image/ambients/galaxy.png';
     case 'white-noise':
-      return 'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?q=80&w=1600&auto=format&fit=crop';
+      return '/image/ambients/galaxy2.png';
     case 'pink-noise':
-      return 'https://images.unsplash.com/photo-1532767154073-93e5065788f4?q=80&w=1600&auto=format&fit=crop';
+      return '/image/ambients/galaxy3.png';
     case 'brown-noise':
-      return 'https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=1600&auto=format&fit=crop';
+      return '/image/ambients/nature.png';
     case 'none':
     default:
-      return 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=1600&auto=format&fit=crop';
+      return '/image/ambients/leaf.png';
   }
 };
 
