@@ -178,7 +178,7 @@ export function SessionSettings({
                     <div className="flex flex-col gap-3">
                       {voiceProfiles.map((v) => {
                         const isActive = selectedVoiceId === v.id;
-                        const isMale = v.id === 'atlas' || v.id === 'caspian';
+                        const isMale = v.id === 'edward' || v.id === 'viraj';
                         return (
                           <div 
                             key={v.id}
@@ -186,13 +186,27 @@ export function SessionSettings({
                               isActive ? 'bg-white/15 border-white/40 shadow-xl' : 'bg-white/5 border-white/10'
                             } ${!isVoiceEnabled ? 'opacity-40 grayscale pointer-events-none' : ''}`}
                           >
+                            {/* Profile Avatar Icon */}
+                            <div 
+                              onClick={() => onSelectVoice(v.id)}
+                              className={`w-11 h-11 rounded-full shrink-0 flex items-center justify-center border cursor-pointer select-none active:scale-95 transition-all overflow-hidden ${
+                                isActive ? 'border-white/40 shadow-lg bg-white/10' : 'border-white/10 bg-white/5 opacity-80 hover:opacity-100'
+                              }`}
+                            >
+                              <img 
+                                src={`/image/avatars/${v.id}.png`} 
+                                alt={v.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            
                             <div 
                               onClick={() => onSelectVoice(v.id)}
                               className="flex-1 cursor-pointer"
                             >
                               <h4 className={`text-base font-normal ${isActive ? 'text-white' : 'text-gray-300'}`}>{v.name}</h4>
-                              <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">
-                                {isMale ? 'Deep Presence' : 'Ethereal Harmony'}
+                               <p className="text-xs text-gray-400 mt-1">
+                                {v.description}
                               </p>
                             </div>
                             
