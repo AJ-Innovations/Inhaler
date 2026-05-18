@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Sparkles, Zap, Sunrise, Moon, Brain, Wind, Search, X, UserRound } from 'lucide-react';
+import { Play, Sparkles, Zap, Sunrise, Moon, Brain, Wind, Search, X, UserRound, Volume2, VolumeX, Compass } from 'lucide-react';
 import { Exercise, exercises } from '../data';
 import { ExerciseCard } from '../components/ExerciseCard';
 
@@ -19,6 +19,9 @@ interface ExploreViewProps {
   };
   userAvatar: string | null;
   onProfileClick: () => void;
+  soundscape: any;
+  isAmbientSoundOn: boolean;
+  setIsAmbientSoundOn: (on: boolean) => void;
 }
 
 export function ExploreView({
@@ -29,12 +32,41 @@ export function ExploreView({
   onToggleFavorite,
   stats,
   userAvatar,
-  onProfileClick
+  onProfileClick,
+  soundscape,
+  isAmbientSoundOn,
+  setIsAmbientSoundOn
 }: ExploreViewProps) {
   const [heroIndex, setHeroIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const cycleTime = 5000;
+
+  const [isAmbientSelectorOpen, setIsAmbientSelectorOpen] = useState(false);
+
+  const ambientList = [
+    { id: 'zen-river', name: 'Zen River', image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=300&auto=format&fit=crop' },
+    { id: 'zen-fountain', name: 'Zen Fountain', image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=300&auto=format&fit=crop' },
+    { id: 'winter-rain', name: 'Winter Rain', image: 'https://images.unsplash.com/photo-1485594050903-8e8ee7b071a8?q=80&w=300&auto=format&fit=crop' },
+    { id: 'light-rain', name: 'Light Rain', image: 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?q=80&w=300&auto=format&fit=crop' },
+    { id: 'nature-birds', name: 'Nature Birds', image: 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?q=80&w=300&auto=format&fit=crop' },
+    { id: 'hz-transformation', name: '528Hz Transform', image: 'https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=300&auto=format&fit=crop' },
+    { id: 'white-noise', name: 'White Noise', image: 'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?q=80&w=300&auto=format&fit=crop' },
+    { id: 'pink-noise', name: 'Pink Noise', image: 'https://images.unsplash.com/photo-1532767154073-93e5065788f4?q=80&w=300&auto=format&fit=crop' },
+    { id: 'brown-noise', name: 'Deep Brownian', image: 'https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=300&auto=format&fit=crop' },
+    { id: 'none', name: 'None (Silent Space)', image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=300&auto=format&fit=crop' }
+  ];
+
+  const handleToggleSound = () => {
+    if (isAmbientSoundOn) {
+      setIsAmbientSoundOn(false);
+    } else {
+      if (soundscape.activeSoundscape === 'none') {
+        soundscape.setActiveSoundscape('zen-river');
+      }
+      setIsAmbientSoundOn(true);
+    }
+  };
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -204,6 +236,35 @@ export function ExploreView({
               </div>
             );
           })}
+        </div>
+
+        {/* Quick Ambient Sanctuary Toolbar */}
+        <div className="flex gap-3 mt-1.5">
+          {/* Sound Toggle Button */}
+          <button 
+            onClick={handleToggleSound}
+            className={`flex-1 h-11 rounded-2xl border flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-md backdrop-blur-md ${
+              isAmbientSoundOn 
+                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 font-bold' 
+                : 'bg-white/[0.03] border-white/10 text-gray-400 hover:text-white hover:bg-white/[0.06]'
+            }`}
+          >
+            {isAmbientSoundOn ? <Volume2 size={15} /> : <VolumeX size={15} />}
+            <span className="text-[9px] font-black uppercase tracking-widest">
+              Sound: {isAmbientSoundOn ? 'ON' : 'OFF'}
+            </span>
+          </button>
+
+          {/* Selector Button */}
+          <button 
+            onClick={() => setIsAmbientSelectorOpen(true)}
+            className="flex-1 h-11 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center gap-2.5 text-gray-400 hover:text-white hover:bg-white/[0.06] transition-all active:scale-95 shadow-md backdrop-blur-md"
+          >
+            <Compass size={15} />
+            <span className="text-[9px] font-black uppercase tracking-widest">
+              Ambient Style
+            </span>
+          </button>
         </div>
       </div>
       {/* Sticky Top Bar containing Search & Rounded Profile Icon with Streak Badge */}
@@ -434,6 +495,85 @@ export function ExploreView({
           )}
         </div>
       )}
+
+      {/* Fullscreen Ambient Selection Modal */}
+      <AnimatePresence>
+        {isAmbientSelectorOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[600] bg-black/85 backdrop-blur-3xl flex flex-col p-6 overflow-y-auto"
+          >
+            <div className="max-w-[480px] mx-auto w-full flex-1 flex flex-col pt-8">
+              {/* Header */}
+              <div className="flex justify-between items-center mb-8">
+                <div className="space-y-1">
+                  <h2 className="text-2xl font-light text-white tracking-tight">Ambient Sanctuary</h2>
+                  <p className="text-xs text-gray-500 font-light">Set your visual & auditory environment</p>
+                </div>
+                <button
+                  onClick={() => setIsAmbientSelectorOpen(false)}
+                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all active:scale-90"
+                >
+                  <X size={18} className="text-white" />
+                </button>
+              </div>
+
+              {/* Grid of Ambients */}
+              <div className="grid grid-cols-2 gap-4 pb-12">
+                {ambientList.map((item) => {
+                  const isActive = soundscape.activeSoundscape === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        soundscape.setActiveSoundscape(item.id);
+                        if (item.id !== 'none') {
+                          setIsAmbientSoundOn(true);
+                        } else {
+                          setIsAmbientSoundOn(false);
+                        }
+                      }}
+                      className={`group relative rounded-[28px] overflow-hidden border aspect-[4/3] flex flex-col text-left transition-all duration-300 active:scale-95 shadow-md ${
+                        isActive 
+                          ? 'border-emerald-400 ring-1 ring-emerald-400/30 shadow-[0_0_15px_rgba(52,211,153,0.2)]' 
+                          : 'border-white/10 hover:border-white/20'
+                      }`}
+                    >
+                      {/* Wallpaper image background */}
+                      <img 
+                        src={item.image} 
+                        alt={item.name} 
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-80" 
+                      />
+                      {/* Subtle dark gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                      
+                      {/* Selection dot */}
+                      {isActive && (
+                        <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-emerald-400 flex items-center justify-center shadow-lg">
+                          <Sparkles size={10} className="text-black font-black" />
+                        </div>
+                      )}
+
+                      {/* Name */}
+                      <div className="mt-auto p-3.5 relative z-10 space-y-0.5">
+                        <span className="text-[10px] font-bold text-white tracking-wide block truncate">
+                          {item.name}
+                        </span>
+                        <span className="text-[8px] text-gray-400 font-medium uppercase tracking-widest block">
+                          {item.id === 'none' ? 'Silent' : 'Audio + Visual'}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
