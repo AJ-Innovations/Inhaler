@@ -247,19 +247,22 @@ export function ExploreView({
         </div>
 
         {/* Weekly Calendar Tracker */}
-        <div className="flex gap-2">
+        <div className="flex gap-4 pt-1.5 px-0.5">
           {weekDays.map((day) => {
             const isToday = currentDayIndex === day.value;
             return (
               <div 
                 key={day.name} 
-                className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
+                className={`text-xs transition-all relative ${
                   isToday 
-                    ? 'bg-gradient-to-br from-emerald-400 to-teal-500 text-black shadow-[0_0_15px_rgba(16,185,129,0.4)] scale-110 font-black' 
-                    : 'bg-white/[0.03] border border-white/5 text-gray-400 hover:text-white hover:bg-white/[0.08]'
+                    ? 'text-white font-black scale-110' 
+                    : 'text-white/30 font-medium'
                 }`}
               >
                 {day.label}
+                {isToday && (
+                  <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.8)]" />
+                )}
               </div>
             );
           })}
