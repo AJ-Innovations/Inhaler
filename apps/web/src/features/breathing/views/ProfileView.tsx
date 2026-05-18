@@ -147,16 +147,16 @@ export function ProfileView({
     {
       title: 'Preferences',
       items: [
-        { id: 'notifications' as SettingsType, icon: Bell, label: 'Notifications', value: dailyReminderEnabled ? dailyReminderTime : 'Off', color: 'bg-blue-500' },
-        { id: 'privacy' as SettingsType, icon: Shield, label: 'Privacy & Health', value: 'Connected', color: 'bg-emerald-500' },
-        { id: 'goal' as SettingsType, icon: Target, label: 'Daily Goal', value: `${dailyGoal} Minutes`, color: 'bg-orange-500' },
+        { id: 'notifications' as SettingsType, icon: Bell, label: 'Notifications', value: dailyReminderEnabled ? dailyReminderTime : 'Off' },
+        { id: 'privacy' as SettingsType, icon: Shield, label: 'Privacy & Health', value: 'Connected' },
+        { id: 'goal' as SettingsType, icon: Target, label: 'Daily Goal', value: `${dailyGoal} Minutes` },
       ]
     },
     {
       title: 'Support',
       items: [
-        { id: 'about' as SettingsType, icon: Info, label: 'About Sparox', value: 'v1.4.2', color: 'bg-purple-500' },
-        { id: 'none' as SettingsType, icon: ExternalLink, label: 'Resource Center', color: 'bg-gray-500', isExternal: true },
+        { id: 'about' as SettingsType, icon: Info, label: 'About Sparox', value: 'v1.4.2' },
+        { id: 'none' as SettingsType, icon: ExternalLink, label: 'Resource Center', isExternal: true },
       ]
     }
   ];
@@ -170,7 +170,7 @@ export function ProfileView({
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <span className="text-sm font-light text-white">Daily Reminder</span>
-                  <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+                  <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">
                     {dailyReminderEnabled ? `Active at ${dailyReminderTime}` : 'Disabled'}
                   </p>
                 </div>
@@ -179,12 +179,12 @@ export function ProfileView({
                 <button
                   onClick={() => onToggleReminder?.(!dailyReminderEnabled)}
                   className={`w-12 h-6 rounded-full flex items-center px-1 transition-all duration-300 ${
-                    dailyReminderEnabled ? 'bg-indigo-500' : 'bg-white/10'
+                    dailyReminderEnabled ? 'bg-white' : 'bg-white/10'
                   }`}
                 >
                   <motion.div 
                     layout
-                    className="w-4 h-4 bg-white rounded-full shadow-md"
+                    className="w-4 h-4 bg-black rounded-full shadow-md"
                     animate={{ x: dailyReminderEnabled ? 20 : 0 }}
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   />
@@ -198,7 +198,7 @@ export function ProfileView({
                   exit={{ opacity: 0, height: 0 }}
                   className="space-y-4 pt-4 border-t border-white/5"
                 >
-                  <label className="block text-[10px] uppercase tracking-widest font-black text-gray-500">
+                  <label className="block text-[10px] uppercase tracking-widest font-black text-white/40">
                     Reminder Time
                   </label>
                   
@@ -208,7 +208,7 @@ export function ProfileView({
                       type="time"
                       value={dailyReminderTime}
                       onChange={(e) => onUpdateTime?.(e.target.value)}
-                      className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-xl font-light text-white focus:outline-none focus:border-indigo-500/50 appearance-none cursor-pointer"
+                      className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-xl font-light text-white focus:outline-none focus:border-white/20 appearance-none cursor-pointer"
                     />
                   </div>
                 </motion.div>
@@ -216,12 +216,12 @@ export function ProfileView({
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-[10px] uppercase tracking-widest font-bold text-gray-600 px-2">System Alerts</h4>
+              <h4 className="text-[10px] uppercase tracking-widest font-bold text-white/50 px-2">System Alerts</h4>
               <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 space-y-3">
-                <p className="text-xs text-gray-400 font-light">
-                  Push status: <span className="text-emerald-400 font-medium">Active</span>
+                <p className="text-xs text-white/70 font-light">
+                  Push status: <span className="text-white font-medium">Active</span>
                 </p>
-                <p className="text-[10px] text-gray-500 leading-relaxed uppercase tracking-wider font-bold">
+                <p className="text-[10px] text-white/40 leading-relaxed uppercase tracking-wider font-bold">
                   Enable system settings permissions to receive lock-screen alert popups.
                 </p>
               </div>
@@ -231,21 +231,21 @@ export function ProfileView({
       case 'privacy':
         return (
           <div className="space-y-6">
-            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-3xl p-6 flex items-center gap-4">
-              <Shield className="text-emerald-400" size={24} />
+            <div className="bg-white/[0.04] border border-white/10 rounded-3xl p-6 flex items-center gap-4">
+              <Shield className="text-white" size={24} />
               <div>
                 <h4 className="text-sm font-medium text-white">Local-First Storage</h4>
-                <p className="text-xs text-emerald-400/70">Your data never leaves this device.</p>
+                <p className="text-xs text-white/50">Your data never leaves this device.</p>
               </div>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-3xl p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-light text-white">Biometric Lock</span>
                 <div className="w-12 h-6 bg-white/10 rounded-full flex items-center px-1">
-                  <div className="w-4 h-4 bg-gray-500 rounded-full" />
+                  <div className="w-4 h-4 bg-white/30 rounded-full" />
                 </div>
               </div>
-              <p className="text-[10px] text-gray-500 leading-relaxed uppercase tracking-widest font-bold">Secure your session history with FaceID or TouchID</p>
+              <p className="text-[10px] text-white/40 leading-relaxed uppercase tracking-widest font-bold">Secure your session history with FaceID or TouchID</p>
             </div>
           </div>
         );
@@ -261,14 +261,14 @@ export function ProfileView({
               >
                 <span className="text-7xl font-light text-white tracking-tighter tabular-nums">{dailyGoal}</span>
               </motion.div>
-              <p className="text-[10px] text-indigo-400 font-black uppercase tracking-[0.3em]">Minutes Per Day</p>
+              <p className="text-[10px] text-white/50 font-black uppercase tracking-[0.3em]">Minutes Per Day</p>
             </div>
 
             <div className="relative px-2">
               {/* Custom Track Background */}
-              <div className="absolute top-1/2 -translate-y-1/2 left-2 right-2 h-1.5 bg-white/5 rounded-full overflow-hidden">
+              <div className="absolute top-1/2 -translate-y-1/2 left-2 right-2 h-1 bg-white/10 rounded-full overflow-hidden">
                 <motion.div 
-                  className="h-full bg-gradient-to-r from-indigo-500 to-indigo-300"
+                  className="h-full bg-white"
                   animate={{ width: `${((dailyGoal - 5) / (60 - 5)) * 100}%` }}
                 />
               </div>
@@ -283,27 +283,27 @@ export function ProfileView({
                 onChange={(e) => setDailyGoal(parseInt(e.target.value))}
                 className="relative w-full h-10 appearance-none bg-transparent cursor-pointer z-10
                   [&::-webkit-slider-thumb]:appearance-none
-                  [&::-webkit-slider-thumb]:w-8
-                  [&::-webkit-slider-thumb]:h-8
+                  [&::-webkit-slider-thumb]:w-6
+                  [&::-webkit-slider-thumb]:h-6
                   [&::-webkit-slider-thumb]:rounded-full
                   [&::-webkit-slider-thumb]:bg-white
                   [&::-webkit-slider-thumb]:shadow-[0_0_20px_rgba(255,255,255,0.4)]
                   [&::-webkit-slider-thumb]:border-4
-                  [&::-webkit-slider-thumb]:border-indigo-600
+                  [&::-webkit-slider-thumb]:border-black
                   [&::-webkit-slider-thumb]:transition-all
                   [&::-webkit-slider-thumb]:active:scale-125"
               />
 
-              <div className="flex justify-between text-[8px] font-black text-gray-700 uppercase tracking-[0.2em] mt-4 px-1">
+              <div className="flex justify-between text-[8px] font-black text-white/40 uppercase tracking-[0.2em] mt-4 px-1">
                 <span>5m</span>
-                <span className="text-gray-500">30m</span>
+                <span className="text-white/20">30m</span>
                 <span>60m</span>
               </div>
             </div>
 
             <button
               onClick={() => setActiveSettings('none')}
-              className="w-full h-16 rounded-[28px] bg-white text-black font-black text-[10px] uppercase tracking-[0.3em] shadow-[0_20px_40px_rgba(255,255,255,0.05)] active:scale-95 transition-all mt-4"
+              className="w-full h-16 rounded-[28px] bg-white text-black font-black text-[10px] uppercase tracking-[0.3em] hover:bg-white/90 active:scale-95 transition-all mt-4"
             >
               Set New Goal
             </button>
@@ -313,23 +313,23 @@ export function ProfileView({
         return (
           <div className="space-y-8">
             <div className="flex flex-col items-center gap-4">
-              <div className="w-20 h-20 rounded-[28px] bg-gradient-to-br from-indigo-500 to-emerald-500 p-0.5 shadow-2xl">
-                <div className="w-full h-full rounded-[26px] bg-[#0D0D0D] flex items-center justify-center overflow-hidden">
+              <div className="w-20 h-20 rounded-[28px] bg-white/[0.04] border border-white/10 p-0.5 shadow-2xl">
+                <div className="w-full h-full rounded-[26px] bg-transparent flex items-center justify-center overflow-hidden">
                   <ZapIcon size={32} className="text-white" />
                 </div>
               </div>
               <div className="text-center">
                 <h4 className="text-xl font-light text-white tracking-tight">Sparox Premium</h4>
-                <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold mt-1">Version 1.4.2</p>
+                <p className="text-[10px] text-white/40 uppercase tracking-[0.3em] font-bold mt-1">Version 1.4.2</p>
               </div>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-[32px] p-6 space-y-4">
               <div className="flex items-center gap-4">
-                <Heart size={18} className="text-red-400" />
+                <Heart size={18} className="text-white/60" />
                 <span className="text-sm font-light text-white/80">Made with love in California</span>
               </div>
               <div className="flex items-center gap-4">
-                <Smartphone size={18} className="text-blue-400" />
+                <Smartphone size={18} className="text-white/60" />
                 <span className="text-sm font-light text-white/80">Built for iOS & Android PWA</span>
               </div>
             </div>
@@ -360,10 +360,10 @@ export function ProfileView({
         <div className="relative group">
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="w-40 h-40 rounded-full bg-gradient-to-br from-white/10 to-white/5 p-1 mb-6 shadow-2xl relative overflow-hidden cursor-pointer"
+            className="w-40 h-40 rounded-full bg-white/[0.04] p-1 mb-6 shadow-2xl relative overflow-hidden cursor-pointer"
             onClick={() => setIsSelectingAvatar(true)}
           >
-            <div className="w-full h-full rounded-full bg-[#0D0D0D] flex items-center justify-center border border-white/10 overflow-hidden relative">
+            <div className="w-full h-full rounded-full bg-transparent flex items-center justify-center border border-white/10 overflow-hidden relative">
               {userAvatar ? (
                 <img src={userAvatar} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
@@ -375,11 +375,11 @@ export function ProfileView({
                 <span className="text-[10px] uppercase tracking-widest font-black text-white">Update Image</span>
               </div>
             </div>
-            <div className="absolute inset-0 rounded-full bg-indigo-500/10 blur-3xl opacity-50 pointer-events-none" />
+            <div className="absolute inset-0 rounded-full bg-white/5 blur-3xl opacity-50 pointer-events-none" />
           </motion.div>
 
           <button
-            className="absolute bottom-8 right-1 w-10 h-10 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all z-20 border-4 border-[#0D0D0D]"
+            className="absolute bottom-8 right-1 w-10 h-10 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all z-20 border-4 border-black"
             onClick={() => setIsEditingName(true)}
           >
             <Edit2 size={16} />
@@ -401,12 +401,12 @@ export function ProfileView({
                 value={tempName}
                 onChange={(e) => setTempName(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSaveName()}
-                className="bg-white/5 border border-white/20 rounded-2xl px-4 py-2 text-2xl font-light text-white focus:outline-none focus:border-indigo-500/50 w-56 text-center"
+                className="bg-white/5 border border-white/20 rounded-2xl px-4 py-2 text-2xl font-light text-white focus:outline-none focus:border-white/40 w-56 text-center"
               />
-              <button onClick={handleSaveName} className="p-3 rounded-2xl bg-emerald-500 text-black">
+              <button onClick={handleSaveName} className="p-3 rounded-2xl bg-white text-black">
                 <Check size={20} />
               </button>
-              <button onClick={() => { setIsEditingName(false); setTempName(userName); }} className="p-3 rounded-2xl bg-white/5 text-gray-400">
+              <button onClick={() => { setIsEditingName(false); setTempName(userName); }} className="p-3 rounded-2xl bg-white/5 text-white/40">
                 <X size={20} />
               </button>
             </motion.div>
@@ -420,8 +420,8 @@ export function ProfileView({
             >
               <h2 className="text-3xl font-light text-white tracking-tight">{userName}</h2>
               <div className="flex items-center justify-center gap-2 mt-2">
-                <Sparkles size={12} className="text-indigo-400" />
-                <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600">Zen Practitioner • Elite Tier</p>
+                <Sparkles size={12} className="text-white/60" />
+                <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-white/40">Zen Practitioner • Elite Tier</p>
               </div>
             </motion.div>
           )}
@@ -435,21 +435,21 @@ export function ProfileView({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-black/90 backdrop-blur-xl flex items-center justify-center px-8"
+            className="fixed inset-0 z-[200] bg-black/85 backdrop-blur-xl flex items-center justify-center px-8"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-[#0D0D0D] border border-white/10 p-10 rounded-[48px] w-full max-w-md space-y-8 shadow-2xl"
+              className="bg-black/60 backdrop-blur-2xl border border-white/10 p-10 rounded-[48px] w-full max-w-md space-y-8 shadow-2xl relative"
             >
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <h3 className="text-2xl font-light text-white tracking-tight">Identity</h3>
-                  <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-600">Choose your symbol</p>
+                  <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-white/40">Choose your symbol</p>
                 </div>
                 <button
                   onClick={() => setIsSelectingAvatar(false)}
-                  className="w-10 h-10 rounded-full bg-white/5 text-gray-500 flex items-center justify-center hover:text-white transition-colors"
+                  className="w-10 h-10 rounded-full bg-white/5 text-white/40 flex items-center justify-center hover:text-white transition-colors"
                 >
                   <X size={20} />
                 </button>
@@ -458,14 +458,14 @@ export function ProfileView({
               <div className="flex gap-4">
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex-1 flex items-center justify-center gap-3 py-5 rounded-[24px] bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 hover:bg-indigo-500/20 transition-all group"
+                  className="flex-1 flex items-center justify-center gap-3 py-5 rounded-[24px] bg-white/[0.04] border border-white/10 text-white hover:bg-white/[0.08] transition-all group"
                 >
                   <Upload size={18} className="group-hover:-translate-y-1 transition-transform" />
                   <span className="text-[10px] font-black uppercase tracking-widest">Gallery</span>
                 </button>
                 <button
                   onClick={() => { onUpdateAvatar(null); setIsSelectingAvatar(false); }}
-                  className="flex-1 flex items-center justify-center gap-3 py-5 rounded-[24px] bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10 transition-all"
+                  className="flex-1 flex items-center justify-center gap-3 py-5 rounded-[24px] bg-white/5 border border-white/10 text-white/40 hover:bg-white/10 transition-all"
                 >
                   <ImageIcon size={18} />
                   <span className="text-[10px] font-black uppercase tracking-widest">Default</span>
@@ -486,13 +486,13 @@ export function ProfileView({
                         </div>
                       )}
                     </button>
-                    <span className={`text-[8px] uppercase tracking-widest font-black ${userAvatar === avatar.path ? 'text-white' : 'text-gray-600'}`}>{avatar.label}</span>
+                    <span className={`text-[8px] uppercase tracking-widest font-black ${userAvatar === avatar.path ? 'text-white' : 'text-white/40'}`}>{avatar.label}</span>
                   </div>
                 ))}
               </div>
 
               <div className="pt-4 border-t border-white/5">
-                <p className="text-[9px] text-gray-500 font-medium text-center uppercase tracking-[0.2em] leading-relaxed">
+                <p className="text-[9px] text-white/40 font-medium text-center uppercase tracking-[0.2em] leading-relaxed">
                   Your identity is stored locally on your device for maximum privacy.
                 </p>
               </div>
@@ -508,29 +508,29 @@ export function ProfileView({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-black/90 backdrop-blur-xl flex items-center justify-center px-8"
+            className="fixed inset-0 z-[200] bg-black/85 backdrop-blur-xl flex items-center justify-center px-8"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-[#0D0D0D] border border-white/10 p-10 rounded-[48px] w-full max-w-md space-y-8 shadow-2xl"
+              className="bg-black/60 backdrop-blur-2xl border border-white/10 p-10 rounded-[48px] w-full max-w-md space-y-8 shadow-2xl relative"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <button
-                    onClick={() => setActiveSettings('none')}
-                    className="w-10 h-10 rounded-full bg-white/5 text-gray-500 flex items-center justify-center hover:text-white transition-colors"
+                     onClick={() => setActiveSettings('none')}
+                     className="w-10 h-10 rounded-full bg-white/5 text-white/40 flex items-center justify-center hover:text-white transition-colors"
                   >
                     <ChevronLeft size={20} />
                   </button>
                   <div className="space-y-1">
                     <h3 className="text-2xl font-light text-white tracking-tight capitalize">{activeSettings}</h3>
-                    <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-600">Configuration</p>
+                    <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-white/40">Configuration</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setActiveSettings('none')}
-                  className="w-10 h-10 rounded-full bg-white/5 text-gray-500 flex items-center justify-center hover:text-white transition-colors"
+                  className="w-10 h-10 rounded-full bg-white/5 text-white/40 flex items-center justify-center hover:text-white transition-colors"
                 >
                   <X size={20} />
                 </button>
@@ -541,7 +541,7 @@ export function ProfileView({
               </div>
 
               <div className="pt-4 border-t border-white/5">
-                <p className="text-[9px] text-gray-500 font-medium text-center uppercase tracking-[0.2em] leading-relaxed">
+                <p className="text-[9px] text-white/40 font-medium text-center uppercase tracking-[0.2em] leading-relaxed">
                   Preferences are applied instantly and saved to your device.
                 </p>
               </div>
@@ -552,22 +552,26 @@ export function ProfileView({
       
       {/* Account Section */}
       <div className="space-y-4 mt-12">
-        <h3 className="px-1 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-500/50">Account</h3>
-        <div className="bg-white/[0.02] border border-white/10 rounded-[42px] overflow-hidden shadow-2xl">
+        <h3 className="px-1 text-[10px] uppercase tracking-[0.2em] font-bold text-white/40">Account</h3>
+        <div className="bg-white/[0.02] backdrop-blur-md border border-white/[0.06] rounded-[42px] overflow-hidden shadow-2xl relative group">
+          {/* iOS Style Inner Glow */}
+          <div
+            className="absolute -right-20 -top-20 w-60 h-60 bg-white rounded-full blur-[100px] opacity-0 group-hover:opacity-[0.03] transition-opacity duration-1000"
+          />
           <button 
             onClick={onLogin}
-            className="w-full flex items-center justify-between px-8 py-6 hover:bg-white/5 transition-all group/item"
+            className="w-full flex items-center justify-between px-8 py-6 hover:bg-white/[0.03] transition-all group/item relative z-10"
           >
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center group-hover/item:scale-110 transition-transform">
-                <Mail size={18} className="text-gray-400" />
+              <div className="w-10 h-10 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                <Mail size={18} className="text-white" />
               </div>
               <div className="text-left">
                 <span className="block text-sm font-light text-white">Sign In or Create Account</span>
-                <span className="block text-[10px] text-gray-500 font-medium uppercase tracking-widest mt-0.5">Access cloud sync</span>
+                <span className="block text-[10px] text-white/40 font-medium uppercase tracking-widest mt-0.5">Access cloud sync</span>
               </div>
             </div>
-            <ChevronRight size={14} className="text-gray-600 group-hover/item:translate-x-1 transition-transform" />
+            <ChevronRight size={14} className="text-white/40 group-hover/item:translate-x-1 transition-transform" />
           </button>
         </div>
       </div>
@@ -577,18 +581,22 @@ export function ProfileView({
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={onUpgrade}
-        className="w-full mt-8 relative overflow-hidden rounded-[36px] p-6 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/20 group"
+        className="w-full mt-8 relative overflow-hidden rounded-[36px] p-6 bg-white/[0.02] backdrop-blur-md border border-white/[0.06] group text-left"
       >
+        {/* iOS Style Inner Glow */}
+        <div
+          className="absolute -right-20 -top-20 w-60 h-60 bg-white rounded-full blur-[100px] opacity-0 group-hover:opacity-[0.03] transition-opacity duration-1000"
+        />
         <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition-opacity">
-          <Crown size={40} className="text-emerald-400" />
+          <Crown size={40} className="text-white" />
         </div>
-        <div className="relative z-10 flex flex-col items-start text-left space-y-2">
+        <div className="relative z-10 flex flex-col items-start space-y-2">
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-black text-[8px] font-black uppercase tracking-tighter">Premium</span>
+            <span className="px-2 py-0.5 rounded-full bg-white text-black text-[8px] font-black uppercase tracking-tighter">Premium</span>
             <h4 className="text-lg font-light text-white tracking-tight">Unlock Everything</h4>
           </div>
-          <p className="text-xs text-gray-400 font-light max-w-[200px]">Get all premium routines, custom builders, and cloud sync.</p>
-          <div className="pt-2 flex items-center gap-2 text-emerald-400">
+          <p className="text-xs text-white/50 font-light max-w-[200px]">Get all premium routines, custom builders, and cloud sync.</p>
+          <div className="pt-2 flex items-center gap-2 text-white">
             <span className="text-[10px] font-black uppercase tracking-widest">Upgrade Now</span>
             <ChevronRight size={14} />
           </div>
@@ -601,18 +609,22 @@ export function ProfileView({
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleInstallClick}
-          className="w-full mt-6 relative overflow-hidden rounded-[36px] p-6 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 group"
+          className="w-full mt-6 relative overflow-hidden rounded-[36px] p-6 bg-white/[0.02] backdrop-blur-md border border-white/[0.06] group text-left"
         >
+          {/* iOS Style Inner Glow */}
+          <div
+            className="absolute -right-20 -top-20 w-60 h-60 bg-white rounded-full blur-[100px] opacity-0 group-hover:opacity-[0.03] transition-opacity duration-1000"
+          />
           <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition-opacity">
-            <Smartphone size={40} className="text-indigo-400" />
+            <Smartphone size={40} className="text-white" />
           </div>
-          <div className="relative z-10 flex flex-col items-start text-left space-y-2">
+          <div className="relative z-10 flex flex-col items-start space-y-2">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded-full bg-indigo-500 text-white text-[8px] font-black uppercase tracking-tighter">Fast Access</span>
+              <span className="px-2 py-0.5 rounded-full bg-white text-black text-[8px] font-black uppercase tracking-tighter">Fast Access</span>
               <h4 className="text-lg font-light text-white tracking-tight">Install Sparox App</h4>
             </div>
-            <p className="text-xs text-gray-400 font-light max-w-[240px]">Add Sparox to your home screen for quick offline access, premium performance, and immersive sessions.</p>
-            <div className="pt-2 flex items-center gap-2 text-indigo-400">
+            <p className="text-xs text-white/50 font-light max-w-[240px]">Add Sparox to your home screen for quick offline access, premium performance, and immersive sessions.</p>
+            <div className="pt-2 flex items-center gap-2 text-white">
               <span className="text-[10px] font-black uppercase tracking-widest">Install Now</span>
               <ChevronRight size={14} />
             </div>
@@ -621,20 +633,25 @@ export function ProfileView({
       )}
 
       {/* Stats Section */}
-      <div className="w-full bg-[#0D0D0D] border border-white/[0.06] rounded-[42px] p-8 shadow-2xl">
-        <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-600 mb-6 px-1">Mindfulness Journey</h3>
-        <div className="grid grid-cols-3 gap-4">
+      <div className="w-full bg-white/[0.02] backdrop-blur-md border border-white/[0.06] rounded-[42px] p-8 shadow-2xl relative overflow-hidden group">
+        {/* iOS Style Inner Glow */}
+        <div
+          className="absolute -right-20 -top-20 w-60 h-60 bg-white rounded-full blur-[100px] opacity-0 group-hover:opacity-[0.03] transition-opacity duration-1000"
+        />
+        <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold text-white/50 mb-6 px-1 relative z-10">Mindfulness Journey</h3>
+        <div className="grid grid-cols-3 gap-4 relative z-10">
           {[
-            { icon: Target, label: 'Minutes', value: Math.floor(stats.totalMinutes), color: 'text-orange-400' },
-            { icon: ZapIcon, label: 'Sessions', value: stats.sessionCount, color: 'text-emerald-400' },
-            { icon: Trophy, label: 'Streak', value: stats.streak, color: 'text-blue-400' },
+            { icon: Target, label: 'Minutes', value: Math.floor(stats.totalMinutes) },
+            { icon: ZapIcon, label: 'Sessions', value: stats.sessionCount },
+            { icon: Trophy, label: 'Streak', value: stats.streak },
           ].map((stat) => (
             <div key={stat.label} className="flex flex-col items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-white/[0.03] border border-white/5 flex items-center justify-center">
-                <stat.icon size={16} className={stat.color} />
+              <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center shadow-inner relative overflow-hidden">
+                <div className="absolute inset-0 blur-xl opacity-10 bg-white rounded-full" />
+                <stat.icon size={16} className="text-white relative z-10" />
               </div>
               <span className="text-xl font-light text-white">{stat.value}</span>
-              <span className="text-[8px] uppercase tracking-widest text-gray-600 font-bold">{stat.label}</span>
+              <span className="text-[8px] uppercase tracking-widest text-white/40 font-bold">{stat.label}</span>
             </div>
           ))}
         </div>
@@ -644,23 +661,28 @@ export function ProfileView({
       <div className="space-y-6">
         {menuGroups.map((group) => (
           <div key={group.title} className="space-y-4">
-            <h3 className="px-1 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-600">{group.title}</h3>
-            <div className="bg-[#0D0D0D] border border-white/[0.06] rounded-[42px] overflow-hidden shadow-2xl">
+            <h3 className="px-1 text-[10px] uppercase tracking-[0.2em] font-bold text-white/40">{group.title}</h3>
+            <div className="bg-white/[0.02] backdrop-blur-md border border-white/[0.06] rounded-[42px] overflow-hidden shadow-2xl relative group">
+              {/* iOS Style Inner Glow */}
+              <div
+                className="absolute -right-20 -top-20 w-60 h-60 bg-white rounded-full blur-[100px] opacity-0 group-hover:opacity-[0.03] transition-opacity duration-1000"
+              />
               {group.items.map((item, idx) => (
                 <button
                   key={item.label}
                   onClick={() => item.id !== 'none' && setActiveSettings(item.id)}
-                  className={`w-full flex items-center justify-between px-8 py-6 hover:bg-white/[0.03] transition-all group/item ${idx !== group.items.length - 1 ? 'border-b border-white/[0.03]' : ''}`}
+                  className={`w-full flex items-center justify-between px-8 py-6 hover:bg-white/[0.03] transition-all group/item relative z-10 ${idx !== group.items.length - 1 ? 'border-b border-white/[0.03]' : ''}`}
                 >
                   <div className="flex items-center gap-4">
-                    <div className={`w-10 h-10 rounded-2xl ${item.color} flex items-center justify-center shadow-lg shadow-black/20 group-hover/item:scale-110 transition-transform`}>
-                      <item.icon size={18} className="text-white" />
+                    <div className="w-10 h-10 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center group-hover/item:scale-110 transition-transform relative overflow-hidden shadow-black/20 shadow-lg">
+                      <div className="absolute inset-0 blur-xl opacity-10 bg-white rounded-full" />
+                      <item.icon size={18} className="text-white relative z-10" />
                     </div>
                     <span className="text-sm font-light text-white/80 group-hover/item:text-white transition-colors">{item.label}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    {item.value && <span className="text-xs text-gray-500 font-medium group-hover/item:text-gray-400 transition-colors">{item.value}</span>}
-                    <ChevronRight size={14} className="text-gray-700 group-hover/item:text-gray-500 transition-colors" />
+                    {item.value && <span className="text-xs text-white/40 font-medium group-hover/item:text-white/50 transition-colors">{item.value}</span>}
+                    <ChevronRight size={14} className="text-white/40 group-hover/item:text-white/60 transition-colors" />
                   </div>
                 </button>
               ))}
@@ -700,14 +722,14 @@ export function ProfileView({
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-[#111] border border-white/10 p-8 rounded-[40px] w-full max-w-sm text-center space-y-6 shadow-2xl"
+              className="bg-black/60 backdrop-blur-2xl border border-white/10 p-8 rounded-[40px] w-full max-w-sm text-center space-y-6 shadow-2xl relative"
             >
               <div className="w-16 h-16 rounded-3xl bg-red-500/20 text-red-500 flex items-center justify-center mx-auto mb-2">
                 <Shield size={32} />
               </div>
               <div className="space-y-2">
                 <h3 className="text-xl font-light text-white">Reset Application?</h3>
-                <p className="text-sm text-gray-500 font-light leading-relaxed">This will permanently delete all your custom exercises, favorites, and statistics. This cannot be undone.</p>
+                <p className="text-sm text-white/40 font-light leading-relaxed">This will permanently delete all your custom exercises, favorites, and statistics. This cannot be undone.</p>
               </div>
               <div className="flex flex-col gap-3 pt-4">
                 <button
@@ -718,7 +740,7 @@ export function ProfileView({
                 </button>
                 <button
                   onClick={() => setShowResetConfirm(false)}
-                  className="w-full h-14 rounded-2xl bg-white/5 text-gray-400 font-bold text-sm uppercase tracking-widest active:scale-95 transition-all"
+                  className="w-full h-14 rounded-2xl bg-white/5 text-white/40 font-bold text-sm uppercase tracking-widest active:scale-95 transition-all"
                 >
                   Cancel
                 </button>
@@ -740,43 +762,43 @@ export function ProfileView({
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-[#0D0D0D] border border-white/10 p-10 rounded-[48px] w-full max-w-md space-y-8 shadow-2xl relative"
+              className="bg-black/60 backdrop-blur-2xl border border-white/10 p-10 rounded-[48px] w-full max-w-md space-y-8 shadow-2xl relative"
             >
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <h3 className="text-2xl font-light text-white tracking-tight">Add to Home Screen</h3>
-                  <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-600">iOS Safari Setup</p>
+                  <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-white/40">iOS Safari Setup</p>
                 </div>
                 <button
                   onClick={() => setShowIOSPrompt(false)}
-                  className="w-10 h-10 rounded-full bg-white/5 text-gray-500 flex items-center justify-center hover:text-white transition-colors"
+                  className="w-10 h-10 rounded-full bg-white/5 text-white/40 flex items-center justify-center hover:text-white transition-colors"
                 >
                   <X size={20} />
                 </button>
               </div>
 
               <div className="space-y-6">
-                <p className="text-sm text-gray-400 font-light leading-relaxed">
+                <p className="text-sm text-white/50 font-light leading-relaxed">
                   Safari doesn't support automatic 1-click installations, but you can add Sparox to your home screen in 3 quick steps:
                 </p>
                 
                 <div className="space-y-4">
                   <div className="flex items-start gap-4">
                     <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">1</div>
-                    <p className="text-sm text-gray-300 font-light pt-0.5">
-                      Tap the <span className="text-indigo-400 font-medium">Share</span> button (looks like a square with an upward arrow) in Safari.
+                    <p className="text-sm text-white/70 font-light pt-0.5">
+                      Tap the <span className="text-white font-medium">Share</span> button (looks like a square with an upward arrow) in Safari.
                     </p>
                   </div>
                   <div className="flex items-start gap-4">
                     <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">2</div>
-                    <p className="text-sm text-gray-300 font-light pt-0.5">
-                      Scroll down the list of options and select <span className="text-indigo-400 font-medium">"Add to Home Screen"</span>.
+                    <p className="text-sm text-white/70 font-light pt-0.5">
+                      Scroll down the list of options and select <span className="text-white font-medium">"Add to Home Screen"</span>.
                     </p>
                   </div>
                   <div className="flex items-start gap-4">
                     <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">3</div>
-                    <p className="text-sm text-gray-300 font-light pt-0.5">
-                      Confirm by tapping <span className="text-indigo-400 font-medium">"Add"</span> in the top right corner!
+                    <p className="text-sm text-white/70 font-light pt-0.5">
+                      Confirm by tapping <span className="text-white font-medium">"Add"</span> in the top right corner!
                     </p>
                   </div>
                 </div>
