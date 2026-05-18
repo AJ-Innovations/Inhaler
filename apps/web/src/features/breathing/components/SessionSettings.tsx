@@ -41,6 +41,12 @@ const IconMap = {
   alpha: Zap,
   theta: Waves,
   delta: Moon,
+  beach: Waves,
+  lake: Waves,
+  marine: Waves,
+  desert: Wind,
+  ethereal: Sparkles,
+  forest: Trees,
 };
 
 export function SessionSettings({ 

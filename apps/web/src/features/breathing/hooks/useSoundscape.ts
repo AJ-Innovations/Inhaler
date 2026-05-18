@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-export type SoundscapeType = 'none' | 'zen-river' | 'zen-fountain' | 'winter-rain' | 'light-rain' | 'nature-birds' | 'hz-transformation' | 'white-noise' | 'pink-noise' | 'brown-noise';
+export type SoundscapeType = 'none' | 'zen-river' | 'zen-fountain' | 'winter-rain' | 'light-rain' | 'nature-birds' | 'hz-transformation' | 'white-noise' | 'pink-noise' | 'brown-noise' | 'beach' | 'lake' | 'marine' | 'desert' | 'ethereal' | 'forest';
 
 interface Soundscape {
   id: SoundscapeType;
@@ -20,6 +20,12 @@ export const soundscapes: Soundscape[] = [
   { id: 'white-noise', name: 'White Noise' },
   { id: 'pink-noise', name: 'Pink Noise' },
   { id: 'brown-noise', name: 'Deep Brownian' },
+  { id: 'beach', name: 'Sunset Beach', url: '/music/alex_jauk-calm-zen-river-flowing-228223.mp3' },
+  { id: 'lake', name: 'Calm Lake', url: '/music/alex_jauk-calm-zen-river-flowing-228223.mp3' },
+  { id: 'marine', name: 'Marine Depths', url: '/music/alex_jauk-zen-fountain-ambience-210613.mp3' },
+  { id: 'desert', name: 'Desert Breeze', url: '/music/soul_frequencies-528-hz-transformation-music-500282.mp3' },
+  { id: 'ethereal', name: 'Ethereal Loop', url: '/music/soul_frequencies-528-hz-transformation-music-500282.mp3' },
+  { id: 'forest', name: 'Oak Forest', url: '/music/fxprosound-winter-rain-in-oak-forest-loop-185672.mp3' },
 ];
 
 export function useSoundscape(isPlaying: boolean = false) {
