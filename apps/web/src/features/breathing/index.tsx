@@ -53,7 +53,7 @@ const getAmbientImage = (activeSoundscape: string) => {
       return '/image/ambients/loop.png';
     case 'forest':
       return '/image/ambients/forest.png';
-    case 'none':
+    case 'leaf':
     default:
       return '/image/ambients/leaf.png';
   }
@@ -77,7 +77,7 @@ export function BreathingExercise() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedAmbient = localStorage.getItem('sparox_active_ambient');
-      if (savedAmbient && savedAmbient !== 'none') {
+      if (savedAmbient && savedAmbient !== 'leaf') {
         soundscape.setActiveSoundscape(savedAmbient as any);
       }
     }
@@ -295,18 +295,13 @@ export function BreathingExercise() {
 
   return (
     <div
-      className="h-screen w-full text-white selection:bg-white flex flex-col overflow-hidden relative bg-cover bg-center transition-all duration-1000"
+      className="h-screen w-full text-white selection:bg-white flex flex-col overflow-hidden relative bg-cover bg-center transition-all duration-1000 bg-black"
       style={{
-        backgroundImage: soundscape.activeSoundscape && soundscape.activeSoundscape !== 'none'
-          ? `url(${getAmbientImage(soundscape.activeSoundscape)})`
-          : 'none',
-        backgroundColor: '#b2eeffff'
+        backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape || 'leaf')})`
       }}
     >
       {/* Dynamic Ambient Background Overlay to guarantee contrast and glassmorphic premium feel */}
-      {soundscape.activeSoundscape && soundscape.activeSoundscape !== 'none' && (
-        <div className="absolute inset-0 bg-black/50 z-0 pointer-events-none" />
-      )}
+      <div className="absolute inset-0 bg-black/50 z-0 pointer-events-none" />
       <AnimatePresence mode="wait">
         {showOnboarding === null ? (
           <motion.div
@@ -451,6 +446,7 @@ export function BreathingExercise() {
                   exercise={selectedExercise}
                   onBack={handleBack}
                   onConfirm={handleConfirmSetup}
+                  soundscape={soundscape}
                 />
               </div>
             )}
