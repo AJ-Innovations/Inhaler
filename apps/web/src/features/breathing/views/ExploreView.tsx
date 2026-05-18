@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Sparkles, Zap, Sunrise, Moon, Brain, Wind, Search, X, UserRound, Volume2, VolumeX, Compass } from 'lucide-react';
+import { Play, Sparkles, Zap, Sunrise, Moon, Brain, Wind, Search, X, UserRound, Volume2, VolumeX, Compass, ChevronDown } from 'lucide-react';
 import { Exercise, exercises } from '../data';
 import { ExerciseCard } from '../components/ExerciseCard';
 
@@ -38,9 +38,7 @@ export function ExploreView({
   setIsAmbientSoundOn
 }: ExploreViewProps) {
   const [heroIndex, setHeroIndex] = useState(0);
-  const [progress, setProgress] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
-  const cycleTime = 5000;
 
   const [isAmbientSelectorOpen, setIsAmbientSelectorOpen] = useState(false);
 
@@ -54,6 +52,12 @@ export function ExploreView({
     { id: 'white-noise', name: 'White Noise', image: '/image/ambients/galaxy2.png' },
     { id: 'pink-noise', name: 'Pink Noise', image: '/image/ambients/galaxy3.png' },
     { id: 'brown-noise', name: 'Deep Brownian', image: '/image/ambients/nature.png' },
+    { id: 'beach', name: 'Sunset Beach', image: '/image/ambients/beach.png' },
+    { id: 'lake', name: 'Calm Lake', image: '/image/ambients/lake4.png' },
+    { id: 'marine', name: 'Marine Depths', image: '/image/ambients/marain.png' },
+    { id: 'desert', name: 'Desert Breeze', image: '/image/ambients/desert3.png' },
+    { id: 'ethereal', name: 'Ethereal Loop', image: '/image/ambients/loop.png' },
+    { id: 'forest', name: 'Oak Forest', image: '/image/ambients/forest.png' },
     { id: 'none', name: 'None (Silent Space)', image: '/image/ambients/leaf.png' }
   ];
 
@@ -192,25 +196,14 @@ export function ExploreView({
   useEffect(() => {
     if (searchQuery.trim()) return;
 
-    const startTime = Date.now();
     const interval = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const newProgress = (elapsed / cycleTime) * 100;
-
-      if (newProgress >= 100) {
-        setProgress(0);
-        setHeroIndex((prev) => (prev + 1) % heroSlides.length);
-        clearInterval(interval);
-      } else {
-        setProgress(newProgress);
-      }
-    }, 16);
+      setHeroIndex((prev) => (prev + 1) % heroSlides.length);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [heroIndex, heroSlides.length, searchQuery]);
 
   const handleManualNav = (dir: number) => {
-    setProgress(0);
     if (dir > 0) {
       setHeroIndex((prev) => (prev + 1) % heroSlides.length);
     } else {
@@ -251,105 +244,106 @@ export function ExploreView({
       exit={{ opacity: 0, y: -10 }}
       className="w-full animate-fadeIn"
     >
+      {/* Dynamic Greeting & Weekly Calendar Widget */}
+      {!hasActiveSearch && (
+        <div className="pt-6 pb-4 px-1 flex flex-col gap-3">
+          <div className="flex justify-between items-center w-full">
+            <h1 className="text-3xl font-light text-white tracking-tight drop-shadow-md">
+              {getGreeting()}
+            </h1>
+
+            {/* Quick Ambient Sanctuary Icons in the same row */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleToggleSound}
+                className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all active:scale-90 shadow-md backdrop-blur-md ${isAmbientSoundOn
+                  ? 'bg-white/10 border-white/20 text-white'
+                  : 'bg-white/[0.03] border-white/5 text-white/40 hover:text-white hover:bg-white/[0.06]'
+                  }`}
+                title={`Ambient Sound: ${isAmbientSoundOn ? 'ON' : 'OFF'}`}
+              >
+                {isAmbientSoundOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
+              </button>
+
+              <button
+                onClick={() => setIsAmbientSelectorOpen(true)}
+                className="w-10 h-10 rounded-full bg-white/[0.03] border border-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.06] transition-all active:scale-90 shadow-md backdrop-blur-md"
+                title="Change Ambient Sanctuary"
+              >
+                <Compass size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* Weekly Calendar Tracker */}
+          <div className="flex gap-4 pt-1.5 px-0.5">
+            {weekDays.map((day) => {
+              const isToday = currentDayIndex === day.value;
+              return (
+                <div
+                  key={day.name}
+                  className={`text-xs transition-all relative ${isToday
+                    ? 'text-white scale-110'
+                    : 'text-white/20 font-medium'
+                    }`}
+                >
+                  {day.label}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+      {/* Sticky Top Bar containing Search & Rounded Profile Icon */}
+      <div className="sticky top-0 z-50 pt-4 pb-2 flex items-center gap-3 w-full">
+        {/* Search Bar */}
+        <div className="relative flex-1 z-50">
+          <div className="relative flex items-center group">
+            <Search
+              className="absolute left-4 text-white/50 transition-colors group-focus-within:text-white z-50"
+              size={18}
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search practices, benefits, or goals..."
+              className="w-full h-12 pl-12 pr-10 rounded-full bg-white/5 border border-white/10 text-white placeholder-white/50 text-sm focus:outline-none focus:border-white/20 focus:bg-white/[0.02] transition-all duration-300 shadow-inner backdrop-blur-xs"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-4 p-1 rounded-full hover:bg-white/10 text-gray-500 hover:text-white transition-colors"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Profile Avatar Trigger Button */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={onProfileClick}
+          className="relative w-12 h-12 rounded-full border border-white/10 bg-white/[0.03] flex items-center justify-center flex-shrink-0 cursor-pointer overflow-visible shadow-lg hover:border-white/20 transition-all"
+        >
+          <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center">
+            {userAvatar ? (
+              <img src={userAvatar} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              <UserRound size={22} className="text-white/40" />
+            )}
+          </div>
+        </motion.button>
+      </div>
       {!hasActiveSearch ? (
         <div className="w-full">
           {/* Explore Hero Section Fold */}
-          <div className="h-[calc(100vh-96px)] flex flex-col justify-between pb-4">
-            {/* Dynamic Greeting & Weekly Calendar Widget */}
-            <div className="pt-6 pb-4 px-1 flex flex-col gap-3">
-              <div className="flex justify-between items-center w-full">
-                <h1 className="text-3xl font-light text-white tracking-tight drop-shadow-md">
-                  {getGreeting()}
-                </h1>
-
-                {/* Quick Ambient Sanctuary Icons in the same row */}
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={handleToggleSound}
-                    className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all active:scale-90 shadow-md backdrop-blur-md ${isAmbientSoundOn
-                      ? 'bg-white/10 border-white/20 text-white'
-                      : 'bg-white/[0.03] border-white/5 text-white/40 hover:text-white hover:bg-white/[0.06]'
-                      }`}
-                    title={`Ambient Sound: ${isAmbientSoundOn ? 'ON' : 'OFF'}`}
-                  >
-                    {isAmbientSoundOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
-                  </button>
-
-                  <button
-                    onClick={() => setIsAmbientSelectorOpen(true)}
-                    className="w-10 h-10 rounded-full bg-white/[0.03] border border-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.06] transition-all active:scale-90 shadow-md backdrop-blur-md"
-                    title="Change Ambient Sanctuary"
-                  >
-                    <Compass size={16} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Weekly Calendar Tracker */}
-              <div className="flex gap-4 pt-1.5 px-0.5">
-                {weekDays.map((day) => {
-                  const isToday = currentDayIndex === day.value;
-                  return (
-                    <div
-                      key={day.name}
-                      className={`text-xs transition-all relative ${isToday
-                        ? 'text-white scale-110'
-                        : 'text-white/20 font-medium'
-                        }`}
-                    >
-                      {day.label}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Sticky Top Bar containing Search & Rounded Profile Icon */}
-            <div className="sticky top-0 z-50 pt-4 pb-2 flex items-center gap-3 w-full">
-              {/* Search Bar */}
-              <div className="relative flex-1 z-50">
-                <div className="relative flex items-center group">
-                  <Search
-                    className="absolute left-4 text-white/40 transition-colors group-focus-within:text-white"
-                    size={18}
-                  />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search practices, benefits, or goals..."
-                    className="w-full h-12 pl-12 pr-10 rounded-full bg-white/5 border border-white/10 text-white placeholder-white/40 text-sm focus:outline-none focus:border-white/20 focus:bg-white/[0.02] transition-all duration-300 shadow-inner"
-                  />
-                  {searchQuery && (
-                    <button
-                      onClick={() => setSearchQuery('')}
-                      className="absolute right-4 p-1 rounded-full hover:bg-white/10 text-gray-500 hover:text-white transition-colors"
-                    >
-                      <X size={14} />
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Profile Avatar Trigger Button */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={onProfileClick}
-                className="relative w-12 h-12 rounded-full border border-white/10 bg-white/[0.03] flex items-center justify-center flex-shrink-0 cursor-pointer overflow-visible shadow-lg hover:border-white/20 transition-all"
-              >
-                <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center">
-                  {userAvatar ? (
-                    <img src={userAvatar} alt="Avatar" className="w-full h-full object-cover" />
-                  ) : (
-                    <UserRound size={22} className="text-white/40" />
-                  )}
-                </div>
-              </motion.button>
-            </div>
+          <div className="flex flex-col pb-40 h-[calc(100vh-200px)] min-h-[400px] relative">
 
             {/* Hero Section */}
-            <section className="relative w-full flex-1 min-h-0 rounded-[48px] overflow-hidden group touch-pan-y mt-4">
+            <section className="relative w-full flex-1 rounded-[48px] overflow-hidden group touch-pan-y mt-4">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeSlide.id}
@@ -377,16 +371,39 @@ export function ExploreView({
                     <div className="absolute inset-0 blur-3xl opacity-10 bg-white rounded-full" />
                   </motion.div>
 
-                  <div className="space-y-2 relative z-10 pointer-events-none">
-                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/70">
-                      {activeSlide.label}
-                    </span>
-                    <h2 className="text-3xl font-light text-white tracking-tight leading-tight">
-                      {activeSlide.title}
-                    </h2>
-                    <p className="text-white/80 text-xs font-light max-w-[280px] leading-relaxed mx-auto">
-                      {activeSlide.subtitle}
-                    </p>
+                  <div className="space-y-4 relative z-10 pointer-events-none mt-2">
+                    <div className="overflow-hidden">
+                      <motion.div
+                        initial={{ y: "100%", opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.3, duration: 0.5, ease: "easeOut" }}
+                        className="text-[11px] font-black uppercase tracking-[0.4em] text-white/70"
+                      >
+                        {activeSlide.label}
+                      </motion.div>
+                    </div>
+
+                    <div className="overflow-hidden py-1">
+                      <motion.h2
+                        initial={{ y: "100%", opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.4, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                        className="text-5xl font-light text-white tracking-tight leading-tight"
+                      >
+                        {activeSlide.title}
+                      </motion.h2>
+                    </div>
+
+                    <div className="overflow-hidden">
+                      <motion.p
+                        initial={{ y: "100%", opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.5, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                        className="text-white/80 text-sm font-light max-w-[320px] leading-relaxed mx-auto"
+                      >
+                        {activeSlide.subtitle}
+                      </motion.p>
+                    </div>
                   </div>
 
                   <button
@@ -401,25 +418,16 @@ export function ExploreView({
                   </button>
                 </motion.div>
               </AnimatePresence>
-
-              <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-3 z-40 pointer-events-none">
-                {heroSlides.map((_, i) => (
-                  <div
-                    key={i}
-                    className={`relative h-1 rounded-full bg-white/10 overflow-hidden transition-all duration-500 ${heroIndex === i ? 'w-16' : 'w-4'}`}
-                  >
-                    {heroIndex === i && (
-                      <motion.div
-                        className="absolute inset-y-0 left-0 bg-white"
-                        initial={false}
-                        animate={{ width: `${progress}%` }}
-                        transition={{ ease: "linear", duration: 0.016 }}
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
             </section>
+
+            {/* Bouncing Scroll Indicator */}
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+              className="absolute bottom-30 left-1/2 -translate-x-1/2 z-50 text-white/50 pointer-events-none"
+            >
+              <ChevronDown size={32} />
+            </motion.div>
           </div>
 
           {/* Scrollable category-based carousels below the 100vh fold */}
@@ -487,47 +495,6 @@ export function ExploreView({
       ) : (
         /* Search Results View */
         <div className="space-y-10 mt-4 w-full">
-          <div className="sticky top-0 z-50 pt-4 pb-2 flex items-center gap-3 w-full">
-            <div className="relative flex-1 z-50">
-              <div className="relative flex items-center group">
-                <Search
-                  className="absolute left-4 text-white/40 transition-colors group-focus-within:text-white"
-                  size={18}
-                />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search practices, benefits, or goals..."
-                  className="w-full h-12 pl-12 pr-10 rounded-full bg-white/5 border border-white/10 text-white placeholder-white/40 text-sm focus:outline-none focus:border-white/20 focus:bg-white/[0.02] transition-all duration-300 shadow-inner"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-4 p-1 rounded-full hover:bg-white/10 text-gray-500 hover:text-white transition-colors"
-                  >
-                    <X size={14} />
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onProfileClick}
-              className="relative w-12 h-12 rounded-full border border-white/10 bg-white/[0.03] flex items-center justify-center flex-shrink-0 cursor-pointer overflow-visible shadow-lg hover:border-white/20 transition-all"
-            >
-              <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center">
-                {userAvatar ? (
-                  <img src={userAvatar} alt="Avatar" className="w-full h-full object-cover" />
-                ) : (
-                  <UserRound size={22} className="text-white/40" />
-                )}
-              </div>
-            </motion.button>
-          </div>
-
           {filteredCustomExercises.length === 0 && filteredGlobalExercises.length === 0 ? (
             <motion.div
               initial={{ opacity: 0 }}
