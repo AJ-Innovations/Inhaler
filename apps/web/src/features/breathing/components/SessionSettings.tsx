@@ -38,6 +38,10 @@ interface SessionSettingsProps {
   onSetBinauralVolume: (v: number) => void;
   isOpen: boolean;
   onClose: () => void;
+  isAmbientSoundOn?: boolean;
+  setIsAmbientSoundOn?: (on: boolean) => void;
+  pauseSoundscape?: () => void;
+  setActiveSoundscape?: (id: SoundscapeType) => void;
 }
 
 const IconMap = {
@@ -62,6 +66,44 @@ const IconMap = {
   forest: Trees,
 };
 
+const getAmbientImage = (activeSoundscape: string) => {
+  switch (activeSoundscape) {
+    case "zen-river":
+      return "/image/ambients/river.png";
+    case "zen-fountain":
+      return "/image/ambients/whaterfalls.png";
+    case "winter-rain":
+      return "/image/ambients/rain.png";
+    case "light-rain":
+      return "/image/ambients/rain2.png";
+    case "nature-birds":
+      return "/image/ambients/nature2.png";
+    case "hz-transformation":
+      return "/image/ambients/galaxy.png";
+    case "white-noise":
+      return "/image/ambients/galaxy2.png";
+    case "pink-noise":
+      return "/image/ambients/galaxy3.png";
+    case "brown-noise":
+      return "/image/ambients/nature.png";
+    case "beach":
+      return "/image/ambients/beach.png";
+    case "lake":
+      return "/image/ambients/lake4.png";
+    case "marine":
+      return "/image/ambients/marain.png";
+    case "desert":
+      return "/image/ambients/desert3.png";
+    case "ethereal":
+      return "/image/ambients/loop.png";
+    case "forest":
+      return "/image/ambients/forest.png";
+    case "leaf":
+    default:
+      return "/image/ambients/leaf.png";
+  }
+};
+
 export function SessionSettings({
   activeSoundscape,
   onSelectSoundscape,
@@ -80,6 +122,10 @@ export function SessionSettings({
   onSetBinauralVolume,
   isOpen,
   onClose,
+  isAmbientSoundOn,
+  setIsAmbientSoundOn,
+  pauseSoundscape,
+  setActiveSoundscape,
 }: SessionSettingsProps) {
   const [activeTab, setActiveTab] = useState<"sound" | "voice" | "binaural">(
     "sound",
@@ -142,39 +188,98 @@ export function SessionSettings({
               <div className="scrollbar-hide max-h-[60vh] overflow-y-auto pr-1">
                 {activeTab === "sound" && (
                   <div className="flex flex-col gap-8">
+                    {/* GPU-Accelerated CSS for Butter-Smooth Soundwaves inside Panel */}
+                    <style>{`
+                      @keyframes wave-dance-panel {
+                        0%, 100% { height: 4px; }
+                        50% { height: 16px; }
+                      }
+                      .animate-wave-p1 { animation: wave-dance-panel 1.2s infinite ease-in-out; }
+                      .animate-wave-p2 { animation: wave-dance-panel 1.2s infinite ease-in-out 0.25s; }
+                      .animate-wave-p3 { animation: wave-dance-panel 1.2s infinite ease-in-out 0.5s; }
+                      .animate-wave-p4 { animation: wave-dance-panel 1.2s infinite ease-in-out 0.75s; }
+                      .animate-wave-p5 { animation: wave-dance-panel 1.2s infinite ease-in-out 1.0s; }
+                    `}</style>
                     <div className="grid grid-cols-2 gap-4">
                       {soundscapes.map((s) => {
-                        const Icon =
-                          IconMap[s.id as keyof typeof IconMap] || Volume2;
                         const isActive = activeSoundscape === s.id;
 
                         return (
                           <button
                             key={s.id}
-                            onClick={() => onSelectSoundscape(s.id)}
-                            className={`relative flex flex-col items-center justify-center rounded-[28px] border p-6 transition-all duration-400 ${
+                            onClick={() => {
+                              if (isActive) {
+                                if (isAmbientSoundOn) {
+                                  setIsAmbientSoundOn?.(false);
+                                  pauseSoundscape?.();
+                                } else {
+                                  setIsAmbientSoundOn?.(true);
+                                  setActiveSoundscape?.(s.id);
+                                }
+                              } else {
+                                setActiveSoundscape?.(s.id);
+                                setIsAmbientSoundOn?.(true);
+                              }
+                            }}
+                            className={`group relative flex aspect-[3/4] w-full flex-col overflow-hidden rounded-3xl border text-left transition-all duration-300 active:scale-95 ${
                               isActive
-                                ? "border-white/40 bg-white/15 text-white shadow-[0_0_20px_rgba(255,255,255,0.1)]"
-                                : "border-white/10 bg-white/5 text-gray-400 hover:bg-white/10"
+                                ? "border-white bg-white/10 ring-1 ring-white/20"
+                                : "border-white/5 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]"
                             }`}
                           >
-                            <Icon
-                              size={24}
-                              strokeWidth={1.5}
-                              className="mb-2"
+                            <img
+                              src={getAmbientImage(s.id)}
+                              alt={s.name}
+                              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+                                isActive
+                                  ? "opacity-95"
+                                  : "opacity-75 group-hover:opacity-90"
+                              }`}
                             />
-                            <span className="text-xs font-medium">
-                              {s.name}
-                            </span>
-                            {isActive && (
-                              <div className="absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-white shadow-lg">
-                                <Check
-                                  size={12}
-                                  className="text-black"
-                                  strokeWidth={3}
-                                />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
+
+                            {/* Premium Dynamic Audio Soundwave Bars Animation */}
+                            {isActive && isAmbientSoundOn && (
+                              <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+                                <div className="flex h-6 items-end justify-center gap-[3px]">
+                                  <div
+                                    className="animate-wave-p1 w-[3px] rounded-full bg-white"
+                                    style={{ height: "4px" }}
+                                  />
+                                  <div
+                                    className="animate-wave-p2 w-[3px] rounded-full bg-white"
+                                    style={{ height: "4px" }}
+                                  />
+                                  <div
+                                    className="animate-wave-p3 w-[3px] rounded-full bg-white"
+                                    style={{ height: "4px" }}
+                                  />
+                                  <div
+                                    className="animate-wave-p4 w-[3px] rounded-full bg-white"
+                                    style={{ height: "4px" }}
+                                  />
+                                  <div
+                                    className="animate-wave-p5 w-[3px] rounded-full bg-white"
+                                    style={{ height: "4px" }}
+                                  />
+                                </div>
                               </div>
                             )}
+
+                            <div className="relative z-10 mt-auto flex w-full flex-col gap-1.5 p-4">
+                              <span className="block truncate text-xs font-medium tracking-wide text-white">
+                                {s.name}
+                              </span>
+                              <span
+                                className={`w-fit rounded-full px-2 py-0.5 text-[7.5px] font-bold tracking-widest uppercase inline-fit ${
+                                  isActive
+                                    ? "border border-white bg-white text-black"
+                                    : "border border-white/10 bg-white/10 text-white/60"
+                                }`}
+                              >
+                                {s.id === "leaf" ? "Silent" : "Audio + Visual"}
+                              </span>
+                            </div>
                           </button>
                         );
                       })}
