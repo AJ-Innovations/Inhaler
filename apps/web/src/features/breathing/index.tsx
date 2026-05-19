@@ -243,12 +243,23 @@ export function BreathingExercise() {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/sw.js")
-        .then((reg) =>
-          console.log("Service Worker registered successfully:", reg.scope),
-        )
+        .then((reg) => {
+          console.log("Service Worker registered successfully:", reg.scope);
+          // Proactively check for Service Worker updates
+          reg.update();
+        })
         .catch((err) =>
           console.error("Service Worker registration failed:", err),
         );
+
+      // Listen for new service worker taking control and reload automatically to apply updates
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
     }
 
     // 2. Detect Apple iOS Device
