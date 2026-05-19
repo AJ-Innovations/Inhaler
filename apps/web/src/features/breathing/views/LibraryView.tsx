@@ -67,7 +67,7 @@ export function LibraryView({
               Created Collections
             </span>
           </div>
-          <div className="mb-10 flex flex-col gap-4">
+          <div className="mb-10 flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3">
             {customExercises.map((ex: Exercise) => (
               <ExerciseCard
                 key={ex.id}
@@ -89,7 +89,7 @@ export function LibraryView({
               Saved Practices
             </span>
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3">
             {favoriteExercises.map((ex: Exercise) => (
               <ExerciseCard
                 key={ex.id}
