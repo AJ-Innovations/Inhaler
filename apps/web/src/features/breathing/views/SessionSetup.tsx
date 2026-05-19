@@ -102,7 +102,7 @@ export function SessionSetup({
       </div>
       <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-black/20 via-black/40 to-black/80" />
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-[480px] flex-col px-6 py-12">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-[480px] flex-col px-6 py-12 md:max-w-[540px]">
         {/* Header */}
         <div className="mb-12 flex items-center justify-between">
           <button
