@@ -205,6 +205,16 @@ export function SubscriptionView({
     pricingTiers.DEFAULT,
   );
   const [detectedCountry, setDetectedCountry] = useState<string>("US");
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const applyCountry = (country: string) => {
     const cc = country.toUpperCase();
@@ -462,7 +472,7 @@ export function SubscriptionView({
       exit={{ opacity: 0, x: -20 }}
       className={`flex h-[100dvh] w-full flex-col overflow-hidden`}
     >
-      <div className="mx-auto flex h-full w-full max-w-[480px] flex-col overflow-hidden">
+      <div className="mx-auto flex h-full w-full max-w-[480px] flex-col overflow-hidden transition-all duration-500 lg:max-w-[1200px]">
         {/* Sticky Top Header Bar with Centered Title, Back button & Gorgeous Subtitle */}
         <div className="sticky top-0 z-50 flex w-full shrink-0 flex-col items-center gap-1 bg-transparent px-6 py-4">
           <div className="flex w-full items-center justify-between">
@@ -482,7 +492,7 @@ export function SubscriptionView({
         </div>
 
         {/* Plan Selector Pill Tabs */}
-        <div className="flex shrink-0 items-center justify-center px-6 pt-4 pb-2">
+        <div className="flex shrink-0 items-center justify-center px-6 pt-4 pb-2 lg:hidden">
           <div className="flex w-full gap-1 rounded-full border border-white/[0.06] bg-white/[0.04] p-1">
             {plans.map((plan, index) => {
               const isSelected = index === activeIndex;
@@ -516,15 +526,17 @@ export function SubscriptionView({
 
         {/* Centered Single-Card Viewer */}
         <div
-          className="relative flex min-h-0 w-full flex-1 items-center justify-center px-5"
+          className="relative flex min-h-0 w-full flex-1 items-center justify-center px-5 lg:px-0"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
           {/* Track — slides via translateX */}
           <div
-            className="flex h-[520px] w-full flex-row items-stretch gap-4 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            className="flex h-[520px] w-full flex-row items-stretch gap-4 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] lg:grid lg:h-auto lg:grid-cols-3 lg:gap-6"
             style={{
-              transform: `translateX(calc(-${activeIndex} * (100% + 16px)))`,
+              transform: isDesktop
+                ? "none"
+                : `translateX(calc(-${activeIndex} * (100% + 16px)))`,
             }}
           >
             {plans.map((plan, index) => {
@@ -534,8 +546,8 @@ export function SubscriptionView({
                 <div
                   key={plan.id}
                   onClick={() => setActiveIndex(index)}
-                  className={`relative flex h-full w-full min-w-full cursor-pointer flex-col justify-between rounded-[36px] border p-6 backdrop-blur-3xl transition-all duration-500 ${
-                    isActive
+                  className={`relative flex h-full w-full min-w-full cursor-pointer flex-col justify-between rounded-[36px] border p-6 backdrop-blur-3xl transition-all duration-500 lg:min-w-0 ${
+                    isActive || isDesktop
                       ? `${colors.highlight} ${colors.border} scale-100 opacity-100`
                       : `bg-white/[0.02] ${colors.border} scale-95 opacity-40 hover:opacity-70`
                   }`}
