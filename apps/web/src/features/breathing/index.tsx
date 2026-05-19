@@ -102,7 +102,7 @@ export function BreathingExercise() {
   const {
     customExercises, favorites, sessions, stats, customGoals,
     toggleFavorite, deleteExercise, addExercise, recordSession, addCustomGoal, deleteCustomGoal,
-    userName, userAvatar, updateUserName, updateAvatar, clearAllData
+    userName, userAvatar, updateUserName, updateAvatar, updateUserCountry, clearAllData
   } = useLibrary();
 
   // Load reminder settings from LocalStorage
@@ -262,6 +262,10 @@ export function BreathingExercise() {
       localStorage.setItem('spirox_active_plan', planId);
       if (name) {
         updateUserName(name);
+      }
+      const savedCountry = localStorage.getItem('spirox_user_country');
+      if (savedCountry) {
+        updateUserCountry(savedCountry);
       }
     }
     setShowOnboarding(false);
