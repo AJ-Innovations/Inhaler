@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, Zap, Moon, Brain, Wind, Check, Lock, ShieldCheck,
-  CreditCard, ArrowRight, ChevronLeft, Star, Crown, CheckCircle2
+  CreditCard, ArrowRight, ChevronLeft, Star, Crown, CheckCircle2, Globe
 } from 'lucide-react';
 import { AuthView } from './AuthView';
 import { SubscriptionView } from './SubscriptionView';
@@ -18,6 +18,7 @@ type OnboardingStep =
   | 'q_goal'
   | 'q_stress'
   | 'q_experience'
+  | 'q_country'
   | 'calibrating'
   | 'paywall'
   | 'auth'
@@ -30,6 +31,64 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
   const [selectedStress, setSelectedStress] = useState<string | null>(null);
   const [selectedExperience, setSelectedExperience] = useState<string | null>(null);
   const [chosenPlan, setChosenPlan] = useState<'free' | 'pro' | 'premium'>('pro');
+  const [detectedCountry, setDetectedCountry] = useState('US');
+  const [selectedCountry, setSelectedCountry] = useState('US');
+
+  const countryNames: Record<string, string> = {
+    US: 'United States',
+    IN: 'India',
+    GB: 'United Kingdom',
+    EU: 'Eurozone',
+    CA: 'Canada',
+    AU: 'Australia',
+    JP: 'Japan',
+    KR: 'South Korea',
+    AE: 'United Arab Emirates',
+    SA: 'Saudi Arabia',
+    BR: 'Brazil',
+    TR: 'Turkey',
+    ID: 'Indonesia',
+    VN: 'Vietnam'
+  };
+
+  useEffect(() => {
+    let active = true;
+    async function detectGeo() {
+      // 1. Try ipapi.co
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (res.ok) {
+          const data = await res.json();
+          if (active && data.country_code) {
+            const cc = data.country_code.toUpperCase();
+            setDetectedCountry(cc);
+            setSelectedCountry(cc);
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Onboarding primary geo lookup failed, trying backup...', e);
+      }
+
+      // 2. Try freeipapi.com
+      try {
+        const res = await fetch('https://freeipapi.com/api/json');
+        if (res.ok) {
+          const data = await res.json();
+          if (active && data.countryCode) {
+            const cc = data.countryCode.toUpperCase();
+            setDetectedCountry(cc);
+            setSelectedCountry(cc);
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Onboarding geo backup failed.');
+      }
+    }
+    detectGeo();
+    return () => { active = false; };
+  }, []);
 
   // Custom Payment Inputs
   const [cardNumber, setCardNumber] = useState('');
@@ -317,7 +376,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                       key={e.id}
                       onClick={() => {
                         setSelectedExperience(e.id);
-                        setTimeout(() => setStep('calibrating'), 300);
+                        setTimeout(() => setStep('q_country'), 300);
                       }}
                       className={`w-full p-5 rounded-full border text-left transition-all duration-300 ${selectedExperience === e.id
                         ? 'border-emerald-500/50 bg-emerald-500/5 shadow-[0_0_20px_rgba(16,185,129,0.06)] scale-[1.02]'
@@ -334,6 +393,64 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
 
                 <button
                   onClick={() => setStep('q_stress')}
+                  className="inline-flex items-center gap-2 text-xs text-gray-600 hover:text-white transition-colors mt-2"
+                >
+                  <ChevronLeft size={16} /> Back
+                </button>
+              </motion.div>
+            )}
+
+            {/* STEP: Question 4 (Country Selection) */}
+            {step === 'q_country' && (
+              <motion.div
+                key="q_country"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                className="space-y-8 flex flex-col justify-center h-full"
+              >
+                <div className="space-y-2">
+                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white">Step 4 of 4</span>
+                  <h2 className="text-3xl font-light text-white tracking-tight leading-tight">Where are you breathing from?</h2>
+                  <p className="text-gray-300 text-md font-light">
+                    We've detected your country as <span className="text-emerald-400 font-semibold">{countryNames[detectedCountry] || 'United States'}</span>. Confirm or select your country below to personalize your pricing and routines.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="relative group">
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-400 transition-colors">
+                      <Globe size={18} />
+                    </div>
+                    <select
+                      value={selectedCountry}
+                      onChange={(e) => setSelectedCountry(e.target.value)}
+                      className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-full pl-16 pr-6 text-white focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all font-light text-sm cursor-pointer"
+                      style={{ colorScheme: 'dark' }}
+                    >
+                      {Object.entries(countryNames).map(([code, name]) => (
+                        <option key={code} value={code} className="bg-neutral-900 text-white">
+                          {name}
+                        </option>
+                      ))}
+                      <option value="DEFAULT" className="bg-neutral-900 text-white">Other Country / Global</option>
+                    </select>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      localStorage.setItem('spirox_user_country', selectedCountry);
+                      setStep('calibrating');
+                    }}
+                    className="w-full h-14 bg-white text-black rounded-full font-black text-[10px] uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(255,255,255,0.06)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 relative overflow-hidden"
+                  >
+                    Confirm & Start Calibration
+                    <ArrowRight size={16} strokeWidth={3} />
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => setStep('q_experience')}
                   className="inline-flex items-center gap-2 text-xs text-gray-600 hover:text-white transition-colors mt-2"
                 >
                   <ChevronLeft size={16} /> Back
