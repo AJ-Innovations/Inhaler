@@ -1,6 +1,5 @@
 "use client";
 
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { motion } from "framer-motion";
 import { Clock, Home, RotateCcw, TrendingUp, Trophy, Zap } from "lucide-react";
 import React from "react";
@@ -132,19 +131,83 @@ export function SessionComplete({
       <div className="pointer-events-none absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-emerald-500/10 blur-[100px]" />
 
       <div className="relative z-10 w-full max-w-[480px] space-y-8 py-10 md:max-w-[600px]">
-        {/* Lottie Celebration */}
-        <div className="relative flex h-64 items-center justify-center">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent" />
-          <DotLottieReact
-            src="https://lottie.host/8e6c46a6-f286-4f40-8b65-63567840139b/1O4FfO6lG1.lottie"
-            loop={false}
-            autoplay
-            className="h-full w-full scale-125"
+        {/* Premium Visual Celebration Beacon */}
+        <div className="relative flex h-64 w-full items-center justify-center overflow-hidden">
+          {/* Pulsing Concentric Rings */}
+          <motion.div
+            animate={{ scale: [1, 1.4, 1], opacity: [0.15, 0.4, 0.15] }}
+            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+            className="absolute h-56 w-56 rounded-full border border-indigo-500/20 bg-indigo-500/5"
           />
-          <div className="absolute bottom-4 flex flex-col items-center space-y-1">
-            <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-500 shadow-lg shadow-indigo-500/20">
-              <Trophy className="text-white" size={24} />
-            </div>
+          <motion.div
+            animate={{ scale: [1, 1.25, 1], opacity: [0.2, 0.5, 0.2] }}
+            transition={{
+              repeat: Infinity,
+              duration: 3,
+              ease: "easeInOut",
+              delay: 0.5,
+            }}
+            className="absolute h-40 w-40 rounded-full border border-emerald-500/20 bg-emerald-500/5"
+          />
+          <motion.div
+            animate={{ scale: [1, 1.12, 1], opacity: [0.3, 0.6, 0.3] }}
+            transition={{
+              repeat: Infinity,
+              duration: 2,
+              ease: "easeInOut",
+              delay: 1,
+            }}
+            className="absolute h-28 w-28 rounded-full border border-white/10 bg-white/5"
+          />
+
+          {/* Floating Sparkles & Particles */}
+          <div className="absolute inset-0 z-0">
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{
+                  x: "50%",
+                  y: "50%",
+                  scale: 0,
+                  opacity: 0,
+                }}
+                animate={{
+                  x: `${50 + (Math.random() - 0.5) * 80}%`,
+                  y: `${50 + (Math.random() - 0.5) * 80}%`,
+                  scale: [0, Math.random() * 1.5 + 0.5, 0],
+                  opacity: [0, 0.8, 0],
+                }}
+                transition={{
+                  repeat: Infinity,
+                  duration: Math.random() * 3 + 2,
+                  delay: Math.random() * 2,
+                  ease: "easeOut",
+                }}
+                className={`absolute h-1.5 w-1.5 rounded-full ${
+                  i % 3 === 0
+                    ? "bg-indigo-400"
+                    : i % 3 === 1
+                      ? "bg-emerald-400"
+                      : "bg-amber-400"
+                } blur-[0.5px]`}
+              />
+            ))}
+          </div>
+
+          <div className="absolute bottom-4 z-10 flex flex-col items-center space-y-1">
+            <motion.div
+              initial={{ scale: 0.8, rotate: -15, opacity: 0 }}
+              animate={{ scale: 1, rotate: 0, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15 }}
+              className="relative mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-emerald-500 shadow-xl shadow-indigo-500/20"
+            >
+              <Trophy className="relative z-10 text-white" size={24} />
+              <motion.div
+                animate={{ scale: [1, 1.2, 1], opacity: [0, 0.4, 0] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+                className="absolute inset-0 rounded-full bg-white"
+              />
+            </motion.div>
             <h2 className="text-2xl font-light tracking-tight text-white">
               Session Complete
             </h2>
