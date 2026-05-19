@@ -27,8 +27,14 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 
-import { Exercise, exercises as defaultExercises } from "../breathing/data";
-import { Badge, CustomGoal } from "../breathing/hooks/useCustomExercises";
+import {
+  Exercise,
+  exercises as defaultExercises,
+} from "@/features/breathing/data";
+import {
+  Badge,
+  CustomGoal,
+} from "@/features/breathing/hooks/useCustomExercises";
 
 interface AchievementsViewProps {
   stats: {

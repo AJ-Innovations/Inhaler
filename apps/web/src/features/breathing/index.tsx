@@ -4,12 +4,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Wind } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
-import { AuthView } from "../auth/AuthView";
-import { AchievementsView } from "../dashboard/AchievementsView";
-import { JournalView } from "../journal/JournalView";
-import { OnboardingView } from "../onboarding/OnboardingView";
-import { ProfileView } from "../profile/ProfileView";
-import { SubscriptionView } from "../subscription/SubscriptionView";
+import { AuthView } from "@/features/auth/AuthView";
+import { AchievementsView } from "@/features/dashboard/AchievementsView";
+import { JournalView } from "@/features/journal/JournalView";
+import { OnboardingView } from "@/features/onboarding/OnboardingView";
+import { ProfileView } from "@/features/profile/ProfileView";
+import { SubscriptionView } from "@/features/subscription/SubscriptionView";
+
 import { BottomNav, TabType } from "./components/BottomNav";
 import { Exercise } from "./data";
 import { useLibrary } from "./hooks/useCustomExercises";

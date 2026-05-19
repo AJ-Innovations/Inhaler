@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import { supabase } from "../../../lib/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
+
 import { Exercise } from "../data";
 
 const STORAGE_KEY = "spirox_custom_exercises";
@@ -119,7 +120,6 @@ export function useLibrary() {
   useEffect(() => {
     const savedCustom = localStorage.getItem(STORAGE_KEY);
     if (savedCustom) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       try {
         setCustomExercises(JSON.parse(savedCustom));
       } catch {

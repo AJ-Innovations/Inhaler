@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 
-import { supabase } from "../../lib/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
 
 interface AuthViewProps {
   onBack: () => void;
