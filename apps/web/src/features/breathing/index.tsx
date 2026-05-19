@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Wind } from 'lucide-react';
 
 import { Exercise } from './data';
 import { useLibrary } from './hooks/useCustomExercises';
@@ -68,6 +69,8 @@ export function BreathingExercise() {
   const [sessionConfig, setSessionConfig] = useState<SessionConfig | null>(null);
   const [sessionResults, setSessionResults] = useState<{ duration: number; cycles: number } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
+  const [showExitModal, setShowExitModal] = useState(false);
+  const isPopStateRef = useRef(false);
 
   // Global Soundscape Controller
   const [isAmbientSoundOn, setIsAmbientSoundOn] = useState(false);
@@ -255,6 +258,58 @@ export function BreathingExercise() {
       window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     }
   }, []);
+
+  // Synchronize dynamic view states to browser history for native mobile backward buttons support
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    window.history.replaceState({ view: 'home', activeTab: 'explore' }, '');
+
+    const handlePopState = (event: PopStateEvent) => {
+      const state = event.state;
+      if (state && state.view) {
+        isPopStateRef.current = true;
+        setView(state.view);
+        if (state.activeTab) {
+          setActiveTab(state.activeTab);
+        }
+      } else {
+        // Intercept exiting back button behavior on mobile devices and prompt confirmation modal
+        setShowExitModal(true);
+        window.history.pushState({ view: 'home', activeTab: 'explore' }, '');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    if (isPopStateRef.current) {
+      isPopStateRef.current = false;
+      return;
+    }
+
+    if (view === 'home') {
+      window.history.replaceState({ view, activeTab }, '');
+    } else {
+      window.history.pushState({ view, activeTab }, '');
+    }
+  }, [view, activeTab]);
+
+  const handleExitApp = () => {
+    setShowExitModal(false);
+    if (typeof window !== 'undefined') {
+      window.history.go(-2);
+      setTimeout(() => {
+        window.close();
+      }, 100);
+    }
+  };
 
   const handleCompleteOnboarding = (planId: string, name?: string) => {
     if (typeof window !== 'undefined') {
@@ -491,6 +546,49 @@ export function BreathingExercise() {
                 />
               </div>
             )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Premium Glassmorphic Exit Confirmation Overlay */}
+      <AnimatePresence>
+        {showExitModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[500] bg-black/85 backdrop-blur-md flex items-center justify-center px-8"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-black/60 backdrop-blur-2xl border border-white/10 p-8 rounded-[40px] w-full max-w-sm text-center space-y-6 shadow-2xl relative"
+            >
+              <div className="w-16 h-16 rounded-3xl bg-rose-500/20 text-rose-500 flex items-center justify-center mx-auto mb-2">
+                <Wind size={32} />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-xl font-light text-white">Exit Spirox?</h3>
+                <p className="text-sm text-white/40 font-light leading-relaxed">
+                  Are you sure you want to exit the application? Your deep breathing journey is always here for you.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 pt-4">
+                <button
+                  onClick={handleExitApp}
+                  className="w-full h-14 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white font-bold text-sm uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-rose-500/10"
+                >
+                  Exit App
+                </button>
+                <button
+                  onClick={() => setShowExitModal(false)}
+                  className="w-full h-14 rounded-2xl bg-white/5 hover:bg-white/10 text-white/80 border border-white/10 font-bold text-sm uppercase tracking-widest transition-all active:scale-95"
+                >
+                  Stay Here
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
