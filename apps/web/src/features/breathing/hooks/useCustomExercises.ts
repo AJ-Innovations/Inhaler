@@ -38,6 +38,7 @@ export function useLibrary() {
   const [customGoals, setCustomGoals] = useState<CustomGoal[]>([]);
   const [userName, setUserName] = useState('Zen Practitioner');
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
+  const [userCountry, setUserCountry] = useState('US');
   const [user, setUser] = useState<any>(null);
 
   // Sync user profile from Supabase
@@ -59,8 +60,10 @@ export function useLibrary() {
         // Fallback to local storage if logged out
         const savedName = localStorage.getItem('spirox_user_name') || 'Zen Practitioner';
         const savedAvatar = localStorage.getItem('spirox_user_avatar');
+        const savedCountry = localStorage.getItem('spirox_user_country') || 'US';
         setUserName(savedName);
         setUserAvatar(savedAvatar);
+        setUserCountry(savedCountry);
       }
     });
 
@@ -71,14 +74,32 @@ export function useLibrary() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('username, avatar_url')
+        .select('username, avatar_url, country_code')
         .eq('id', userId)
         .single();
       
-      if (error) throw error;
+      if (error) {
+        if (error.message?.includes('country_code') || error.code === 'PGRST204' || error.code === 'PGRST100') {
+          const { data: fbData } = await supabase
+            .from('profiles')
+            .select('username, avatar_url')
+            .eq('id', userId)
+            .single();
+          if (fbData) {
+            if (fbData.username) setUserName(fbData.username);
+            if (fbData.avatar_url) setUserAvatar(fbData.avatar_url);
+          }
+          return;
+        }
+        throw error;
+      }
       if (data) {
         if (data.username) setUserName(data.username);
         if (data.avatar_url) setUserAvatar(data.avatar_url);
+        if (data.country_code) {
+          setUserCountry(data.country_code);
+          localStorage.setItem('spirox_user_country', data.country_code);
+        }
       }
     } catch (err) {
       console.error('Error fetching user profile from database:', err);
@@ -112,6 +133,9 @@ export function useLibrary() {
 
     const savedAvatar = localStorage.getItem('spirox_user_avatar');
     if (savedAvatar) setUserAvatar(savedAvatar);
+
+    const savedCountry = localStorage.getItem('spirox_user_country') || 'US';
+    if (savedCountry) setUserCountry(savedCountry);
   }, []);
 
   const addExercise = (exercise: Exercise) => {
@@ -185,6 +209,26 @@ export function useLibrary() {
         if (error) throw error;
       } catch (err) {
         console.error('Error updating avatar in database:', err);
+      }
+    }
+  };
+
+  const updateUserCountry = async (code: string) => {
+    const cc = code.toUpperCase();
+    setUserCountry(cc);
+    localStorage.setItem('spirox_user_country', cc);
+
+    if (user) {
+      try {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ country_code: cc })
+          .eq('id', user.id);
+        if (error) {
+          console.warn('Could not update country_code in profiles table (it may not exist). Error:', error.message);
+        }
+      } catch (err) {
+        console.error('Error updating country in database:', err);
       }
     }
   };
@@ -298,8 +342,10 @@ export function useLibrary() {
     deleteCustomGoal,
     userName,
     userAvatar,
+    userCountry,
     updateUserName,
     updateAvatar,
+    updateUserCountry,
     clearAllData
   };
 }
