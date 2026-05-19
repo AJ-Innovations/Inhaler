@@ -6,8 +6,8 @@ import {
   Sparkles, Zap, Moon, Brain, Wind, Check, Lock, ShieldCheck,
   CreditCard, ArrowRight, ChevronLeft, Star, Crown, CheckCircle2, Globe
 } from 'lucide-react';
-import { AuthView } from './AuthView';
-import { SubscriptionView } from './SubscriptionView';
+import { AuthView } from '../auth/AuthView';
+import { SubscriptionView } from '../subscription/SubscriptionView';
 
 interface OnboardingViewProps {
   onComplete: (planId: string, userName?: string) => void;

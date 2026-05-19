@@ -9,16 +9,16 @@ import { CustomBuilder } from './views/CustomBuilder';
 import { BottomNav, TabType } from './components/BottomNav';
 import { ExploreView } from './views/ExploreView';
 import { LibraryView } from './views/LibraryView';
-import { ProfileView } from './views/ProfileView';
+import { ProfileView } from '../profile/ProfileView';
 import { ExerciseView } from './views/ExerciseView';
 import { DetailsView } from './views/DetailsView';
 import { SessionSetup, SessionConfig } from './views/SessionSetup';
 import { SessionComplete } from './views/SessionComplete';
-import { JournalView } from './views/JournalView';
-import { AchievementsView } from './views/AchievementsView';
-import { SubscriptionView } from './views/SubscriptionView';
-import { AuthView } from './views/AuthView';
-import { OnboardingView } from './views/OnboardingView';
+import { JournalView } from '../journal/JournalView';
+import { AchievementsView } from '../dashboard/AchievementsView';
+import { SubscriptionView } from '../subscription/SubscriptionView';
+import { AuthView } from '../auth/AuthView';
+import { OnboardingView } from '../onboarding/OnboardingView';
 import { useSoundscape } from './hooks/useSoundscape';
 
 const getAmbientImage = (activeSoundscape: string) => {

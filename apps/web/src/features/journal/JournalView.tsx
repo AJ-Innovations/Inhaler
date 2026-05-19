@@ -3,8 +3,8 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PieChart, Zap, Calendar, Activity, Wind, Brain, ShieldCheck, ChevronRight, Info, Timer } from 'lucide-react';
-import { exercises } from '../data';
-import { Badge } from '../hooks/useCustomExercises';
+import { exercises } from '../breathing/data';
+import { Badge } from '../breathing/hooks/useCustomExercises';
 
 interface JournalViewProps {
   sessions: { exerciseId: string; date: string; duration: number; cycles?: number }[];

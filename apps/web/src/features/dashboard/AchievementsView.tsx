@@ -7,8 +7,8 @@ import {
   CheckCircle2, Play, ChevronLeft, Target, Wind, Repeat, Zap, 
   Heart, Brain, Activity, Sun, Moon, Cloud, Shield, LucideIcon
 } from 'lucide-react';
-import { Badge, CustomGoal } from '../hooks/useCustomExercises';
-import { Exercise, exercises as defaultExercises } from '../data';
+import { Badge, CustomGoal } from '../breathing/hooks/useCustomExercises';
+import { Exercise, exercises as defaultExercises } from '../breathing/data';
 
 interface AchievementsViewProps {
   stats: {

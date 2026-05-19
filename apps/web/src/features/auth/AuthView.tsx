@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, ArrowRight, ChevronLeft, User, CheckCircle, Key } from 'lucide-react';
-import { supabase } from '../../../lib/supabaseClient';
+import { supabase } from '../../lib/supabaseClient';
 
 interface AuthViewProps {
   onBack: () => void;
