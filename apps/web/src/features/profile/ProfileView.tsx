@@ -661,209 +661,223 @@ export function ProfileView({
         )}
       </AnimatePresence>
 
-      {/* Account Section */}
-      <div className="mt-12 space-y-4">
-        <h3 className="px-1 text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase">
-          Account
-        </h3>
-        <div className="group relative overflow-hidden rounded-[42px] border border-white/[0.06] bg-white/[0.02] shadow-2xl backdrop-blur-md">
-          {/* iOS Style Inner Glow */}
-          <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-white opacity-0 blur-[100px] transition-opacity duration-1000 group-hover:opacity-[0.03]" />
-          <button
-            onClick={onLogin}
-            className="group/item relative z-10 flex w-full items-center justify-between px-8 py-6 transition-all hover:bg-white/[0.03]"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] transition-transform group-hover/item:scale-110">
-                <Mail size={18} className="text-white" />
-              </div>
-              <div className="text-left">
-                <span className="block text-sm font-light text-white">
-                  Sign In or Create Account
-                </span>
-                <span className="mt-0.5 block text-[10px] font-medium tracking-widest text-white/40 uppercase">
-                  Access cloud sync
-                </span>
-              </div>
-            </div>
-            <ChevronRight
-              size={14}
-              className="text-white/40 transition-transform group-hover/item:translate-x-1"
-            />
-          </button>
-        </div>
-      </div>
-
-      {/* Premium Upgrade Card */}
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        onClick={onUpgrade}
-        className="group relative mt-8 w-full overflow-hidden rounded-[36px] border border-white/[0.06] bg-white/[0.02] p-6 text-left backdrop-blur-md"
-      >
-        {/* iOS Style Inner Glow */}
-        <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-white opacity-0 blur-[100px] transition-opacity duration-1000 group-hover:opacity-[0.03]" />
-        <div className="absolute top-0 right-0 p-4 opacity-20 transition-opacity group-hover:opacity-40">
-          <Crown size={40} className="text-white" />
-        </div>
-        <div className="relative z-10 flex flex-col items-start space-y-2">
-          <div className="flex items-center gap-2">
-            <span className="rounded-full bg-white px-2 py-0.5 text-[8px] font-black tracking-tighter text-black uppercase">
-              Premium
-            </span>
-            <h4 className="text-lg font-light tracking-tight text-white">
-              Unlock Everything
-            </h4>
-          </div>
-          <p className="max-w-[200px] text-xs font-light text-white/50">
-            Get all premium routines, custom builders, and cloud sync.
-          </p>
-          <div className="flex items-center gap-2 pt-2 text-white">
-            <span className="text-[10px] font-black tracking-widest uppercase">
-              Upgrade Now
-            </span>
-            <ChevronRight size={14} />
-          </div>
-        </div>
-      </motion.button>
-
-      {/* PWA Install Button */}
-      {isInstallable && (
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={handleInstallClick}
-          className="group relative mt-6 w-full overflow-hidden rounded-[36px] border border-white/[0.06] bg-white/[0.02] p-6 text-left backdrop-blur-md"
-        >
-          {/* iOS Style Inner Glow */}
-          <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-white opacity-0 blur-[100px] transition-opacity duration-1000 group-hover:opacity-[0.03]" />
-          <div className="absolute top-0 right-0 p-4 opacity-20 transition-opacity group-hover:opacity-40">
-            <Smartphone size={40} className="text-white" />
-          </div>
-          <div className="relative z-10 flex flex-col items-start space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="rounded-full bg-white px-2 py-0.5 text-[8px] font-black tracking-tighter text-black uppercase">
-                Fast Access
-              </span>
-              <h4 className="text-lg font-light tracking-tight text-white">
-                Install Spirox App
-              </h4>
-            </div>
-            <p className="max-w-[240px] text-xs font-light text-white/50">
-              Add Spirox to your home screen for quick offline access, premium
-              performance, and immersive sessions.
-            </p>
-            <div className="flex items-center gap-2 pt-2 text-white">
-              <span className="text-[10px] font-black tracking-widest uppercase">
-                Install Now
-              </span>
-              <ChevronRight size={14} />
+      {/* 2-Column Responsive Dashboard for Profile Metrics and Settings */}
+      <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
+        {/* Left Column: Stats & Promotional Cards */}
+        <div className="space-y-6">
+          {/* Stats Section */}
+          <div className="group relative w-full overflow-hidden rounded-[42px] border border-white/[0.06] bg-white/[0.02] p-8 shadow-2xl backdrop-blur-md">
+            {/* iOS Style Inner Glow */}
+            <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-white opacity-0 blur-[100px] transition-opacity duration-1000 group-hover:opacity-[0.03]" />
+            <h3 className="relative z-10 mb-6 px-1 text-[10px] font-bold tracking-[0.3em] text-white/50 uppercase">
+              Mindfulness Journey
+            </h3>
+            <div className="relative z-10 grid grid-cols-3 gap-4">
+              {[
+                {
+                  icon: Target,
+                  label: "Minutes",
+                  value: Math.floor(stats.totalMinutes),
+                },
+                { icon: ZapIcon, label: "Sessions", value: stats.sessionCount },
+                { icon: Trophy, label: "Streak", value: stats.streak },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="flex flex-col items-center gap-2"
+                >
+                  <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] shadow-inner">
+                    <div className="absolute inset-0 rounded-full bg-white opacity-10 blur-xl" />
+                    <stat.icon size={16} className="relative z-10 text-white" />
+                  </div>
+                  <span className="text-xl font-light text-white">
+                    {stat.value}
+                  </span>
+                  <span className="text-[8px] font-bold tracking-widest text-white/40 uppercase">
+                    {stat.label}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
-        </motion.button>
-      )}
 
-      {/* Stats Section */}
-      <div className="group relative w-full overflow-hidden rounded-[42px] border border-white/[0.06] bg-white/[0.02] p-8 shadow-2xl backdrop-blur-md">
-        {/* iOS Style Inner Glow */}
-        <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-white opacity-0 blur-[100px] transition-opacity duration-1000 group-hover:opacity-[0.03]" />
-        <h3 className="relative z-10 mb-6 px-1 text-[10px] font-bold tracking-[0.3em] text-white/50 uppercase">
-          Mindfulness Journey
-        </h3>
-        <div className="relative z-10 grid grid-cols-3 gap-4">
-          {[
-            {
-              icon: Target,
-              label: "Minutes",
-              value: Math.floor(stats.totalMinutes),
-            },
-            { icon: ZapIcon, label: "Sessions", value: stats.sessionCount },
-            { icon: Trophy, label: "Streak", value: stats.streak },
-          ].map((stat) => (
-            <div key={stat.label} className="flex flex-col items-center gap-2">
-              <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] shadow-inner">
-                <div className="absolute inset-0 rounded-full bg-white opacity-10 blur-xl" />
-                <stat.icon size={16} className="relative z-10 text-white" />
-              </div>
-              <span className="text-xl font-light text-white">
-                {stat.value}
-              </span>
-              <span className="text-[8px] font-bold tracking-widest text-white/40 uppercase">
-                {stat.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Menu Groups */}
-      <div className="space-y-6">
-        {menuGroups.map((group) => (
-          <div key={group.title} className="space-y-4">
+          {/* Account Section */}
+          <div className="space-y-4">
             <h3 className="px-1 text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase">
-              {group.title}
+              Account
             </h3>
             <div className="group relative overflow-hidden rounded-[42px] border border-white/[0.06] bg-white/[0.02] shadow-2xl backdrop-blur-md">
               {/* iOS Style Inner Glow */}
               <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-white opacity-0 blur-[100px] transition-opacity duration-1000 group-hover:opacity-[0.03]" />
-              {group.items.map((item, idx) => (
-                <button
-                  key={item.label}
-                  onClick={() =>
-                    item.id !== "none" && setActiveSettings(item.id)
-                  }
-                  className={`group/item relative z-10 flex w-full items-center justify-between px-8 py-6 transition-all hover:bg-white/[0.03] ${idx !== group.items.length - 1 ? "border-b border-white/[0.03]" : ""}`}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-lg shadow-black/20 transition-transform group-hover/item:scale-110">
-                      <div className="absolute inset-0 rounded-full bg-white opacity-10 blur-xl" />
-                      <item.icon
-                        size={18}
-                        className="relative z-10 text-white"
-                      />
-                    </div>
-                    <span className="text-sm font-light text-white/80 transition-colors group-hover/item:text-white">
-                      {item.label}
+              <button
+                onClick={onLogin}
+                className="group/item relative z-10 flex w-full items-center justify-between px-8 py-6 transition-all hover:bg-white/[0.03]"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] transition-transform group-hover/item:scale-110">
+                    <Mail size={18} className="text-white" />
+                  </div>
+                  <div className="text-left">
+                    <span className="block text-sm font-light text-white">
+                      Sign In or Create Account
+                    </span>
+                    <span className="mt-0.5 block text-[10px] font-medium tracking-widest text-white/40 uppercase">
+                      Access cloud sync
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    {item.value && (
-                      <span className="text-xs font-medium text-white/40 transition-colors group-hover/item:text-white/50">
-                        {item.value}
-                      </span>
-                    )}
-                    <ChevronRight
-                      size={14}
-                      className="text-white/40 transition-colors group-hover/item:text-white/60"
-                    />
-                  </div>
-                </button>
-              ))}
+                </div>
+                <ChevronRight
+                  size={14}
+                  className="text-white/40 transition-transform group-hover/item:translate-x-1"
+                />
+              </button>
             </div>
           </div>
-        ))}
 
-        {/* Danger Zone */}
-        <div className="space-y-4">
-          <h3 className="px-1 text-[10px] font-bold tracking-[0.2em] text-red-500/50 uppercase">
-            Danger Zone
-          </h3>
-          <div className="rounded-[42px] border border-red-500/10 bg-red-500/[0.02] shadow-2xl">
-            <button
-              onClick={() => setShowResetConfirm(true)}
-              className="group/item flex w-full items-center justify-between rounded-[42px] px-8 py-6 text-red-400 transition-all hover:bg-red-500/[0.05]"
-            >
-              <div className="flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-red-500/20 transition-transform group-hover/item:scale-110">
-                  <Trash2 size={18} />
-                </div>
-                <span className="text-sm font-light">Reset All Local Data</span>
+          {/* Premium Upgrade Card */}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={onUpgrade}
+            className="group relative w-full overflow-hidden rounded-[36px] border border-white/[0.06] bg-white/[0.02] p-6 text-left backdrop-blur-md"
+          >
+            {/* iOS Style Inner Glow */}
+            <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-white opacity-0 blur-[100px] transition-opacity duration-1000 group-hover:opacity-[0.03]" />
+            <div className="absolute top-0 right-0 p-4 opacity-20 transition-opacity group-hover:opacity-40">
+              <Crown size={40} className="text-white" />
+            </div>
+            <div className="relative z-10 flex flex-col items-start space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-white px-2 py-0.5 text-[8px] font-black tracking-tighter text-black uppercase">
+                  Premium
+                </span>
+                <h4 className="text-lg font-light tracking-tight text-white">
+                  Unlock Everything
+                </h4>
               </div>
-              <ChevronRight
-                size={14}
-                className="opacity-30 transition-opacity group-hover/item:opacity-100"
-              />
-            </button>
+              <p className="max-w-[200px] text-xs font-light text-white/50">
+                Get all premium routines, custom builders, and cloud sync.
+              </p>
+              <div className="flex items-center gap-2 pt-2 text-white">
+                <span className="text-[10px] font-black tracking-widest uppercase">
+                  Upgrade Now
+                </span>
+                <ChevronRight size={14} />
+              </div>
+            </div>
+          </motion.button>
+
+          {/* PWA Install Button */}
+          {isInstallable && (
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleInstallClick}
+              className="group relative w-full overflow-hidden rounded-[36px] border border-white/[0.06] bg-white/[0.02] p-6 text-left backdrop-blur-md"
+            >
+              {/* iOS Style Inner Glow */}
+              <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-white opacity-0 blur-[100px] transition-opacity duration-1000 group-hover:opacity-[0.03]" />
+              <div className="absolute top-0 right-0 p-4 opacity-20 transition-opacity group-hover:opacity-40">
+                <Smartphone size={40} className="text-white" />
+              </div>
+              <div className="relative z-10 flex flex-col items-start space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-white px-2 py-0.5 text-[8px] font-black tracking-tighter text-black uppercase">
+                    Fast Access
+                  </span>
+                  <h4 className="text-lg font-light tracking-tight text-white">
+                    Install Spirox App
+                  </h4>
+                </div>
+                <p className="max-w-[240px] text-xs font-light text-white/50">
+                  Add Spirox to your home screen for quick offline access,
+                  premium performance, and immersive sessions.
+                </p>
+                <div className="flex items-center gap-2 pt-2 text-white">
+                  <span className="text-[10px] font-black tracking-widest uppercase">
+                    Install Now
+                  </span>
+                  <ChevronRight size={14} />
+                </div>
+              </div>
+            </motion.button>
+          )}
+        </div>
+
+        {/* Right Column: Settings Groups & Danger Zone */}
+        <div className="space-y-8">
+          {/* Menu Groups */}
+          <div className="space-y-6">
+            {menuGroups.map((group) => (
+              <div key={group.title} className="space-y-4">
+                <h3 className="px-1 text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase">
+                  {group.title}
+                </h3>
+                <div className="group relative overflow-hidden rounded-[42px] border border-white/[0.06] bg-white/[0.02] shadow-2xl backdrop-blur-md">
+                  {/* iOS Style Inner Glow */}
+                  <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-white opacity-0 blur-[100px] transition-opacity duration-1000 group-hover:opacity-[0.03]" />
+                  {group.items.map((item, idx) => (
+                    <button
+                      key={item.label}
+                      onClick={() =>
+                        item.id !== "none" && setActiveSettings(item.id)
+                      }
+                      className={`group/item relative z-10 flex w-full items-center justify-between px-8 py-6 transition-all hover:bg-white/[0.03] ${idx !== group.items.length - 1 ? "border-b border-white/[0.03]" : ""}`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-lg shadow-black/20 transition-transform group-hover/item:scale-110">
+                          <div className="absolute inset-0 rounded-full bg-white opacity-10 blur-xl" />
+                          <item.icon
+                            size={18}
+                            className="relative z-10 text-white"
+                          />
+                        </div>
+                        <span className="text-sm font-light text-white/80 transition-colors group-hover/item:text-white">
+                          {item.label}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {item.value && (
+                          <span className="text-xs font-medium text-white/40 transition-colors group-hover/item:text-white/50">
+                            {item.value}
+                          </span>
+                        )}
+                        <ChevronRight
+                          size={14}
+                          className="text-white/40 transition-colors group-hover/item:text-white/60"
+                        />
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {/* Danger Zone */}
+            <div className="space-y-4">
+              <h3 className="px-1 text-[10px] font-bold tracking-[0.2em] text-red-500/50 uppercase">
+                Danger Zone
+              </h3>
+              <div className="rounded-[42px] border border-red-500/10 bg-red-500/[0.02] shadow-2xl">
+                <button
+                  onClick={() => setShowResetConfirm(true)}
+                  className="group/item flex w-full items-center justify-between rounded-[42px] px-8 py-6 text-red-400 transition-all hover:bg-red-500/[0.05]"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-red-500/20 transition-transform group-hover/item:scale-110">
+                      <Trash2 size={18} />
+                    </div>
+                    <span className="text-sm font-light">
+                      Reset All Local Data
+                    </span>
+                  </div>
+                  <ChevronRight
+                    size={14}
+                    className="opacity-30 transition-opacity group-hover/item:opacity-100"
+                  />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
