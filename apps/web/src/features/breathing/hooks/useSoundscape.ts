@@ -195,19 +195,10 @@ export function useSoundscape(isPlaying: boolean = false) {
   const safePause = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
-
-    if (playPromiseRef.current) {
-      playPromiseRef.current
-        .then(() => {
-          audio.pause();
-        })
-        .catch(() => {
-          audio.pause();
-        });
-      playPromiseRef.current = null;
-    } else {
+    try {
       audio.pause();
-    }
+    } catch (e) {}
+    playPromiseRef.current = null;
   }, []);
 
   useEffect(() => {
@@ -241,7 +232,9 @@ export function useSoundscape(isPlaying: boolean = false) {
           audio.src = sound.url;
         }
         audio.volume = volume;
-        safePlay();
+        if (audio.paused) {
+          safePlay();
+        }
       }
     }
 
@@ -269,13 +262,55 @@ export function useSoundscape(isPlaying: boolean = false) {
       );
   }, [volume]);
 
+  const selectSoundscape = useCallback(
+    (id: SoundscapeType) => {
+      setActiveSoundscape(id);
+
+      if (typeof window === "undefined") return;
+
+      if (!audioRef.current) {
+        audioRef.current = new Audio();
+        audioRef.current.loop = true;
+      }
+      const audio = audioRef.current;
+      const isNoise = id.includes("noise");
+
+      if (isNoise) {
+        safePause();
+        const type = id.split("-")[0] as "white" | "pink" | "brown";
+        startNoise(type);
+      } else {
+        stopNoise();
+        const sound = soundscapes.find((s) => s.id === id);
+        if (sound && sound.url) {
+          const absoluteUrl = new URL(sound.url, window.location.href).href;
+          if (audio.src !== absoluteUrl) {
+            safePause();
+            audio.src = sound.url;
+          }
+          audio.volume = volume;
+          if (audio.paused) {
+            safePlay();
+          }
+        }
+      }
+    },
+    [startNoise, stopNoise, safePlay, safePause, volume],
+  );
+
+  const pauseSoundscape = useCallback(() => {
+    safePause();
+    stopNoise();
+  }, [safePause, stopNoise]);
+
   const toggleSoundscape = (id: SoundscapeType) => {
-    setActiveSoundscape((prev) => (prev === id ? "leaf" : id));
+    selectSoundscape(activeSoundscape === id ? "leaf" : id);
   };
 
   return {
     activeSoundscape,
-    setActiveSoundscape,
+    setActiveSoundscape: selectSoundscape,
+    pauseSoundscape,
     toggleSoundscape,
     volume,
     setVolume,
