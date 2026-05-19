@@ -5,7 +5,7 @@ import { Exercise } from '../data';
 import { supabase } from '../../../lib/supabaseClient';
 
 
-const STORAGE_KEY = 'inhale_custom_exercises';
+const STORAGE_KEY = 'spirox_custom_exercises';
 
 export interface Badge {
   id: string;
@@ -57,8 +57,8 @@ export function useLibrary() {
         fetchUserProfile(session.user.id);
       } else {
         // Fallback to local storage if logged out
-        const savedName = localStorage.getItem('inhale_user_name') || 'Zen Practitioner';
-        const savedAvatar = localStorage.getItem('inhale_user_avatar');
+        const savedName = localStorage.getItem('spirox_user_name') || 'Zen Practitioner';
+        const savedAvatar = localStorage.getItem('spirox_user_avatar');
         setUserName(savedName);
         setUserAvatar(savedAvatar);
       }
@@ -92,25 +92,25 @@ export function useLibrary() {
       try { setCustomExercises(JSON.parse(savedCustom)); } catch { /* ignore */ }
     }
 
-    const savedFavs = localStorage.getItem('inhale_favorites');
+    const savedFavs = localStorage.getItem('spirox_favorites');
     if (savedFavs) {
       try { setFavorites(JSON.parse(savedFavs)); } catch { /* ignore */ }
     }
 
-    const savedSessions = localStorage.getItem('inhale_sessions');
+    const savedSessions = localStorage.getItem('spirox_sessions');
     if (savedSessions) {
       try { setSessions(JSON.parse(savedSessions)); } catch { /* ignore */ }
     }
 
-    const savedGoals = localStorage.getItem('inhale_custom_goals');
+    const savedGoals = localStorage.getItem('spirox_custom_goals');
     if (savedGoals) {
       try { setCustomGoals(JSON.parse(savedGoals)); } catch { /* ignore */ }
     }
 
-    const savedName = localStorage.getItem('inhale_user_name');
+    const savedName = localStorage.getItem('spirox_user_name');
     if (savedName) setUserName(savedName);
 
-    const savedAvatar = localStorage.getItem('inhale_user_avatar');
+    const savedAvatar = localStorage.getItem('spirox_user_avatar');
     if (savedAvatar) setUserAvatar(savedAvatar);
   }, []);
 
@@ -131,32 +131,32 @@ export function useLibrary() {
       ? favorites.filter(favId => favId !== id)
       : [...favorites, id];
     setFavorites(updated);
-    localStorage.setItem('inhale_favorites', JSON.stringify(updated));
+    localStorage.setItem('spirox_favorites', JSON.stringify(updated));
   };
 
   const recordSession = (exerciseId: string, duration: number) => {
     const newSession = { exerciseId, date: new Date().toISOString(), duration };
     const updated = [...sessions, newSession];
     setSessions(updated);
-    localStorage.setItem('inhale_sessions', JSON.stringify(updated));
+    localStorage.setItem('spirox_sessions', JSON.stringify(updated));
   };
 
   const addCustomGoal = (goal: Omit<CustomGoal, 'currentMinutes'>) => {
     const newGoal = { ...goal, currentMinutes: 0 };
     const updated = [...customGoals, newGoal];
     setCustomGoals(updated);
-    localStorage.setItem('inhale_custom_goals', JSON.stringify(updated));
+    localStorage.setItem('spirox_custom_goals', JSON.stringify(updated));
   };
 
   const deleteCustomGoal = (id: string) => {
     const updated = customGoals.filter(g => g.id !== id);
     setCustomGoals(updated);
-    localStorage.setItem('inhale_custom_goals', JSON.stringify(updated));
+    localStorage.setItem('spirox_custom_goals', JSON.stringify(updated));
   };
 
   const updateUserName = async (name: string) => {
     setUserName(name);
-    localStorage.setItem('inhale_user_name', name);
+    localStorage.setItem('spirox_user_name', name);
 
     if (user) {
       try {
@@ -173,8 +173,8 @@ export function useLibrary() {
 
   const updateAvatar = async (avatar: string | null) => {
     setUserAvatar(avatar);
-    if (avatar) localStorage.setItem('inhale_user_avatar', avatar);
-    else localStorage.removeItem('inhale_user_avatar');
+    if (avatar) localStorage.setItem('spirox_user_avatar', avatar);
+    else localStorage.removeItem('spirox_user_avatar');
 
     if (user) {
       try {

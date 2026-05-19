@@ -76,7 +76,7 @@ export function BreathingExercise() {
   // Persistence of selected ambient
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedAmbient = localStorage.getItem('sparox_active_ambient');
+      const savedAmbient = localStorage.getItem('spirox_active_ambient');
       if (savedAmbient && savedAmbient !== 'leaf') {
         soundscape.setActiveSoundscape(savedAmbient as any);
       }
@@ -85,7 +85,7 @@ export function BreathingExercise() {
 
   useEffect(() => {
     if (soundscape.activeSoundscape) {
-      localStorage.setItem('sparox_active_ambient', soundscape.activeSoundscape);
+      localStorage.setItem('spirox_active_ambient', soundscape.activeSoundscape);
     }
   }, [soundscape.activeSoundscape]);
 
@@ -108,12 +108,12 @@ export function BreathingExercise() {
   // Load reminder settings from LocalStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const enabled = localStorage.getItem('inhale_daily_reminder_enabled') === 'true';
-      const time = localStorage.getItem('inhale_daily_reminder_time') || '08:30';
+      const enabled = localStorage.getItem('spirox_daily_reminder_enabled') === 'true';
+      const time = localStorage.getItem('spirox_daily_reminder_time') || '08:30';
       setDailyReminderEnabled(enabled);
       setDailyReminderTime(time);
 
-      const completed = localStorage.getItem('inhale_onboarding_completed') === 'true';
+      const completed = localStorage.getItem('spirox_onboarding_completed') === 'true';
       setShowOnboarding(!completed);
     } else {
       setShowOnboarding(false);
@@ -143,25 +143,25 @@ export function BreathingExercise() {
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
           setDailyReminderEnabled(true);
-          localStorage.setItem('inhale_daily_reminder_enabled', 'true');
+          localStorage.setItem('spirox_daily_reminder_enabled', 'true');
           triggerNotification('Reminders Enabled! 🧘', 'You will be notified daily at your scheduled breathing time.');
         } else {
           alert('Notification permission is required to enable daily reminders.');
           setDailyReminderEnabled(false);
-          localStorage.setItem('inhale_daily_reminder_enabled', 'false');
+          localStorage.setItem('spirox_daily_reminder_enabled', 'false');
         }
       } else {
         alert('Notifications are not supported in this browser.');
       }
     } else {
       setDailyReminderEnabled(false);
-      localStorage.setItem('inhale_daily_reminder_enabled', 'false');
+      localStorage.setItem('spirox_daily_reminder_enabled', 'false');
     }
   };
 
   const handleUpdateTime = (time: string) => {
     setDailyReminderTime(time);
-    localStorage.setItem('inhale_daily_reminder_time', time);
+    localStorage.setItem('spirox_daily_reminder_time', time);
   };
 
   // Scheduled Reminder Background Checker (Runs every 30s)
@@ -258,8 +258,8 @@ export function BreathingExercise() {
 
   const handleCompleteOnboarding = (planId: string, name?: string) => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('inhale_onboarding_completed', 'true');
-      localStorage.setItem('inhale_active_plan', planId);
+      localStorage.setItem('spirox_onboarding_completed', 'true');
+      localStorage.setItem('spirox_active_plan', planId);
       if (name) {
         updateUserName(name);
       }

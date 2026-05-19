@@ -264,7 +264,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
               <div className="space-y-1">
                 <h1 className="text-3xl font-light tracking-tight text-white">Reset Password</h1>
                 <p className="text-gray-500 font-light text-xs max-w-[280px] mx-auto leading-relaxed">
-                  Create a strong, secure new password for your Sparox account.
+                  Create a strong, secure new password for your Spirox account.
                 </p>
               </div>
             </div>
@@ -369,7 +369,7 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
               </motion.div>
               <div className="space-y-1">
                 <h1 className="text-3xl font-light tracking-tight text-white">
-                  {mode === 'login' ? 'Welcome Back' : 'Join Sparox'}
+                  {mode === 'login' ? 'Welcome Back' : 'Join Spirox'}
                 </h1>
                 <p className="text-gray-500 font-light text-xs">
                   {mode === 'login' 

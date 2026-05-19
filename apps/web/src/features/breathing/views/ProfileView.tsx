@@ -155,7 +155,7 @@ export function ProfileView({
     {
       title: 'Support',
       items: [
-        { id: 'about' as SettingsType, icon: Info, label: 'About Sparox', value: 'v1.4.2' },
+        { id: 'about' as SettingsType, icon: Info, label: 'About Spirox', value: 'v1.4.2' },
         { id: 'none' as SettingsType, icon: ExternalLink, label: 'Resource Center', isExternal: true },
       ]
     }
@@ -319,7 +319,7 @@ export function ProfileView({
                 </div>
               </div>
               <div className="text-center">
-                <h4 className="text-xl font-light text-white tracking-tight">Sparox Premium</h4>
+                <h4 className="text-xl font-light text-white tracking-tight">Spirox Premium</h4>
                 <p className="text-[10px] text-white/40 uppercase tracking-[0.3em] font-bold mt-1">Version 1.4.2</p>
               </div>
             </div>
@@ -621,9 +621,9 @@ export function ProfileView({
           <div className="relative z-10 flex flex-col items-start space-y-2">
             <div className="flex items-center gap-2">
               <span className="px-2 py-0.5 rounded-full bg-white text-black text-[8px] font-black uppercase tracking-tighter">Fast Access</span>
-              <h4 className="text-lg font-light text-white tracking-tight">Install Sparox App</h4>
+              <h4 className="text-lg font-light text-white tracking-tight">Install Spirox App</h4>
             </div>
-            <p className="text-xs text-white/50 font-light max-w-[240px]">Add Sparox to your home screen for quick offline access, premium performance, and immersive sessions.</p>
+            <p className="text-xs text-white/50 font-light max-w-[240px]">Add Spirox to your home screen for quick offline access, premium performance, and immersive sessions.</p>
             <div className="pt-2 flex items-center gap-2 text-white">
               <span className="text-[10px] font-black uppercase tracking-widest">Install Now</span>
               <ChevronRight size={14} />
@@ -779,7 +779,7 @@ export function ProfileView({
 
               <div className="space-y-6">
                 <p className="text-sm text-white/50 font-light leading-relaxed">
-                  Safari doesn't support automatic 1-click installations, but you can add Sparox to your home screen in 3 quick steps:
+                  Safari doesn't support automatic 1-click installations, but you can add Spirox to your home screen in 3 quick steps:
                 </p>
                 
                 <div className="space-y-4">

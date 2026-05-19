@@ -91,9 +91,13 @@ export function SessionComplete({ exercise, duration, cycles, onHome, onRestart 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black z-[300] flex flex-col items-center justify-center p-6 overflow-y-auto scrollbar-hide"
+      className="fixed inset-0 bg-black/95 z-[300] flex flex-col items-center justify-center p-6 overflow-y-auto scrollbar-hide backdrop-blur-md"
     >
-      <div className="max-w-[480px] w-full space-y-8 py-10">
+      {/* Decorative Premium Glow Elements */}
+      <div className="absolute -top-20 -right-20 w-80 h-80 bg-indigo-500/10 blur-[100px] pointer-events-none rounded-full" />
+      <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-emerald-500/10 blur-[100px] pointer-events-none rounded-full" />
+
+      <div className="max-w-[480px] w-full space-y-8 py-10 z-10 relative">
         {/* Lottie Celebration */}
         <div className="relative h-64 flex items-center justify-center">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent pointer-events-none" />
@@ -147,19 +151,34 @@ export function SessionComplete({ exercise, duration, cycles, onHome, onRestart 
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9 }}
             onClick={onRestart}
-            className="w-full h-16 rounded-[28px] bg-white text-black font-bold text-sm uppercase tracking-widest shadow-xl shadow-white/5 active:scale-95 transition-all flex items-center justify-center gap-3"
+            className="w-full h-16 rounded-full bg-white text-black font-black text-[12px] uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:shadow-[0_0_35px_rgba(255,255,255,0.25)] active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden cursor-pointer"
           >
-            <RotateCcw size={18} />
-            Restart Session
+            <span className="relative z-10 flex items-center gap-2">
+              <RotateCcw size={16} strokeWidth={3} />
+              Restart Session
+            </span>
+            {/* Animated Premium Gloss Shimmer */}
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: '100%' }}
+              transition={{
+                repeat: Infinity,
+                repeatType: 'loop',
+                duration: 2.5,
+                ease: 'linear',
+              }}
+              className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-black/5 to-transparent pointer-events-none"
+            />
           </motion.button>
+          
           <motion.button
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1 }}
             onClick={onHome}
-            className="w-full h-16 rounded-[28px] bg-white/5 text-white/60 font-bold text-sm uppercase tracking-widest hover:bg-white/10 active:scale-95 transition-all flex items-center justify-center gap-3"
+            className="w-full h-16 rounded-full bg-white/[0.04] border border-white/10 text-white/80 hover:text-white hover:bg-white/[0.08] font-black text-[12px] uppercase tracking-[0.2em] active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer"
           >
-            <Home size={18} />
+            <Home size={16} strokeWidth={2.5} />
             Return Home
           </motion.button>
         </div>
