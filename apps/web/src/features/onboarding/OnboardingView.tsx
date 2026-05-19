@@ -1,54 +1,72 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from "framer-motion";
 import {
-  Sparkles, Zap, Moon, Brain, Wind, Check, Lock, ShieldCheck,
-  CreditCard, ArrowRight, ChevronLeft, Star, Crown, CheckCircle2, Globe
-} from 'lucide-react';
-import { AuthView } from '../auth/AuthView';
-import { SubscriptionView } from '../subscription/SubscriptionView';
+  ArrowRight,
+  Brain,
+  Check,
+  CheckCircle2,
+  ChevronLeft,
+  CreditCard,
+  Crown,
+  Globe,
+  Lock,
+  Moon,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Wind,
+  Zap,
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
+
+import { AuthView } from "../auth/AuthView";
+import { SubscriptionView } from "../subscription/SubscriptionView";
 
 interface OnboardingViewProps {
   onComplete: (planId: string, userName?: string) => void;
 }
 
 type OnboardingStep =
-  | 'intro'
-  | 'q_goal'
-  | 'q_stress'
-  | 'q_experience'
-  | 'q_country'
-  | 'calibrating'
-  | 'paywall'
-  | 'auth'
-  | 'payment'
-  | 'success';
+  | "intro"
+  | "q_goal"
+  | "q_stress"
+  | "q_experience"
+  | "q_country"
+  | "calibrating"
+  | "paywall"
+  | "auth"
+  | "payment"
+  | "success";
 
 export function OnboardingView({ onComplete }: OnboardingViewProps) {
-  const [step, setStep] = useState<OnboardingStep>('intro');
+  const [step, setStep] = useState<OnboardingStep>("intro");
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
   const [selectedStress, setSelectedStress] = useState<string | null>(null);
-  const [selectedExperience, setSelectedExperience] = useState<string | null>(null);
-  const [chosenPlan, setChosenPlan] = useState<'free' | 'pro' | 'premium'>('pro');
-  const [detectedCountry, setDetectedCountry] = useState('US');
-  const [selectedCountry, setSelectedCountry] = useState('US');
+  const [selectedExperience, setSelectedExperience] = useState<string | null>(
+    null,
+  );
+  const [chosenPlan, setChosenPlan] = useState<"free" | "pro" | "premium">(
+    "pro",
+  );
+  const [detectedCountry, setDetectedCountry] = useState("US");
+  const [selectedCountry, setSelectedCountry] = useState("US");
 
   const countryNames: Record<string, string> = {
-    US: 'United States',
-    IN: 'India',
-    GB: 'United Kingdom',
-    EU: 'Eurozone',
-    CA: 'Canada',
-    AU: 'Australia',
-    JP: 'Japan',
-    KR: 'South Korea',
-    AE: 'United Arab Emirates',
-    SA: 'Saudi Arabia',
-    BR: 'Brazil',
-    TR: 'Turkey',
-    ID: 'Indonesia',
-    VN: 'Vietnam'
+    US: "United States",
+    IN: "India",
+    GB: "United Kingdom",
+    EU: "Eurozone",
+    CA: "Canada",
+    AU: "Australia",
+    JP: "Japan",
+    KR: "South Korea",
+    AE: "United Arab Emirates",
+    SA: "Saudi Arabia",
+    BR: "Brazil",
+    TR: "Turkey",
+    ID: "Indonesia",
+    VN: "Vietnam",
   };
 
   useEffect(() => {
@@ -56,7 +74,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
     async function detectGeo() {
       // 1. Try ipapi.co
       try {
-        const res = await fetch('https://ipapi.co/json/');
+        const res = await fetch("https://ipapi.co/json/");
         if (res.ok) {
           const data = await res.json();
           if (active && data.country_code) {
@@ -67,12 +85,15 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
           }
         }
       } catch (e) {
-        console.warn('Onboarding primary geo lookup failed, trying backup...', e);
+        console.warn(
+          "Onboarding primary geo lookup failed, trying backup...",
+          e,
+        );
       }
 
       // 2. Try freeipapi.com
       try {
-        const res = await fetch('https://freeipapi.com/api/json');
+        const res = await fetch("https://freeipapi.com/api/json");
         if (res.ok) {
           const data = await res.json();
           if (active && data.countryCode) {
@@ -83,26 +104,30 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
           }
         }
       } catch (e) {
-        console.warn('Onboarding geo backup failed.');
+        console.warn("Onboarding geo backup failed.");
       }
     }
     detectGeo();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, []);
 
   // Custom Payment Inputs
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardExpiry, setCardExpiry] = useState('');
-  const [cardCvv, setCardCvv] = useState('');
-  const [cardName, setCardName] = useState('');
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvv, setCardCvv] = useState("");
+  const [cardName, setCardName] = useState("");
   const [isPaying, setIsPaying] = useState(false);
 
   // Calibration Loader Progress
   const [calibrationProgress, setCalibrationProgress] = useState(0);
-  const [calibrationText, setCalibrationText] = useState('Initializing Diaphragm Analysis...');
+  const [calibrationText, setCalibrationText] = useState(
+    "Initializing Diaphragm Analysis...",
+  );
 
   useEffect(() => {
-    if (step !== 'calibrating') return;
+    if (step !== "calibrating") return;
 
     let progressInterval: NodeJS.Timeout;
     const startTime = Date.now();
@@ -114,19 +139,21 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
       setCalibrationProgress(Math.floor(computed));
 
       if (computed < 25) {
-        setCalibrationText('Analyzing custom goals & lung capacity...');
+        setCalibrationText("Analyzing custom goals & lung capacity...");
       } else if (computed < 55) {
-        setCalibrationText('Calibrating box-breathing ratios...');
+        setCalibrationText("Calibrating box-breathing ratios...");
       } else if (computed < 85) {
-        setCalibrationText('Syncing ambient soundscapes & binaural beat frequencies...');
+        setCalibrationText(
+          "Syncing ambient soundscapes & binaural beat frequencies...",
+        );
       } else {
-        setCalibrationText('Finalizing personalized breathing sanctuary...');
+        setCalibrationText("Finalizing personalized breathing sanctuary...");
       }
 
       if (computed >= 100) {
         clearInterval(progressInterval);
         setTimeout(() => {
-          setStep('paywall');
+          setStep("paywall");
         }, 600);
       }
     }, 50);
@@ -136,9 +163,9 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
 
   // Format Card Number
   const handleCardNumberChange = (value: string) => {
-    const numbersOnly = value.replace(/\D/g, '').slice(0, 16);
+    const numbersOnly = value.replace(/\D/g, "").slice(0, 16);
     const matches = numbersOnly.match(/\d{4,16}/g);
-    const match = (matches && matches[0]) || '';
+    const match = (matches && matches[0]) || "";
     const parts = [];
 
     for (let i = 0, len = match.length; i < len; i += 4) {
@@ -146,7 +173,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
     }
 
     if (parts.length > 0) {
-      setCardNumber(parts.join(' '));
+      setCardNumber(parts.join(" "));
     } else {
       setCardNumber(numbersOnly);
     }
@@ -154,7 +181,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
 
   // Format Expiry Date
   const handleExpiryChange = (value: string) => {
-    const clean = value.replace(/\D/g, '').slice(0, 4);
+    const clean = value.replace(/\D/g, "").slice(0, 4);
     if (clean.length >= 2) {
       setCardExpiry(`${clean.slice(0, 2)}/${clean.slice(2)}`);
     } else {
@@ -166,7 +193,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
   const handlePaymentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!cardNumber || !cardExpiry || !cardCvv || !cardName) {
-      alert('Please fill in all credit card credentials.');
+      alert("Please fill in all credit card credentials.");
       return;
     }
     setIsPaying(true);
@@ -174,64 +201,115 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
     // Simulate payment transaction
     setTimeout(() => {
       setIsPaying(false);
-      setStep('success');
+      setStep("success");
     }, 2500);
   };
 
   // Success flow redirect
   const handleFinalRedirect = () => {
-    onComplete(chosenPlan, cardName || 'Mindful Breather');
+    onComplete(chosenPlan, cardName || "Mindful Breather");
   };
 
   const goals = [
-    { id: 'sleep', title: 'Deep Sleep & Insomnia Cure', desc: 'Fall asleep faster and maximize recovery.', icon: Moon, color: 'text-white' },
-    { id: 'stress', title: 'Anxiety & Quick Stress Relief', desc: 'Settle your nervous system in 2 minutes.', icon: Zap, color: 'text-white' },
-    { id: 'focus', title: 'Extreme Focus & Brain Clarity', desc: 'Navy SEAL method to lock in attention.', icon: Brain, color: 'text-white' },
-    { id: 'power', title: 'Athletic Grit & Endurance', desc: 'Expand CO2 tolerance and lung volume.', icon: Wind, color: 'text-white' }
+    {
+      id: "sleep",
+      title: "Deep Sleep & Insomnia Cure",
+      desc: "Fall asleep faster and maximize recovery.",
+      icon: Moon,
+      color: "text-white",
+    },
+    {
+      id: "stress",
+      title: "Anxiety & Quick Stress Relief",
+      desc: "Settle your nervous system in 2 minutes.",
+      icon: Zap,
+      color: "text-white",
+    },
+    {
+      id: "focus",
+      title: "Extreme Focus & Brain Clarity",
+      desc: "Navy SEAL method to lock in attention.",
+      icon: Brain,
+      color: "text-white",
+    },
+    {
+      id: "power",
+      title: "Athletic Grit & Endurance",
+      desc: "Expand CO2 tolerance and lung volume.",
+      icon: Wind,
+      color: "text-white",
+    },
   ];
 
   const stressLevels = [
-    { id: 'daily', title: 'Almost Constantly (Daily)', desc: 'Always on-edge, multi-tasking under pressure.' },
-    { id: 'weekly', title: 'Frequently (A few times a week)', desc: 'Struggling during peak deadlines and stress spikes.' },
-    { id: 'rarely', title: 'Occasionally or Rarely', desc: 'Just seeking general focus and preventative calm.' }
+    {
+      id: "daily",
+      title: "Almost Constantly (Daily)",
+      desc: "Always on-edge, multi-tasking under pressure.",
+    },
+    {
+      id: "weekly",
+      title: "Frequently (A few times a week)",
+      desc: "Struggling during peak deadlines and stress spikes.",
+    },
+    {
+      id: "rarely",
+      title: "Occasionally or Rarely",
+      desc: "Just seeking general focus and preventative calm.",
+    },
   ];
 
   const experienceLevels = [
-    { id: 'beginner', title: 'Beginner / First Steps', desc: 'I want simple patterns and audio guidance.' },
-    { id: 'intermediate', title: 'Intermediate / Occasional', desc: 'I understand box-breathing and breath holds.' },
-    { id: 'advanced', title: 'Advanced / Daily Meditator', desc: 'I want extreme challenges and advanced detox.' }
+    {
+      id: "beginner",
+      title: "Beginner / First Steps",
+      desc: "I want simple patterns and audio guidance.",
+    },
+    {
+      id: "intermediate",
+      title: "Intermediate / Occasional",
+      desc: "I understand box-breathing and breath holds.",
+    },
+    {
+      id: "advanced",
+      title: "Advanced / Daily Meditator",
+      desc: "I want extreme challenges and advanced detox.",
+    },
   ];
 
   return (
-    <div className="fixed inset-0 z-[500] text-white flex flex-col font-sans select-none overflow-hidden bg-black">
+    <div className="fixed inset-0 z-[500] flex flex-col overflow-hidden bg-black font-sans text-white select-none">
       {/* Cinematic Natural Background */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat blur-[10px] opacity-100 scale-110 pointer-events-none transition-all duration-1000"
+        className="pointer-events-none absolute inset-0 scale-110 bg-cover bg-center bg-no-repeat opacity-100 blur-[10px] transition-all duration-1000"
         style={{ backgroundImage: "url('/image/ambients/lake4.png')" }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/80 pointer-events-none" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/80" />
 
-      <div className="relative flex-1 flex flex-col max-w-[480px] mx-auto w-full h-full">
-        <div className="flex-1 flex flex-col justify-center px-6 relative z-10 py-10 h-full overflow-y-auto scrollbar-hide">
+      <div className="relative mx-auto flex h-full w-full max-w-[480px] flex-1 flex-col">
+        <div className="scrollbar-hide relative z-10 flex h-full flex-1 flex-col justify-center overflow-y-auto px-6 py-10">
           <AnimatePresence mode="wait">
-
             {/* STEP: Intro Screen */}
-            {step === 'intro' && (
+            {step === "intro" && (
               <motion.div
                 key="intro"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 1.05 }}
                 transition={{ duration: 0.5 }}
-                className="space-y-12 text-center flex flex-col items-center justify-center h-full"
+                className="flex h-full flex-col items-center justify-center space-y-12 text-center"
               >
                 <div className="space-y-4">
                   <motion.div
                     animate={{ scale: [1, 1.08, 1] }}
-                    transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-                    className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-500/20 via-blue-500/20 to-indigo-500/20 border border-white/10 flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.15)] relative"
+                    transition={{
+                      repeat: Infinity,
+                      duration: 6,
+                      ease: "easeInOut",
+                    }}
+                    className="relative flex h-24 w-24 items-center justify-center rounded-full border border-white/10 bg-gradient-to-br from-emerald-500/20 via-blue-500/20 to-indigo-500/20 shadow-[0_0_50px_rgba(16,185,129,0.15)]"
                   >
-                    <Sparkles size={40} className="text-white animate-pulse" />
+                    <Sparkles size={40} className="animate-pulse text-white" />
                     <div className="absolute inset-0 rounded-full bg-emerald-500/5 blur-xl" />
                   </motion.div>
                 </div>
@@ -241,7 +319,11 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                     <motion.h1
                       initial={{ y: "100%", opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                      transition={{
+                        delay: 0.2,
+                        duration: 0.8,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
                       className="text-6xl font-light tracking-tight text-white"
                     >
                       SPIROX
@@ -251,37 +333,54 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                     <motion.p
                       initial={{ y: "100%", opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                      className="text-white/70 text-sm font-light max-w-[280px] leading-relaxed mx-auto"
+                      transition={{
+                        delay: 0.3,
+                        duration: 0.8,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                      className="mx-auto max-w-[280px] text-sm leading-relaxed font-light text-white/70"
                     >
-                      Take a moment to align your body and mind. Let's calibrate your customized, high-performance breathing journey.
+                      Take a moment to align your body and mind. Let's calibrate
+                      your customized, high-performance breathing journey.
                     </motion.p>
                   </div>
                 </div>
 
                 <button
-                  onClick={() => setStep('q_goal')}
-                  className="w-full h-14 bg-white text-black rounded-full font-black text-[10px] uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(255,255,255,0.06)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 mt-8 relative overflow-hidden"
+                  onClick={() => setStep("q_goal")}
+                  className="relative mt-8 flex h-14 w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-white text-[10px] font-black tracking-[0.2em] text-black uppercase shadow-[0_20px_40px_rgba(255,255,255,0.06)] transition-all hover:scale-105 active:scale-95"
                 >
-                  <span className="relative z-10">Start Diaphragm Calibration</span>
-                  <ArrowRight size={16} strokeWidth={3} className="relative z-10" />
+                  <span className="relative z-10">
+                    Start Diaphragm Calibration
+                  </span>
+                  <ArrowRight
+                    size={16}
+                    strokeWidth={3}
+                    className="relative z-10"
+                  />
                 </button>
               </motion.div>
             )}
 
             {/* STEP: Question 1 (Goals) */}
-            {step === 'q_goal' && (
+            {step === "q_goal" && (
               <motion.div
                 key="q_goal"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
-                className="space-y-8 flex flex-col justify-center h-full"
+                className="flex h-full flex-col justify-center space-y-8"
               >
                 <div className="space-y-4">
-                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white">Step 1 of 3</span>
-                  <h2 className="text-3xl font-light text-white tracking-tight leading-tight">What is your primary goal today?</h2>
-                  <p className="text-gray-300 text-md font-light">We will tailor your initial sessions based on this choice.</p>
+                  <span className="text-[9px] font-black tracking-[0.3em] text-white uppercase">
+                    Step 1 of 3
+                  </span>
+                  <h2 className="text-3xl leading-tight font-light tracking-tight text-white">
+                    What is your primary goal today?
+                  </h2>
+                  <p className="text-md font-light text-gray-300">
+                    We will tailor your initial sessions based on this choice.
+                  </p>
                 </div>
 
                 <div className="space-y-3">
@@ -290,19 +389,26 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                       key={g.id}
                       onClick={() => {
                         setSelectedGoal(g.id);
-                        setTimeout(() => setStep('q_stress'), 300);
+                        setTimeout(() => setStep("q_stress"), 300);
                       }}
-                      className={`w-full p-5 rounded-full border text-left flex items-center gap-4 transition-all duration-300 ${selectedGoal === g.id
-                        ? 'border-emerald-500/50 bg-emerald-500/5 shadow-[0_0_20px_rgba(16,185,129,0.06)] scale-[1.02]'
-                        : 'border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]'
-                        }`}
+                      className={`flex w-full items-center gap-4 rounded-full border p-5 text-left transition-all duration-300 ${
+                        selectedGoal === g.id
+                          ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/5 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
+                          : "border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]"
+                      }`}
                     >
-                      <div className={`p-3 rounded-full bg-white/5 shrink-0 ${g.color}`}>
+                      <div
+                        className={`shrink-0 rounded-full bg-white/5 p-3 ${g.color}`}
+                      >
                         <g.icon size={20} />
                       </div>
                       <div className="space-y-1">
-                        <h4 className="text-md font-semibold text-white leading-none">{g.title}</h4>
-                        <p className="text-[12px] text-gray-300 font-light">{g.desc}</p>
+                        <h4 className="text-md leading-none font-semibold text-white">
+                          {g.title}
+                        </h4>
+                        <p className="text-[12px] font-light text-gray-300">
+                          {g.desc}
+                        </p>
                       </div>
                     </button>
                   ))}
@@ -311,18 +417,25 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
             )}
 
             {/* STEP: Question 2 (Stress level) */}
-            {step === 'q_stress' && (
+            {step === "q_stress" && (
               <motion.div
                 key="q_stress"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
-                className="space-y-8 flex flex-col justify-center h-full"
+                className="flex h-full flex-col justify-center space-y-8"
               >
                 <div className="space-y-2">
-                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white">Step 2 of 3</span>
-                  <h2 className="text-3xl font-light text-white tracking-tight leading-tight">How often do you feel overwhelmed?</h2>
-                  <p className="text-gray-300 text-md font-light">Helps customize routine reminders and heart-rate recovery cycles.</p>
+                  <span className="text-[9px] font-black tracking-[0.3em] text-white uppercase">
+                    Step 2 of 3
+                  </span>
+                  <h2 className="text-3xl leading-tight font-light tracking-tight text-white">
+                    How often do you feel overwhelmed?
+                  </h2>
+                  <p className="text-md font-light text-gray-300">
+                    Helps customize routine reminders and heart-rate recovery
+                    cycles.
+                  </p>
                 </div>
 
                 <div className="space-y-3">
@@ -331,24 +444,29 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                       key={s.id}
                       onClick={() => {
                         setSelectedStress(s.id);
-                        setTimeout(() => setStep('q_experience'), 300);
+                        setTimeout(() => setStep("q_experience"), 300);
                       }}
-                      className={`w-full p-5 rounded-full border text-left transition-all duration-300 ${selectedStress === s.id
-                        ? 'border-emerald-500/50 bg-emerald-500/5 shadow-[0_0_20px_rgba(16,185,129,0.06)] scale-[1.02]'
-                        : 'border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]'
-                        }`}
+                      className={`w-full rounded-full border p-5 text-left transition-all duration-300 ${
+                        selectedStress === s.id
+                          ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/5 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
+                          : "border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]"
+                      }`}
                     >
                       <div className="space-y-1">
-                        <h4 className="text-md font-semibold text-white leading-none">{s.title}</h4>
-                        <p className="text-[12px] text-gray-300 font-light mt-1">{s.desc}</p>
+                        <h4 className="text-md leading-none font-semibold text-white">
+                          {s.title}
+                        </h4>
+                        <p className="mt-1 text-[12px] font-light text-gray-300">
+                          {s.desc}
+                        </p>
                       </div>
                     </button>
                   ))}
                 </div>
 
                 <button
-                  onClick={() => setStep('q_goal')}
-                  className="inline-flex items-center gap-2 text-xs text-gray-600 hover:text-white transition-colors mt-2"
+                  onClick={() => setStep("q_goal")}
+                  className="mt-2 inline-flex items-center gap-2 text-xs text-gray-600 transition-colors hover:text-white"
                 >
                   <ChevronLeft size={16} /> Back
                 </button>
@@ -356,18 +474,25 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
             )}
 
             {/* STEP: Question 3 (Experience Level) */}
-            {step === 'q_experience' && (
+            {step === "q_experience" && (
               <motion.div
                 key="q_experience"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
-                className="space-y-8 flex flex-col justify-center h-full"
+                className="flex h-full flex-col justify-center space-y-8"
               >
                 <div className="space-y-2">
-                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white">Step 3 of 3</span>
-                  <h2 className="text-3xl font-light text-white tracking-tight leading-tight">What is your experience level?</h2>
-                  <p className="text-gray-300 text-md font-light">Determines inhale/hold intervals and unlocking advanced options.</p>
+                  <span className="text-[9px] font-black tracking-[0.3em] text-white uppercase">
+                    Step 3 of 3
+                  </span>
+                  <h2 className="text-3xl leading-tight font-light tracking-tight text-white">
+                    What is your experience level?
+                  </h2>
+                  <p className="text-md font-light text-gray-300">
+                    Determines inhale/hold intervals and unlocking advanced
+                    options.
+                  </p>
                 </div>
 
                 <div className="space-y-3">
@@ -376,24 +501,29 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                       key={e.id}
                       onClick={() => {
                         setSelectedExperience(e.id);
-                        setTimeout(() => setStep('q_country'), 300);
+                        setTimeout(() => setStep("q_country"), 300);
                       }}
-                      className={`w-full p-5 rounded-full border text-left transition-all duration-300 ${selectedExperience === e.id
-                        ? 'border-emerald-500/50 bg-emerald-500/5 shadow-[0_0_20px_rgba(16,185,129,0.06)] scale-[1.02]'
-                        : 'border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]'
-                        }`}
+                      className={`w-full rounded-full border p-5 text-left transition-all duration-300 ${
+                        selectedExperience === e.id
+                          ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/5 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
+                          : "border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]"
+                      }`}
                     >
                       <div className="space-y-1">
-                        <h4 className="text-md font-semibold text-white leading-none">{e.title}</h4>
-                        <p className="text-[12px] text-gray-300 font-light mt-1">{e.desc}</p>
+                        <h4 className="text-md leading-none font-semibold text-white">
+                          {e.title}
+                        </h4>
+                        <p className="mt-1 text-[12px] font-light text-gray-300">
+                          {e.desc}
+                        </p>
                       </div>
                     </button>
                   ))}
                 </div>
 
                 <button
-                  onClick={() => setStep('q_stress')}
-                  className="inline-flex items-center gap-2 text-xs text-gray-600 hover:text-white transition-colors mt-2"
+                  onClick={() => setStep("q_stress")}
+                  className="mt-2 inline-flex items-center gap-2 text-xs text-gray-600 transition-colors hover:text-white"
                 >
                   <ChevronLeft size={16} /> Back
                 </button>
@@ -401,48 +531,69 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
             )}
 
             {/* STEP: Question 4 (Country Selection) */}
-            {step === 'q_country' && (
+            {step === "q_country" && (
               <motion.div
                 key="q_country"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
-                className="space-y-8 flex flex-col justify-center h-full"
+                className="flex h-full flex-col justify-center space-y-8"
               >
                 <div className="space-y-2">
-                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white">Step 4 of 4</span>
-                  <h2 className="text-3xl font-light text-white tracking-tight leading-tight">Where are you breathing from?</h2>
-                  <p className="text-gray-300 text-md font-light">
-                    We've detected your country as <span className="text-emerald-400 font-semibold">{countryNames[detectedCountry] || 'United States'}</span>. Confirm or select your country below to personalize your pricing and routines.
+                  <span className="text-[9px] font-black tracking-[0.3em] text-white uppercase">
+                    Step 4 of 4
+                  </span>
+                  <h2 className="text-3xl leading-tight font-light tracking-tight text-white">
+                    Where are you breathing from?
+                  </h2>
+                  <p className="text-md font-light text-gray-300">
+                    We've detected your country as{" "}
+                    <span className="font-semibold text-emerald-400">
+                      {countryNames[detectedCountry] || "United States"}
+                    </span>
+                    . Confirm or select your country below to personalize your
+                    pricing and routines.
                   </p>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="relative group">
-                    <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-400 transition-colors">
+                  <div className="group relative">
+                    <div className="absolute top-1/2 left-6 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-emerald-400">
                       <Globe size={18} />
                     </div>
                     <select
                       value={selectedCountry}
                       onChange={(e) => setSelectedCountry(e.target.value)}
-                      className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-full pl-16 pr-6 text-white focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all font-light text-sm cursor-pointer"
-                      style={{ colorScheme: 'dark' }}
+                      className="h-14 w-full cursor-pointer rounded-full border border-white/10 bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all focus:border-emerald-500/50 focus:bg-white/[0.05] focus:outline-none"
+                      style={{ colorScheme: "dark" }}
                     >
                       {Object.entries(countryNames).map(([code, name]) => (
-                        <option key={code} value={code} className="bg-neutral-900 text-white">
+                        <option
+                          key={code}
+                          value={code}
+                          className="bg-neutral-900 text-white"
+                        >
                           {name}
                         </option>
                       ))}
-                      <option value="DEFAULT" className="bg-neutral-900 text-white">Other Country / Global</option>
+                      <option
+                        value="DEFAULT"
+                        className="bg-neutral-900 text-white"
+                      >
+                        Other Country / Global
+                      </option>
                     </select>
                   </div>
 
                   <button
                     onClick={() => {
-                      localStorage.setItem('spirox_user_country', selectedCountry);
-                      setStep('calibrating');
+                      localStorage.setItem(
+                        "spirox_user_country",
+                        selectedCountry,
+                      );
+                      setStep("calibrating");
                     }}
-                    className="w-full h-14 bg-white text-black rounded-full font-black text-[10px] uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(255,255,255,0.06)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 relative overflow-hidden"
+                    className="relative flex h-14 w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-white text-[10px] font-black tracking-[0.2em] text-black uppercase shadow-[0_20px_40px_rgba(255,255,255,0.06)] transition-all hover:scale-105 active:scale-95"
                   >
                     Confirm & Start Calibration
                     <ArrowRight size={16} strokeWidth={3} />
@@ -450,8 +601,8 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                 </div>
 
                 <button
-                  onClick={() => setStep('q_experience')}
-                  className="inline-flex items-center gap-2 text-xs text-gray-600 hover:text-white transition-colors mt-2"
+                  onClick={() => setStep("q_experience")}
+                  className="mt-2 inline-flex items-center gap-2 text-xs text-gray-600 transition-colors hover:text-white"
                 >
                   <ChevronLeft size={16} /> Back
                 </button>
@@ -459,33 +610,45 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
             )}
 
             {/* STEP: Calibration Engine Loader */}
-            {step === 'calibrating' && (
+            {step === "calibrating" && (
               <motion.div
                 key="calibrating"
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 1.02 }}
-                className="space-y-12 text-center flex flex-col items-center justify-center h-full"
+                className="flex h-full flex-col items-center justify-center space-y-12 text-center"
               >
                 {/* Pulsing Diaphragm Simulator */}
-                <div className="relative w-44 h-44 flex items-center justify-center">
+                <div className="relative flex h-44 w-44 items-center justify-center">
                   <motion.div
                     animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
-                    transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut" }}
-                    className="absolute inset-0 bg-emerald-500/10 rounded-full blur-2xl"
+                    transition={{
+                      repeat: Infinity,
+                      duration: 3.5,
+                      ease: "easeInOut",
+                    }}
+                    className="absolute inset-0 rounded-full bg-emerald-500/10 blur-2xl"
                   />
                   <motion.div
                     animate={{ scale: [0.8, 1.15, 0.8] }}
-                    transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut" }}
-                    className="w-32 h-32 rounded-full border border-emerald-500/20 bg-emerald-500/5 flex items-center justify-center relative shadow-[0_0_30px_rgba(16,185,129,0.06)]"
+                    transition={{
+                      repeat: Infinity,
+                      duration: 3.5,
+                      ease: "easeInOut",
+                    }}
+                    className="relative flex h-32 w-32 items-center justify-center rounded-full border border-emerald-500/20 bg-emerald-500/5 shadow-[0_0_30px_rgba(16,185,129,0.06)]"
                   >
-                    <span className="text-2xl font-light text-emerald-400">{calibrationProgress}%</span>
+                    <span className="text-2xl font-light text-emerald-400">
+                      {calibrationProgress}%
+                    </span>
                   </motion.div>
                 </div>
 
                 <div className="space-y-3">
-                  <h3 className="text-xl font-light tracking-tight text-white">Generating Personalized Sanctuary</h3>
-                  <p className="text-gray-300 text-md font-light max-w-[280px] mx-auto leading-relaxed h-10 transition-all duration-300">
+                  <h3 className="text-xl font-light tracking-tight text-white">
+                    Generating Personalized Sanctuary
+                  </h3>
+                  <p className="text-md mx-auto h-10 max-w-[280px] leading-relaxed font-light text-gray-300 transition-all duration-300">
                     {calibrationText}
                   </p>
                 </div>
@@ -493,19 +656,19 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
             )}
 
             {/* STEP: Paywall Carousel Plan Selector */}
-            {step === 'paywall' && (
+            {step === "paywall" && (
               <motion.div
                 key="paywall"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -30 }}
-                className="absolute inset-0 z-50 bg-transparent flex flex-col h-full overflow-hidden"
+                className="absolute inset-0 z-50 flex h-full flex-col overflow-hidden bg-transparent"
               >
                 <SubscriptionView
-                  onBack={() => setStep('q_experience')}
+                  onBack={() => setStep("q_experience")}
                   onPlanSelected={(planId) => {
                     setChosenPlan(planId as any);
-                    setStep('auth');
+                    setStep("auth");
                   }}
                   isOnboarding
                 />
@@ -513,7 +676,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
             )}
 
             {/* STEP: Account Registration (AuthView integration) */}
-            {step === 'auth' && (
+            {step === "auth" && (
               <motion.div
                 key="auth"
                 initial={{ opacity: 0, x: 50 }}
@@ -522,12 +685,12 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                 className="absolute inset-0 z-50 bg-transparent"
               >
                 <AuthView
-                  onBack={() => setStep('paywall')}
+                  onBack={() => setStep("paywall")}
                   onSuccess={() => {
-                    if (chosenPlan === 'free') {
-                      setStep('success');
+                    if (chosenPlan === "free") {
+                      setStep("success");
                     } else {
-                      setStep('payment');
+                      setStep("payment");
                     }
                   }}
                 />
@@ -535,67 +698,92 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
             )}
 
             {/* STEP: Payment Gateway setup */}
-            {step === 'payment' && (
+            {step === "payment" && (
               <motion.div
                 key="payment"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -30 }}
-                className="space-y-8 flex flex-col justify-center h-full"
+                className="flex h-full flex-col justify-center space-y-8"
               >
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="text-emerald-400" size={16} />
-                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-400">Secure Payment Checkout</span>
+                    <span className="text-[9px] font-black tracking-[0.3em] text-emerald-400 uppercase">
+                      Secure Payment Checkout
+                    </span>
                   </div>
-                  <h2 className="text-3xl font-light text-white tracking-tight leading-tight">Payment Setup</h2>
-                  <p className="text-gray-300 text-md font-light">
-                    Set up your billing details to activate your <span className="text-white font-semibold uppercase">{chosenPlan}</span> membership.
+                  <h2 className="text-3xl leading-tight font-light tracking-tight text-white">
+                    Payment Setup
+                  </h2>
+                  <p className="text-md font-light text-gray-300">
+                    Set up your billing details to activate your{" "}
+                    <span className="font-semibold text-white uppercase">
+                      {chosenPlan}
+                    </span>{" "}
+                    membership.
                   </p>
                 </div>
 
                 {/* Glassmorphic Credit Card Preview */}
-                <div className="relative w-full h-44 rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.01] p-6 flex flex-col justify-between overflow-hidden shadow-2xl backdrop-blur-xl shrink-0">
-                  <div className="flex justify-between items-start">
-                    <div className="w-12 h-8 rounded-md bg-white/10 flex items-center justify-center font-bold text-xs text-white/50 tracking-wider">
+                <div className="relative flex h-44 w-full shrink-0 flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.01] p-6 shadow-2xl backdrop-blur-xl">
+                  <div className="flex items-start justify-between">
+                    <div className="flex h-8 w-12 items-center justify-center rounded-md bg-white/10 text-xs font-bold tracking-wider text-white/50">
                       CHIP
                     </div>
-                    {chosenPlan === 'premium' ? (
-                      <Crown className="text-amber-400" size={24} fill="currentColor" />
+                    {chosenPlan === "premium" ? (
+                      <Crown
+                        className="text-amber-400"
+                        size={24}
+                        fill="currentColor"
+                      />
                     ) : (
-                      <Star className="text-indigo-400" size={24} fill="currentColor" />
+                      <Star
+                        className="text-indigo-400"
+                        size={24}
+                        fill="currentColor"
+                      />
                     )}
                   </div>
 
                   <div className="space-y-4">
-                    <div className="text-xl tracking-[0.25em] font-light text-white font-mono h-6">
-                      {cardNumber || '•••• •••• •••• ••••'}
+                    <div className="h-6 font-mono text-xl font-light tracking-[0.25em] text-white">
+                      {cardNumber || "•••• •••• •••• ••••"}
                     </div>
-                    <div className="flex justify-between items-end">
+                    <div className="flex items-end justify-between">
                       <div className="space-y-1">
-                        <span className="text-[7px] text-gray-500 font-bold uppercase tracking-widest leading-none block">Cardholder</span>
-                        <span className="text-xs text-white/80 font-medium font-mono uppercase h-4 block overflow-hidden max-w-[200px] whitespace-nowrap">
-                          {cardName || 'YOUR FULL NAME'}
+                        <span className="block text-[7px] leading-none font-bold tracking-widest text-gray-500 uppercase">
+                          Cardholder
+                        </span>
+                        <span className="block h-4 max-w-[200px] overflow-hidden font-mono text-xs font-medium whitespace-nowrap text-white/80 uppercase">
+                          {cardName || "YOUR FULL NAME"}
                         </span>
                       </div>
                       <div className="space-y-1 text-right">
-                        <span className="text-[7px] text-gray-500 font-bold uppercase tracking-widest leading-none block">Expires</span>
-                        <span className="text-xs text-white/80 font-medium font-mono h-4 block">
-                          {cardExpiry || 'MM/YY'}
+                        <span className="block text-[7px] leading-none font-bold tracking-widest text-gray-500 uppercase">
+                          Expires
+                        </span>
+                        <span className="block h-4 font-mono text-xs font-medium text-white/80">
+                          {cardExpiry || "MM/YY"}
                         </span>
                       </div>
                     </div>
                   </div>
                   {/* Accent glow on card */}
-                  <div className={`absolute -right-20 -bottom-20 w-40 h-40 rounded-full blur-[60px] pointer-events-none opacity-40 ${chosenPlan === 'premium' ? 'bg-amber-500' : 'bg-indigo-500'
-                    }`} />
+                  <div
+                    className={`pointer-events-none absolute -right-20 -bottom-20 h-40 w-40 rounded-full opacity-40 blur-[60px] ${
+                      chosenPlan === "premium"
+                        ? "bg-amber-500"
+                        : "bg-indigo-500"
+                    }`}
+                  />
                 </div>
 
                 {/* Card Inputs Form */}
                 <form onSubmit={handlePaymentSubmit} className="space-y-4">
                   <div className="space-y-3">
-                    <div className="relative group">
-                      <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-emerald-400 transition-colors">
+                    <div className="group relative">
+                      <div className="absolute top-1/2 left-5 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-emerald-400">
                         <CreditCard size={16} />
                       </div>
                       <input
@@ -603,13 +791,13 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                         placeholder="Cardholder Name"
                         value={cardName}
                         onChange={(e) => setCardName(e.target.value)}
-                        className="w-full h-12 bg-white/[0.03] border border-white/10 rounded-full pl-14 pr-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all font-light text-sm"
+                        className="h-12 w-full rounded-full border border-white/10 bg-white/[0.03] pr-4 pl-14 text-sm font-light text-white transition-all placeholder:text-gray-600 focus:border-emerald-500/50 focus:bg-white/[0.05] focus:outline-none"
                         required
                       />
                     </div>
 
-                    <div className="relative group">
-                      <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-emerald-400 transition-colors">
+                    <div className="group relative">
+                      <div className="absolute top-1/2 left-5 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-emerald-400">
                         <CreditCard size={16} />
                       </div>
                       <input
@@ -617,30 +805,34 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                         placeholder="Card Number"
                         value={cardNumber}
                         onChange={(e) => handleCardNumberChange(e.target.value)}
-                        className="w-full h-12 bg-white/[0.03] border border-white/10 rounded-full pl-14 pr-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all font-mono text-sm"
+                        className="h-12 w-full rounded-full border border-white/10 bg-white/[0.03] pr-4 pl-14 font-mono text-sm text-white transition-all placeholder:text-gray-600 focus:border-emerald-500/50 focus:bg-white/[0.05] focus:outline-none"
                         required
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
-                      <div className="relative group">
+                      <div className="group relative">
                         <input
                           type="text"
                           placeholder="MM/YY"
                           value={cardExpiry}
                           onChange={(e) => handleExpiryChange(e.target.value)}
-                          className="w-full h-12 bg-white/[0.03] border border-white/10 rounded-full px-5 text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all font-mono text-sm text-center"
+                          className="h-12 w-full rounded-full border border-white/10 bg-white/[0.03] px-5 text-center font-mono text-sm text-white transition-all placeholder:text-gray-600 focus:border-emerald-500/50 focus:bg-white/[0.05] focus:outline-none"
                           maxLength={5}
                           required
                         />
                       </div>
-                      <div className="relative group">
+                      <div className="group relative">
                         <input
                           type="password"
                           placeholder="CVV"
                           value={cardCvv}
-                          onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, '').slice(0, 3))}
-                          className="w-full h-12 bg-white/[0.03] border border-white/10 rounded-full px-5 text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all font-mono text-sm text-center"
+                          onChange={(e) =>
+                            setCardCvv(
+                              e.target.value.replace(/\D/g, "").slice(0, 3),
+                            )
+                          }
+                          className="h-12 w-full rounded-full border border-white/10 bg-white/[0.03] px-5 text-center font-mono text-sm text-white transition-all placeholder:text-gray-600 focus:border-emerald-500/50 focus:bg-white/[0.05] focus:outline-none"
                           maxLength={3}
                           required
                         />
@@ -651,24 +843,39 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                   <button
                     type="submit"
                     disabled={isPaying}
-                    className="w-full h-14 bg-white text-black rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-400 transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3 relative overflow-hidden"
+                    className="relative flex h-14 w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-white text-[10px] font-black tracking-[0.2em] text-black uppercase shadow-2xl transition-all hover:bg-emerald-400 active:scale-95"
                   >
-                    <span className="relative z-10">{isPaying ? 'Authorizing Transaction...' : `Complete Checkout & Join`}</span>
-                    {!isPaying && <ArrowRight size={16} strokeWidth={3} className="relative z-10" />}
+                    <span className="relative z-10">
+                      {isPaying
+                        ? "Authorizing Transaction..."
+                        : `Complete Checkout & Join`}
+                    </span>
+                    {!isPaying && (
+                      <ArrowRight
+                        size={16}
+                        strokeWidth={3}
+                        className="relative z-10"
+                      />
+                    )}
 
                     {/* Sweep shimmer effect */}
                     <motion.div
-                      initial={{ x: '-100%' }}
-                      animate={{ x: '100%' }}
-                      transition={{ repeat: Infinity, repeatType: 'loop', duration: 2.5, ease: 'linear' }}
-                      className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-black/10 to-transparent pointer-events-none"
+                      initial={{ x: "-100%" }}
+                      animate={{ x: "100%" }}
+                      transition={{
+                        repeat: Infinity,
+                        repeatType: "loop",
+                        duration: 2.5,
+                        ease: "linear",
+                      }}
+                      className="pointer-events-none absolute inset-0 h-full w-full bg-gradient-to-r from-transparent via-black/10 to-transparent"
                     />
                   </button>
                 </form>
 
                 <button
-                  onClick={() => setStep('auth')}
-                  className="inline-flex items-center gap-2 text-xs text-gray-600 hover:text-white transition-colors"
+                  onClick={() => setStep("auth")}
+                  className="inline-flex items-center gap-2 text-xs text-gray-600 transition-colors hover:text-white"
                 >
                   <ChevronLeft size={16} /> Back
                 </button>
@@ -676,51 +883,52 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
             )}
 
             {/* STEP: Onboarding Success & Welcome */}
-            {step === 'success' && (
+            {step === "success" && (
               <motion.div
                 key="success"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
-                className="space-y-12 text-center flex flex-col items-center justify-center h-full"
+                className="flex h-full flex-col items-center justify-center space-y-12 text-center"
               >
                 <div className="space-y-4">
                   <motion.div
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    transition={{ type: 'spring', damping: 15 }}
-                    className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-green-600 rounded-[32px] mx-auto flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.3)] relative"
+                    transition={{ type: "spring", damping: 15 }}
+                    className="relative mx-auto flex h-24 w-24 items-center justify-center rounded-[32px] bg-gradient-to-br from-emerald-400 to-green-600 shadow-[0_0_50px_rgba(16,185,129,0.3)]"
                   >
                     <CheckCircle2 size={40} className="text-white" />
                   </motion.div>
                 </div>
 
                 <div className="space-y-3">
-                  <h2 className="text-3xl font-light tracking-tight text-white">Sanctuary Unlocked</h2>
-                  <p className="text-gray-400 text-xs font-light max-w-[280px] leading-relaxed mx-auto">
-                    {chosenPlan === 'free'
-                      ? 'Welcome to Spirox! Your account is created and free breathing cycles are ready.'
+                  <h2 className="text-3xl font-light tracking-tight text-white">
+                    Sanctuary Unlocked
+                  </h2>
+                  <p className="mx-auto max-w-[280px] text-xs leading-relaxed font-light text-gray-400">
+                    {chosenPlan === "free"
+                      ? "Welcome to Spirox! Your account is created and free breathing cycles are ready."
                       : `Welcome to Spirox Pro! Your premium billing is authorized and all masteries are unlocked.`}
                   </p>
                 </div>
 
                 <button
                   onClick={handleFinalRedirect}
-                  className="w-full h-14 bg-white text-black rounded-full font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 mt-8"
+                  className="mt-8 flex h-14 w-full items-center justify-center gap-3 rounded-full bg-white text-[10px] font-black tracking-[0.2em] text-black uppercase shadow-2xl transition-all hover:scale-105 active:scale-95"
                 >
                   Enter Your Sanctuary
                   <ArrowRight size={16} strokeWidth={3} />
                 </button>
               </motion.div>
             )}
-
           </AnimatePresence>
         </div>
       </div>
 
       {/* Ambient background glows */}
-      <div className="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none z-0" />
-      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none z-0" />
+      <div className="pointer-events-none absolute -top-40 -left-40 z-0 h-96 w-96 rounded-full bg-emerald-500/10 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-40 -bottom-40 z-0 h-96 w-96 rounded-full bg-indigo-500/10 blur-[120px]" />
     </div>
   );
 }

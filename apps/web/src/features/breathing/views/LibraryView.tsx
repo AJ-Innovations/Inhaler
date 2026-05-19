@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Library, Plus } from 'lucide-react';
-import { Exercise, exercises } from '../data';
-import { ExerciseCard } from '../components/ExerciseCard';
+import { motion } from "framer-motion";
+import { Library, Plus } from "lucide-react";
+import React from "react";
+
+import { ExerciseCard } from "../components/ExerciseCard";
+import { Exercise, exercises } from "../data";
 
 interface LibraryViewProps {
   onStart: (ex: Exercise) => void;
@@ -23,9 +24,11 @@ export function LibraryView({
   favorites,
   onToggleFavorite,
   onDeleteCustom,
-  onCreate
+  onCreate,
 }: LibraryViewProps) {
-  const favoriteExercises = exercises.filter((ex: Exercise) => favorites.includes(ex.id));
+  const favoriteExercises = exercises.filter((ex: Exercise) =>
+    favorites.includes(ex.id),
+  );
 
   return (
     <motion.div
@@ -34,11 +37,13 @@ export function LibraryView({
       exit={{ opacity: 0, y: -10 }}
       className="w-full"
     >
-      <div className="flex justify-between items-center mb-10">
-        <h1 className="text-3xl font-light tracking-tight text-white">My Library</h1>
+      <div className="mb-10 flex items-center justify-between">
+        <h1 className="text-3xl font-light tracking-tight text-white">
+          My Library
+        </h1>
         <button
           onClick={onCreate}
-          className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all"
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-black shadow-lg transition-all hover:scale-105 active:scale-95"
         >
           <Plus size={24} />
         </button>
@@ -47,16 +52,22 @@ export function LibraryView({
       {customExercises.length === 0 && favoriteExercises.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 text-center opacity-50">
           <Library size={48} strokeWidth={1} className="mb-4 text-gray-500" />
-          <p className="text-sm font-light text-gray-400">Your library is empty.<br />Create a journey or bookmark a practice.</p>
+          <p className="text-sm font-light text-gray-400">
+            Your library is empty.
+            <br />
+            Create a journey or bookmark a practice.
+          </p>
         </div>
       )}
 
       {customExercises.length > 0 && (
         <>
           <div className="mb-6">
-            <span className="text-[10px] uppercase tracking-[0.3em] font-medium text-gray-600 px-1">Created Collections</span>
+            <span className="px-1 text-[10px] font-medium tracking-[0.3em] text-gray-600 uppercase">
+              Created Collections
+            </span>
           </div>
-          <div className="flex flex-col gap-4 mb-10">
+          <div className="mb-10 flex flex-col gap-4">
             {customExercises.map((ex: Exercise) => (
               <ExerciseCard
                 key={ex.id}
@@ -74,7 +85,9 @@ export function LibraryView({
       {favoriteExercises.length > 0 && (
         <>
           <div className="mb-6">
-            <span className="text-[10px] uppercase tracking-[0.3em] font-medium text-gray-300 px-1">Saved Practices</span>
+            <span className="px-1 text-[10px] font-medium tracking-[0.3em] text-gray-300 uppercase">
+              Saved Practices
+            </span>
           </div>
           <div className="flex flex-col gap-4">
             {favoriteExercises.map((ex: Exercise) => (

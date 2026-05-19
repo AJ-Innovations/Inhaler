@@ -1,9 +1,11 @@
-import type { Metadata, Viewport } from "next";
 import "./globals.css";
+
+import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
   title: "Spirox | Breathing Exercises",
-  description: "A premium breathing exercise app for mindfulness and relaxation.",
+  description:
+    "A premium breathing exercise app for mindfulness and relaxation.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -29,12 +31,21 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600&display=swap" rel="stylesheet" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600&display=swap"
+          rel="stylesheet"
+        />
         <link rel="icon" href="/icon-192.png" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
-      <body suppressHydrationWarning className="bg-black">{children}</body>
+      <body suppressHydrationWarning className="bg-black">
+        {children}
+      </body>
     </html>
   );
 }

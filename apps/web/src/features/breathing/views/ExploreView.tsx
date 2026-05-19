@@ -1,10 +1,26 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Sparkles, Zap, Sunrise, Moon, Brain, Wind, Search, X, UserRound, Volume2, VolumeX, Compass, ChevronDown } from 'lucide-react';
-import { Exercise, exercises } from '../data';
-import { ExerciseCard } from '../components/ExerciseCard';
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Brain,
+  ChevronDown,
+  Compass,
+  Moon,
+  Play,
+  Search,
+  Sparkles,
+  Sunrise,
+  UserRound,
+  Volume2,
+  VolumeX,
+  Wind,
+  X,
+  Zap,
+} from "lucide-react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+
+import { ExerciseCard } from "../components/ExerciseCard";
+import { Exercise, exercises } from "../data";
 
 interface ExploreViewProps {
   onStart: (ex: Exercise) => void;
@@ -35,38 +51,82 @@ export function ExploreView({
   onProfileClick,
   soundscape,
   isAmbientSoundOn,
-  setIsAmbientSoundOn
+  setIsAmbientSoundOn,
 }: ExploreViewProps) {
   const [heroIndex, setHeroIndex] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [isAmbientSelectorOpen, setIsAmbientSelectorOpen] = useState(false);
 
   const ambientList = [
-    { id: 'zen-river', name: 'Zen River', image: '/image/ambients/river.png' },
-    { id: 'zen-fountain', name: 'Zen Fountain', image: '/image/ambients/whaterfalls.png' },
-    { id: 'winter-rain', name: 'Winter Rain', image: '/image/ambients/rain.png' },
-    { id: 'light-rain', name: 'Light Rain', image: '/image/ambients/rain2.png' },
-    { id: 'nature-birds', name: 'Nature Birds', image: '/image/ambients/nature2.png' },
-    { id: 'hz-transformation', name: '528Hz Transform', image: '/image/ambients/galaxy.png' },
-    { id: 'white-noise', name: 'White Noise', image: '/image/ambients/galaxy2.png' },
-    { id: 'pink-noise', name: 'Pink Noise', image: '/image/ambients/galaxy3.png' },
-    { id: 'brown-noise', name: 'Deep Brownian', image: '/image/ambients/nature.png' },
-    { id: 'beach', name: 'Sunset Beach', image: '/image/ambients/beach.png' },
-    { id: 'lake', name: 'Calm Lake', image: '/image/ambients/lake4.png' },
-    { id: 'marine', name: 'Marine Depths', image: '/image/ambients/marain.png' },
-    { id: 'desert', name: 'Desert Breeze', image: '/image/ambients/desert3.png' },
-    { id: 'ethereal', name: 'Ethereal Loop', image: '/image/ambients/loop.png' },
-    { id: 'forest', name: 'Oak Forest', image: '/image/ambients/forest.png' },
-    { id: 'leaf', name: 'Leaf', image: '/image/ambients/leaf.png' }
+    { id: "zen-river", name: "Zen River", image: "/image/ambients/river.png" },
+    {
+      id: "zen-fountain",
+      name: "Zen Fountain",
+      image: "/image/ambients/whaterfalls.png",
+    },
+    {
+      id: "winter-rain",
+      name: "Winter Rain",
+      image: "/image/ambients/rain.png",
+    },
+    {
+      id: "light-rain",
+      name: "Light Rain",
+      image: "/image/ambients/rain2.png",
+    },
+    {
+      id: "nature-birds",
+      name: "Nature Birds",
+      image: "/image/ambients/nature2.png",
+    },
+    {
+      id: "hz-transformation",
+      name: "528Hz Transform",
+      image: "/image/ambients/galaxy.png",
+    },
+    {
+      id: "white-noise",
+      name: "White Noise",
+      image: "/image/ambients/galaxy2.png",
+    },
+    {
+      id: "pink-noise",
+      name: "Pink Noise",
+      image: "/image/ambients/galaxy3.png",
+    },
+    {
+      id: "brown-noise",
+      name: "Deep Brownian",
+      image: "/image/ambients/nature.png",
+    },
+    { id: "beach", name: "Sunset Beach", image: "/image/ambients/beach.png" },
+    { id: "lake", name: "Calm Lake", image: "/image/ambients/lake4.png" },
+    {
+      id: "marine",
+      name: "Marine Depths",
+      image: "/image/ambients/marain.png",
+    },
+    {
+      id: "desert",
+      name: "Desert Breeze",
+      image: "/image/ambients/desert3.png",
+    },
+    {
+      id: "ethereal",
+      name: "Ethereal Loop",
+      image: "/image/ambients/loop.png",
+    },
+    { id: "forest", name: "Oak Forest", image: "/image/ambients/forest.png" },
+    { id: "leaf", name: "Leaf", image: "/image/ambients/leaf.png" },
   ];
 
   const handleToggleSound = () => {
     if (isAmbientSoundOn) {
       setIsAmbientSoundOn(false);
     } else {
-      if (soundscape.activeSoundscape === 'leaf') {
-        soundscape.setActiveSoundscape('zen-river');
+      if (soundscape.activeSoundscape === "leaf") {
+        soundscape.setActiveSoundscape("zen-river");
       }
       setIsAmbientSoundOn(true);
     }
@@ -74,60 +134,67 @@ export function ExploreView({
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour >= 5 && hour < 12) return 'Good Morning';
-    if (hour >= 12 && hour < 17) return 'Good Afternoon';
-    if (hour >= 17 && hour < 21) return 'Good Evening';
-    return 'Good Night';
+    if (hour >= 5 && hour < 12) return "Good Morning";
+    if (hour >= 12 && hour < 17) return "Good Afternoon";
+    if (hour >= 17 && hour < 21) return "Good Evening";
+    return "Good Night";
   };
 
   const currentDayIndex = new Date().getDay();
   const weekDays = [
-    { name: 'Monday', label: 'M', value: 1 },
-    { name: 'Tuesday', label: 'T', value: 2 },
-    { name: 'Wednesday', label: 'W', value: 3 },
-    { name: 'Thursday', label: 'T', value: 4 },
-    { name: 'Friday', label: 'F', value: 5 },
-    { name: 'Saturday', label: 'S', value: 6 },
-    { name: 'Sunday', label: 'S', value: 0 }
+    { name: "Monday", label: "M", value: 1 },
+    { name: "Tuesday", label: "T", value: 2 },
+    { name: "Wednesday", label: "W", value: 3 },
+    { name: "Thursday", label: "T", value: 4 },
+    { name: "Friday", label: "F", value: 5 },
+    { name: "Saturday", label: "S", value: 6 },
+    { name: "Sunday", label: "S", value: 0 },
   ];
 
   const categories = [
     {
-      id: 'stress-relief',
-      title: 'Stress Relief & Reset',
-      desc: 'Soothe the nervous system instantly',
-      exerciseIds: ['calm', '478', 'bhramari', 'anulom']
+      id: "stress-relief",
+      title: "Stress Relief & Reset",
+      desc: "Soothe the nervous system instantly",
+      exerciseIds: ["calm", "478", "bhramari", "anulom"],
     },
     {
-      id: 'sleep-calm',
-      title: 'Sleep & Calm',
-      desc: 'Slow down and drift into deep peace',
-      exerciseIds: ['478', 'calm', 'bhramari', 'sitali']
+      id: "sleep-calm",
+      title: "Sleep & Calm",
+      desc: "Slow down and drift into deep peace",
+      exerciseIds: ["478", "calm", "bhramari", "sitali"],
     },
     {
-      id: 'focus-balance',
-      title: 'Focus & Balance',
-      desc: 'Align your mind and center your cognitive state',
-      exerciseIds: ['box', 'nadi', 'anulom', 'buteyko']
+      id: "focus-balance",
+      title: "Focus & Balance",
+      desc: "Align your mind and center your cognitive state",
+      exerciseIds: ["box", "nadi", "anulom", "buteyko"],
     },
     {
-      id: 'athletic-performance',
-      title: 'Athletic Performance',
-      desc: 'Expand lung capacity and boost oxygen efficiency',
-      exerciseIds: ['box', 'deep-hold', 'wim-hof', 'buteyko']
+      id: "athletic-performance",
+      title: "Athletic Performance",
+      desc: "Expand lung capacity and boost oxygen efficiency",
+      exerciseIds: ["box", "deep-hold", "wim-hof", "buteyko"],
     },
     {
-      id: 'pranayama-mastery',
-      title: 'Pranayama Mastery',
-      desc: 'Traditional yogic breathing techniques',
-      exerciseIds: ['nadi', 'kapalbhati', 'anulom', 'bhastrika', 'sitali', 'sudarshan']
+      id: "pranayama-mastery",
+      title: "Pranayama Mastery",
+      desc: "Traditional yogic breathing techniques",
+      exerciseIds: [
+        "nadi",
+        "kapalbhati",
+        "anulom",
+        "bhastrika",
+        "sitali",
+        "sudarshan",
+      ],
     },
     {
-      id: 'advanced-power',
-      title: 'Advanced & Power',
-      desc: 'Build endurance, heat, and internal force',
-      exerciseIds: ['kapalbhati', 'ibuki', 'deep-hold', 'bhastrika', 'wim-hof']
-    }
+      id: "advanced-power",
+      title: "Advanced & Power",
+      desc: "Build endurance, heat, and internal force",
+      exerciseIds: ["kapalbhati", "ibuki", "deep-hold", "bhastrika", "wim-hof"],
+    },
   ];
 
   const heroSlides = useMemo(() => {
@@ -136,59 +203,59 @@ export function ExploreView({
 
     if (hour >= 5 && hour < 12) {
       slides.push({
-        id: 'time-morning',
-        exercise: exercises.find(e => e.id === 'box') || exercises[0],
+        id: "time-morning",
+        exercise: exercises.find((e) => e.id === "box") || exercises[0],
         title: "Morning Focus",
         subtitle: "Kickstart your day with clarity.",
         label: "Recommended for Morning",
         icon: Sunrise,
         color: "text-white",
-        bg: "from-white/10 to-transparent"
+        bg: "from-white/10 to-transparent",
       });
     } else if (hour >= 12 && hour < 18) {
       slides.push({
-        id: 'time-afternoon',
-        exercise: exercises.find(e => e.id === 'equal') || exercises[2],
+        id: "time-afternoon",
+        exercise: exercises.find((e) => e.id === "equal") || exercises[2],
         title: "Afternoon Balance",
         subtitle: "Maintain focus and reduce stress.",
         label: "Recommended for Afternoon",
         icon: Sparkles,
         color: "text-white",
-        bg: "from-white/10 to-transparent"
+        bg: "from-white/10 to-transparent",
       });
     } else {
       slides.push({
-        id: 'time-evening',
-        exercise: exercises.find(e => e.id === '478') || exercises[1],
+        id: "time-evening",
+        exercise: exercises.find((e) => e.id === "478") || exercises[1],
         title: "Evening Calm",
         subtitle: "Prepare your mind for deep rest.",
         label: "Recommended for Evening",
         icon: Moon,
         color: "text-white",
-        bg: "from-white/10 to-transparent"
+        bg: "from-white/10 to-transparent",
       });
     }
 
     slides.push({
-      id: 'feat-brain',
-      exercise: exercises.find(e => e.id === 'box') || exercises[0],
+      id: "feat-brain",
+      exercise: exercises.find((e) => e.id === "box") || exercises[0],
       title: "Mental Edge",
       subtitle: "Optimize cognitive performance.",
       label: "Scientific Choice",
       icon: Brain,
       color: "text-white",
-      bg: "from-white/10 to-transparent"
+      bg: "from-white/10 to-transparent",
     });
 
     slides.push({
-      id: 'feat-deep',
-      exercise: exercises.find(e => e.id === '478') || exercises[1],
+      id: "feat-deep",
+      exercise: exercises.find((e) => e.id === "478") || exercises[1],
       title: "Deep Presence",
       subtitle: "Go beyond the surface level.",
       label: "Mastery Class",
       icon: Wind,
       color: "text-white",
-      bg: "from-white/10 to-transparent"
+      bg: "from-white/10 to-transparent",
     });
 
     return slides;
@@ -208,7 +275,9 @@ export function ExploreView({
     if (dir > 0) {
       setHeroIndex((prev) => (prev + 1) % heroSlides.length);
     } else {
-      setHeroIndex((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+      setHeroIndex(
+        (prev) => (prev - 1 + heroSlides.length) % heroSlides.length,
+      );
     }
   };
 
@@ -217,22 +286,24 @@ export function ExploreView({
   const filteredCustomExercises = useMemo(() => {
     if (!searchQuery.trim()) return customExercises;
     const query = searchQuery.toLowerCase().trim();
-    return customExercises.filter(ex =>
-      ex.name.toLowerCase().includes(query) ||
-      ex.subtitle.toLowerCase().includes(query) ||
-      ex.description.toLowerCase().includes(query) ||
-      ex.benefits.some(b => b.toLowerCase().includes(query))
+    return customExercises.filter(
+      (ex) =>
+        ex.name.toLowerCase().includes(query) ||
+        ex.subtitle.toLowerCase().includes(query) ||
+        ex.description.toLowerCase().includes(query) ||
+        ex.benefits.some((b) => b.toLowerCase().includes(query)),
     );
   }, [customExercises, searchQuery]);
 
   const filteredGlobalExercises = useMemo(() => {
     if (!searchQuery.trim()) return exercises;
     const query = searchQuery.toLowerCase().trim();
-    return exercises.filter(ex =>
-      ex.name.toLowerCase().includes(query) ||
-      ex.subtitle.toLowerCase().includes(query) ||
-      ex.description.toLowerCase().includes(query) ||
-      ex.benefits.some(b => b.toLowerCase().includes(query))
+    return exercises.filter(
+      (ex) =>
+        ex.name.toLowerCase().includes(query) ||
+        ex.subtitle.toLowerCase().includes(query) ||
+        ex.description.toLowerCase().includes(query) ||
+        ex.benefits.some((b) => b.toLowerCase().includes(query)),
     );
   }, [searchQuery]);
 
@@ -243,13 +314,13 @@ export function ExploreView({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="w-full animate-fadeIn"
+      className="animate-fadeIn w-full"
     >
       {/* Dynamic Greeting & Weekly Calendar Widget */}
       {!hasActiveSearch && (
-        <div className="pt-6 pb-4 px-1 flex flex-col gap-3">
-          <div className="flex justify-between items-center w-full">
-            <h1 className="text-3xl font-light text-white tracking-tight drop-shadow-md">
+        <div className="flex flex-col gap-3 px-1 pt-6 pb-4">
+          <div className="flex w-full items-center justify-between">
+            <h1 className="text-3xl font-light tracking-tight text-white drop-shadow-md">
               {getGreeting()}
             </h1>
 
@@ -257,18 +328,23 @@ export function ExploreView({
             <div className="flex items-center gap-2">
               <button
                 onClick={handleToggleSound}
-                className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all active:scale-90 shadow-md backdrop-blur-md ${isAmbientSoundOn
-                  ? 'bg-white/10 border-white/20 text-white'
-                  : 'bg-white/[0.03] border-white/5 text-white/40 hover:text-white hover:bg-white/[0.06]'
-                  }`}
-                title={`Ambient Sound: ${isAmbientSoundOn ? 'ON' : 'OFF'}`}
+                className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-md backdrop-blur-md transition-all active:scale-90 ${
+                  isAmbientSoundOn
+                    ? "border-white/20 bg-white/10 text-white"
+                    : "border-white/5 bg-white/[0.03] text-white/40 hover:bg-white/[0.06] hover:text-white"
+                }`}
+                title={`Ambient Sound: ${isAmbientSoundOn ? "ON" : "OFF"}`}
               >
-                {isAmbientSoundOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
+                {isAmbientSoundOn ? (
+                  <Volume2 size={16} />
+                ) : (
+                  <VolumeX size={16} />
+                )}
               </button>
 
               <button
                 onClick={() => setIsAmbientSelectorOpen(true)}
-                className="w-10 h-10 rounded-full bg-white/[0.03] border border-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.06] transition-all active:scale-90 shadow-md backdrop-blur-md"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-white/[0.03] text-white/40 shadow-md backdrop-blur-md transition-all hover:bg-white/[0.06] hover:text-white active:scale-90"
                 title="Change Ambient Sanctuary"
               >
                 <Compass size={16} />
@@ -277,16 +353,17 @@ export function ExploreView({
           </div>
 
           {/* Weekly Calendar Tracker */}
-          <div className="flex gap-4 pt-1.5 px-0.5">
+          <div className="flex gap-4 px-0.5 pt-1.5">
             {weekDays.map((day) => {
               const isToday = currentDayIndex === day.value;
               return (
                 <div
                   key={day.name}
-                  className={`text-xs transition-all relative ${isToday
-                    ? 'text-white scale-110'
-                    : 'text-white/20 font-medium'
-                    }`}
+                  className={`relative text-xs transition-all ${
+                    isToday
+                      ? "scale-110 text-white"
+                      : "font-medium text-white/20"
+                  }`}
                 >
                   {day.label}
                 </div>
@@ -296,12 +373,12 @@ export function ExploreView({
         </div>
       )}
       {/* Sticky Top Bar containing Search & Rounded Profile Icon */}
-      <div className="sticky top-0 z-50 pt-4 pb-2 flex items-center gap-3 w-full">
+      <div className="sticky top-0 z-50 flex w-full items-center gap-3 pt-4 pb-2">
         {/* Search Bar */}
-        <div className="relative flex-1 z-50">
-          <div className="relative flex items-center group">
+        <div className="relative z-50 flex-1">
+          <div className="group relative flex items-center">
             <Search
-              className="absolute left-4 text-white/50 transition-colors group-focus-within:text-white z-50"
+              className="absolute left-4 z-50 text-white/50 transition-colors group-focus-within:text-white"
               size={18}
             />
             <input
@@ -309,12 +386,12 @@ export function ExploreView({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search practices, benefits, or goals..."
-              className="w-full h-12 pl-12 pr-10 rounded-full bg-white/5 border border-white/10 text-white placeholder-white/50 text-sm focus:outline-none focus:border-white/20 focus:bg-white/[0.02] transition-all duration-300 shadow-inner backdrop-blur-xs"
+              className="h-12 w-full rounded-full border border-white/10 bg-white/5 pr-10 pl-12 text-sm text-white placeholder-white/50 shadow-inner backdrop-blur-xs transition-all duration-300 focus:border-white/20 focus:bg-white/[0.02] focus:outline-none"
             />
             {searchQuery && (
               <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-4 p-1 rounded-full hover:bg-white/10 text-gray-500 hover:text-white transition-colors"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-4 rounded-full p-1 text-gray-500 transition-colors hover:bg-white/10 hover:text-white"
               >
                 <X size={14} />
               </button>
@@ -327,11 +404,15 @@ export function ExploreView({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={onProfileClick}
-          className="relative w-12 h-12 rounded-full border border-white/10 bg-white/[0.03] flex items-center justify-center flex-shrink-0 cursor-pointer overflow-visible shadow-lg hover:border-white/20 transition-all"
+          className="relative flex h-12 w-12 flex-shrink-0 cursor-pointer items-center justify-center overflow-visible rounded-full border border-white/10 bg-white/[0.03] shadow-lg transition-all hover:border-white/20"
         >
-          <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full">
             {userAvatar ? (
-              <img src={userAvatar} alt="Avatar" className="w-full h-full object-cover" />
+              <img
+                src={userAvatar}
+                alt="Avatar"
+                className="h-full w-full object-cover"
+              />
             ) : (
               <UserRound size={22} className="text-white/40" />
             )}
@@ -341,10 +422,9 @@ export function ExploreView({
       {!hasActiveSearch ? (
         <div className="w-full">
           {/* Explore Hero Section Fold */}
-          <div className="flex flex-col pb-40 h-[calc(100vh-200px)] min-h-[400px] relative">
-
+          <div className="relative flex h-[calc(100vh-200px)] min-h-[400px] flex-col pb-40">
             {/* Hero Section */}
-            <section className="relative w-full flex-1 rounded-[48px] overflow-hidden group touch-pan-y mt-4">
+            <section className="group relative mt-4 w-full flex-1 touch-pan-y overflow-hidden rounded-[48px]">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeSlide.id}
@@ -356,29 +436,33 @@ export function ExploreView({
                     if (info.offset.x > 50) handleManualNav(-1);
                     else if (info.offset.x < -50) handleManualNav(1);
                   }}
-                  className="absolute inset-0 rounded-[48px] p-8 flex flex-col items-center justify-center text-center gap-6 shadow-2xl overflow-hidden z-10"
+                  className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 overflow-hidden rounded-[48px] p-8 text-center shadow-2xl"
                 >
                   <div
-                    className={`absolute inset-0 opacity-30 blur-[120px] transition-all duration-1000 bg-gradient-to-br ${activeSlide.bg}`}
+                    className={`absolute inset-0 bg-gradient-to-br opacity-30 blur-[120px] transition-all duration-1000 ${activeSlide.bg}`}
                   />
 
                   <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.2 }}
-                    className={`w-20 h-20 rounded-[28px] flex items-center justify-center shadow-inner relative z-10 ${activeSlide.color}`}
+                    className={`relative z-10 flex h-20 w-20 items-center justify-center rounded-[28px] shadow-inner ${activeSlide.color}`}
                   >
                     <activeSlide.icon size={36} strokeWidth={1.5} />
-                    <div className="absolute inset-0 blur-3xl opacity-10 bg-white rounded-full" />
+                    <div className="absolute inset-0 rounded-full bg-white opacity-10 blur-3xl" />
                   </motion.div>
 
-                  <div className="space-y-4 relative z-10 pointer-events-none mt-2">
+                  <div className="pointer-events-none relative z-10 mt-2 space-y-4">
                     <div className="overflow-hidden">
                       <motion.div
                         initial={{ y: "100%", opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.3, duration: 0.5, ease: "easeOut" }}
-                        className="text-[11px] font-black uppercase tracking-[0.4em] text-white/70"
+                        transition={{
+                          delay: 0.3,
+                          duration: 0.5,
+                          ease: "easeOut",
+                        }}
+                        className="text-[11px] font-black tracking-[0.4em] text-white/70 uppercase"
                       >
                         {activeSlide.label}
                       </motion.div>
@@ -388,8 +472,12 @@ export function ExploreView({
                       <motion.h2
                         initial={{ y: "100%", opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.4, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                        className="text-5xl font-light text-white tracking-tight leading-tight"
+                        transition={{
+                          delay: 0.4,
+                          duration: 1,
+                          ease: [0.16, 1, 0.3, 1],
+                        }}
+                        className="text-5xl leading-tight font-light tracking-tight text-white"
                       >
                         {activeSlide.title}
                       </motion.h2>
@@ -399,8 +487,12 @@ export function ExploreView({
                       <motion.p
                         initial={{ y: "100%", opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.5, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                        className="text-white/80 text-sm font-light max-w-[320px] leading-relaxed mx-auto"
+                        transition={{
+                          delay: 0.5,
+                          duration: 1,
+                          ease: [0.16, 1, 0.3, 1],
+                        }}
+                        className="mx-auto max-w-[320px] text-sm leading-relaxed font-light text-white/80"
                       >
                         {activeSlide.subtitle}
                       </motion.p>
@@ -412,7 +504,7 @@ export function ExploreView({
                       e.stopPropagation();
                       onStart(activeSlide.exercise);
                     }}
-                    className="group relative h-10 px-8 rounded-full bg-white text-black font-bold text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 shadow-[0_20px_40px_rgba(255,255,255,0.12)] hover:scale-105 active:scale-95 transition-all mt-1 z-20"
+                    className="group relative z-20 mt-1 flex h-10 items-center justify-center gap-2 rounded-full bg-white px-8 text-[9px] font-bold tracking-widest text-black uppercase shadow-[0_20px_40px_rgba(255,255,255,0.12)] transition-all hover:scale-105 active:scale-95"
                   >
                     <Play size={10} fill="currentColor" />
                     <span>Begin Session</span>
@@ -424,29 +516,42 @@ export function ExploreView({
             {/* Bouncing Scroll Indicator */}
             <motion.div
               animate={{ y: [0, 8, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              className="absolute bottom-30 left-1/2 -translate-x-1/2 z-50 text-white/50 pointer-events-none"
+              transition={{
+                repeat: Infinity,
+                duration: 1.5,
+                ease: "easeInOut",
+              }}
+              className="pointer-events-none absolute bottom-30 left-1/2 z-50 -translate-x-1/2 text-white/50"
             >
               <ChevronDown size={32} />
             </motion.div>
           </div>
 
           {/* Scrollable category-based carousels below the 100vh fold */}
-          <div className="space-y-8 mt-8 w-full pb-8">
+          <div className="mt-8 w-full space-y-8 pb-8">
             {/* Personal Journeys Carousel */}
             {customExercises.length > 0 && (
               <div className="space-y-4">
-                <div className="flex justify-between items-center px-1">
+                <div className="flex items-center justify-between px-1">
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-[10px] uppercase tracking-[0.3em] font-black text-white/80">Personal Journeys</span>
-                    <span className="text-[8px] uppercase tracking-widest text-white/30 font-bold">Your custom practices</span>
+                    <span className="text-[10px] font-black tracking-[0.3em] text-white/80 uppercase">
+                      Personal Journeys
+                    </span>
+                    <span className="text-[8px] font-bold tracking-widest text-white/30 uppercase">
+                      Your custom practices
+                    </span>
                   </div>
-                  <span className="text-[9px] text-white/40 font-bold uppercase tracking-widest">{customExercises.length} sessions</span>
+                  <span className="text-[9px] font-bold tracking-widest text-white/40 uppercase">
+                    {customExercises.length} sessions
+                  </span>
                 </div>
 
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory mask-fade-edges -mx-1 px-1">
+                <div className="scrollbar-hide mask-fade-edges -mx-1 flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-4">
                   {customExercises.map((ex) => (
-                    <div key={ex.id} className="snap-center shrink-0 w-[95vw] sm:w-[420px]">
+                    <div
+                      key={ex.id}
+                      className="w-[95vw] shrink-0 snap-center sm:w-[420px]"
+                    >
                       <ExerciseCard
                         exercise={ex}
                         onStart={() => onStart(ex)}
@@ -462,22 +567,33 @@ export function ExploreView({
 
             {/* Category Carousels */}
             {categories.map((cat) => {
-              const catExercises = exercises.filter(ex => cat.exerciseIds.includes(ex.id));
+              const catExercises = exercises.filter((ex) =>
+                cat.exerciseIds.includes(ex.id),
+              );
               if (catExercises.length === 0) return null;
 
               return (
                 <div key={cat.id} className="space-y-4">
-                  <div className="flex justify-between items-center px-1">
+                  <div className="flex items-center justify-between px-1">
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-[10px] uppercase tracking-[0.3em] font-black text-white">{cat.title}</span>
-                      <span className="text-[8px] uppercase tracking-widest text-white/40 font-bold">{cat.desc}</span>
+                      <span className="text-[10px] font-black tracking-[0.3em] text-white uppercase">
+                        {cat.title}
+                      </span>
+                      <span className="text-[8px] font-bold tracking-widest text-white/40 uppercase">
+                        {cat.desc}
+                      </span>
                     </div>
-                    <span className="text-[9px] text-white/40 font-bold uppercase tracking-widest">{catExercises.length} practices</span>
+                    <span className="text-[9px] font-bold tracking-widest text-white/40 uppercase">
+                      {catExercises.length} practices
+                    </span>
                   </div>
 
-                  <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory mask-fade-edges -mx-1 px-1">
+                  <div className="scrollbar-hide mask-fade-edges -mx-1 flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-4">
                     {catExercises.map((ex) => (
-                      <div key={ex.id} className="snap-center shrink-0 w-[95vw] sm:w-[420px]">
+                      <div
+                        key={ex.id}
+                        className="w-[95vw] shrink-0 snap-center sm:w-[420px]"
+                      >
                         <ExerciseCard
                           exercise={ex}
                           onStart={() => onStart(ex)}
@@ -495,23 +611,34 @@ export function ExploreView({
         </div>
       ) : (
         /* Search Results View */
-        <div className="space-y-10 mt-4 w-full">
-          {filteredCustomExercises.length === 0 && filteredGlobalExercises.length === 0 ? (
+        <div className="mt-4 w-full space-y-10">
+          {filteredCustomExercises.length === 0 &&
+          filteredGlobalExercises.length === 0 ? (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
               className="flex flex-col items-center justify-center py-20 text-center"
             >
-              <Search size={48} strokeWidth={1} className="mb-4 text-gray-500" />
-              <p className="text-sm font-light text-gray-400">No practices found matching "{searchQuery}"</p>
+              <Search
+                size={48}
+                strokeWidth={1}
+                className="mb-4 text-gray-500"
+              />
+              <p className="text-sm font-light text-gray-400">
+                No practices found matching "{searchQuery}"
+              </p>
             </motion.div>
           ) : (
             <>
               {filteredCustomExercises.length > 0 && (
                 <div className="space-y-6">
-                  <div className="flex justify-between items-center px-1">
-                    <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-white/50">Personal Journeys</span>
-                    <span className="text-[10px] text-white/40 font-medium">{filteredCustomExercises.length} found</span>
+                  <div className="flex items-center justify-between px-1">
+                    <span className="text-[10px] font-bold tracking-[0.3em] text-white/50 uppercase">
+                      Personal Journeys
+                    </span>
+                    <span className="text-[10px] font-medium text-white/40">
+                      {filteredCustomExercises.length} found
+                    </span>
                   </div>
                   <div className="flex flex-col gap-5">
                     {filteredCustomExercises.map((ex) => (
@@ -530,9 +657,13 @@ export function ExploreView({
 
               {filteredGlobalExercises.length > 0 && (
                 <div className="space-y-6">
-                  <div className="flex justify-between items-center px-1">
-                    <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-white/50">Global Collection</span>
-                    <span className="text-[10px] text-white/40 font-medium">{filteredGlobalExercises.length} found</span>
+                  <div className="flex items-center justify-between px-1">
+                    <span className="text-[10px] font-bold tracking-[0.3em] text-white/50 uppercase">
+                      Global Collection
+                    </span>
+                    <span className="text-[10px] font-medium text-white/40">
+                      {filteredGlobalExercises.length} found
+                    </span>
                   </div>
                   <div className="flex flex-col gap-5">
                     {filteredGlobalExercises.map((ex) => (
@@ -560,17 +691,21 @@ export function ExploreView({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[600] bg-black/85 backdrop-blur-3xl flex flex-col p-6 overflow-y-auto"
+            className="fixed inset-0 z-[600] flex flex-col overflow-y-auto bg-black/85 p-6 backdrop-blur-3xl"
           >
-            <div className="max-w-[480px] mx-auto w-full flex-1 flex flex-col pt-8">
-              <div className="flex justify-between items-center mb-8">
+            <div className="mx-auto flex w-full max-w-[480px] flex-1 flex-col pt-8">
+              <div className="mb-8 flex items-center justify-between">
                 <div className="space-y-1">
-                  <h2 className="text-2xl font-light text-white tracking-tight">Ambient Sanctuary</h2>
-                  <p className="text-xs text-white/40 font-light">Set your visual & auditory environment</p>
+                  <h2 className="text-2xl font-light tracking-tight text-white">
+                    Ambient Sanctuary
+                  </h2>
+                  <p className="text-xs font-light text-white/40">
+                    Set your visual & auditory environment
+                  </p>
                 </div>
                 <button
                   onClick={() => setIsAmbientSelectorOpen(false)}
-                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all active:scale-90"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-all hover:bg-white/10 active:scale-90"
                 >
                   <X size={18} className="text-white" />
                 </button>
@@ -584,30 +719,31 @@ export function ExploreView({
                       key={item.id}
                       onClick={() => {
                         soundscape.setActiveSoundscape(item.id);
-                        if (item.id !== 'none') {
+                        if (item.id !== "none") {
                           setIsAmbientSoundOn(true);
                         } else {
                           setIsAmbientSoundOn(false);
                         }
                       }}
-                      className={`group relative rounded-2xl overflow-hidden border aspect-[3/4] flex flex-col text-left transition-all duration-300 active:scale-95 shadow-md ${isActive
-                        ? 'border-white ring-1 ring-white/30 shadow-[0_0_15px_rgba(255,255,255,0.15)]'
-                        : 'border-white/10 hover:border-white/20'
-                        }`}
+                      className={`group relative flex aspect-[3/4] flex-col overflow-hidden rounded-2xl border text-left shadow-md transition-all duration-300 active:scale-95 ${
+                        isActive
+                          ? "border-white shadow-[0_0_15px_rgba(255,255,255,0.15)] ring-1 ring-white/30"
+                          : "border-white/10 hover:border-white/20"
+                      }`}
                     >
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-80"
+                        className="absolute inset-0 h-full w-full object-cover opacity-60 transition-transform duration-500 group-hover:scale-110 group-hover:opacity-80"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
-                      <div className="mt-auto p-3.5 relative z-10 space-y-0.5">
-                        <span className="text-[10px] font-bold text-white tracking-wide block truncate">
+                      <div className="relative z-10 mt-auto space-y-0.5 p-3.5">
+                        <span className="block truncate text-[10px] font-bold tracking-wide text-white">
                           {item.name}
                         </span>
-                        <span className="text-[8px] text-white/40 font-medium uppercase tracking-widest block">
-                          {item.id === 'none' ? 'Silent' : 'Audio + Visual'}
+                        <span className="block text-[8px] font-medium tracking-widest text-white/40 uppercase">
+                          {item.id === "none" ? "Silent" : "Audio + Visual"}
                         </span>
                       </div>
                     </button>

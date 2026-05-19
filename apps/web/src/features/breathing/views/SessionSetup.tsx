@@ -1,29 +1,53 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Timer, RotateCcw, Infinity, Check, Sparkles } from 'lucide-react';
-import { Exercise } from '../data';
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  ArrowLeft,
+  Check,
+  Infinity,
+  RotateCcw,
+  Sparkles,
+  Timer,
+} from "lucide-react";
+import React, { useState } from "react";
+
+import { Exercise } from "../data";
 
 const getAmbientImage = (activeSoundscape: string) => {
   switch (activeSoundscape) {
-    case 'zen-river': return '/image/ambients/river.png';
-    case 'zen-fountain': return '/image/ambients/whaterfalls.png';
-    case 'winter-rain': return '/image/ambients/rain.png';
-    case 'light-rain': return '/image/ambients/rain2.png';
-    case 'nature-birds': return '/image/ambients/nature2.png';
-    case 'hz-transformation': return '/image/ambients/galaxy.png';
-    case 'white-noise': return '/image/ambients/galaxy2.png';
-    case 'pink-noise': return '/image/ambients/galaxy3.png';
-    case 'brown-noise': return '/image/ambients/nature.png';
-    case 'beach': return '/image/ambients/beach.png';
-    case 'lake': return '/image/ambients/lake4.png';
-    case 'marine': return '/image/ambients/marain.png';
-    case 'desert': return '/image/ambients/desert3.png';
-    case 'ethereal': return '/image/ambients/loop.png';
-    case 'forest': return '/image/ambients/forest.png';
-    case 'leaf':
-    default: return '/image/ambients/leaf.png';
+    case "zen-river":
+      return "/image/ambients/river.png";
+    case "zen-fountain":
+      return "/image/ambients/whaterfalls.png";
+    case "winter-rain":
+      return "/image/ambients/rain.png";
+    case "light-rain":
+      return "/image/ambients/rain2.png";
+    case "nature-birds":
+      return "/image/ambients/nature2.png";
+    case "hz-transformation":
+      return "/image/ambients/galaxy.png";
+    case "white-noise":
+      return "/image/ambients/galaxy2.png";
+    case "pink-noise":
+      return "/image/ambients/galaxy3.png";
+    case "brown-noise":
+      return "/image/ambients/nature.png";
+    case "beach":
+      return "/image/ambients/beach.png";
+    case "lake":
+      return "/image/ambients/lake4.png";
+    case "marine":
+      return "/image/ambients/marain.png";
+    case "desert":
+      return "/image/ambients/desert3.png";
+    case "ethereal":
+      return "/image/ambients/loop.png";
+    case "forest":
+      return "/image/ambients/forest.png";
+    case "leaf":
+    default:
+      return "/image/ambients/leaf.png";
   }
 };
 
@@ -35,12 +59,19 @@ interface SessionSetupProps {
 }
 
 export interface SessionConfig {
-  mode: 'duration' | 'cycles' | 'infinite';
+  mode: "duration" | "cycles" | "infinite";
   value: number;
 }
 
-export function SessionSetup({ exercise, onBack, onConfirm, soundscape }: SessionSetupProps) {
-  const [mode, setMode] = useState<'duration' | 'cycles' | 'infinite'>('duration');
+export function SessionSetup({
+  exercise,
+  onBack,
+  onConfirm,
+  soundscape,
+}: SessionSetupProps) {
+  const [mode, setMode] = useState<"duration" | "cycles" | "infinite">(
+    "duration",
+  );
   const [value, setValue] = useState(5);
 
   const durationOptions = [2, 5, 10, 15, 20];
@@ -51,10 +82,10 @@ export function SessionSetup({ exercise, onBack, onConfirm, soundscape }: Sessio
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[200] overflow-y-auto scrollbar-hide bg-black text-white"
+      className="scrollbar-hide fixed inset-0 z-[200] overflow-y-auto bg-black text-white"
     >
       {/* Cinematic Natural Background */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-black">
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-black">
         <AnimatePresence mode="wait">
           <motion.div
             key={soundscape.activeSoundscape}
@@ -62,49 +93,59 @@ export function SessionSetup({ exercise, onBack, onConfirm, soundscape }: Sessio
             animate={{ opacity: 1.0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.8, ease: "easeInOut" }}
-            className="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-110 blur-[10px]"
+            className="absolute inset-0 scale-110 bg-cover bg-center blur-[10px] transition-all duration-1000"
             style={{
-              backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape)})`
+              backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape)})`,
             }}
           />
         </AnimatePresence>
       </div>
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/20 via-black/40 to-black/80 pointer-events-none" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-black/20 via-black/40 to-black/80" />
 
-      <div className="relative z-10 max-w-[480px] mx-auto px-6 py-12 flex flex-col min-h-screen">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-[480px] flex-col px-6 py-12">
         {/* Header */}
-        <div className="flex items-center justify-between mb-12">
-          <button 
+        <div className="mb-12 flex items-center justify-between">
+          <button
             onClick={onBack}
-            className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all shadow-xl"
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white shadow-xl transition-all hover:bg-white/10"
           >
             <ArrowLeft size={20} />
           </button>
           <div className="flex flex-col items-center">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-bold mb-1">Configuration</span>
-            <h2 className="text-xl font-light text-white tracking-tight">{exercise.name}</h2>
+            <span className="mb-1 text-[10px] font-bold tracking-[0.4em] text-white/40 uppercase">
+              Configuration
+            </span>
+            <h2 className="text-xl font-light tracking-tight text-white">
+              {exercise.name}
+            </h2>
           </div>
-          <div className="w-12 h-12" /> {/* Spacer */}
+          <div className="h-12 w-12" /> {/* Spacer */}
         </div>
 
         {/* Hero Illustration / Icon */}
-        <div className="flex flex-col items-center mb-16">
-          <motion.div 
+        <div className="mb-16 flex flex-col items-center">
+          <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="w-24 h-24 rounded-full flex items-center justify-center relative shadow-[0_0_50px_rgba(255,255,255,0.4)] border border-white bg-white backdrop-blur-2xl"
+            className="relative flex h-24 w-24 items-center justify-center rounded-full border border-white bg-white shadow-[0_0_50px_rgba(255,255,255,0.4)] backdrop-blur-2xl"
           >
-            <Sparkles className="text-black relative z-10 animate-pulse" size={40} strokeWidth={1.5} />
+            <Sparkles
+              className="relative z-10 animate-pulse text-black"
+              size={40}
+              strokeWidth={1.5}
+            />
           </motion.div>
-          <h1 className="text-4xl font-light text-white mt-8 tracking-tight">Set Your Goal</h1>
+          <h1 className="mt-8 text-4xl font-light tracking-tight text-white">
+            Set Your Goal
+          </h1>
         </div>
 
         {/* Mode Selector (iOS Sliding Tab) */}
-        <div className="bg-white/[0.03] border border-white/[0.05] rounded-full p-1.5 flex items-center mb-10 shadow-2xl backdrop-blur-3xl">
+        <div className="mb-10 flex items-center rounded-full border border-white/[0.05] bg-white/[0.03] p-1.5 shadow-2xl backdrop-blur-3xl">
           {[
-            { id: 'duration', icon: Timer, label: 'Duration' },
-            { id: 'cycles', icon: RotateCcw, label: 'Cycles' },
-            { id: 'infinite', icon: Infinity, label: 'Free' },
+            { id: "duration", icon: Timer, label: "Duration" },
+            { id: "cycles", icon: RotateCcw, label: "Cycles" },
+            { id: "infinite", icon: Infinity, label: "Free" },
           ].map((item) => {
             const isActive = mode === item.id;
             return (
@@ -112,22 +153,28 @@ export function SessionSetup({ exercise, onBack, onConfirm, soundscape }: Sessio
                 key={item.id}
                 onClick={() => {
                   setMode(item.id as typeof mode);
-                  if (item.id === 'duration') setValue(5);
-                  if (item.id === 'cycles') setValue(20);
+                  if (item.id === "duration") setValue(5);
+                  if (item.id === "cycles") setValue(20);
                 }}
-                className={`flex-1 relative py-4 rounded-full flex flex-col items-center gap-1.5 transition-all duration-500 ${
-                  isActive ? 'text-white' : 'text-gray-400 hover:text-white'
+                className={`relative flex flex-1 flex-col items-center gap-1.5 rounded-full py-4 transition-all duration-500 ${
+                  isActive ? "text-white" : "text-gray-400 hover:text-white"
                 }`}
               >
                 {isActive && (
-                  <motion.div 
+                  <motion.div
                     layoutId="setup-mode-bg"
-                    className="absolute inset-0 bg-white/10 border border-white/10 rounded-full shadow-lg"
-                    transition={{ type: 'spring', duration: 0.6, bounce: 0.2 }}
+                    className="absolute inset-0 rounded-full border border-white/10 bg-white/10 shadow-lg"
+                    transition={{ type: "spring", duration: 0.6, bounce: 0.2 }}
                   />
                 )}
-                <item.icon size={18} className="relative z-10" strokeWidth={isActive ? 2 : 1.5} />
-                <span className="text-[9px] font-black uppercase tracking-[0.15em] relative z-10">{item.label}</span>
+                <item.icon
+                  size={18}
+                  className="relative z-10"
+                  strokeWidth={isActive ? 2 : 1.5}
+                />
+                <span className="relative z-10 text-[9px] font-black tracking-[0.15em] uppercase">
+                  {item.label}
+                </span>
               </button>
             );
           })}
@@ -135,51 +182,60 @@ export function SessionSetup({ exercise, onBack, onConfirm, soundscape }: Sessio
 
         {/* Value Grid */}
         <div className="flex-1 space-y-12">
-          {mode !== 'infinite' ? (
-            <motion.div 
+          {mode !== "infinite" ? (
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="space-y-8"
             >
               <div className="flex flex-col items-center gap-2">
-                <span className="text-[10px] uppercase tracking-[0.4em] text-gray-600 font-black">Practice Intensity</span>
+                <span className="text-[10px] font-black tracking-[0.4em] text-gray-600 uppercase">
+                  Practice Intensity
+                </span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-6xl font-light text-white leading-none">{value}</span>
-                  <span className="text-lg text-gray-500 font-light lowercase">
-                    {mode === 'duration' ? 'minutes' : 'rounds'}
+                  <span className="text-6xl leading-none font-light text-white">
+                    {value}
+                  </span>
+                  <span className="text-lg font-light text-gray-500 lowercase">
+                    {mode === "duration" ? "minutes" : "rounds"}
                   </span>
                 </div>
               </div>
 
               <div className="grid grid-cols-5 gap-3">
-                {(mode === 'duration' ? durationOptions : cycleOptions).map((opt) => (
-                  <button
-                    key={opt}
-                    onClick={() => setValue(opt)}
-                    className={`aspect-square rounded-full flex items-center justify-center text-sm font-medium transition-all duration-500 border backdrop-blur-md ${
-                      value === opt 
-                        ? 'bg-white border-white text-black shadow-[0_0_30px_rgba(255,255,255,0.4)] scale-110' 
-                        : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:border-white/20'
-                    }`}
-                  >
-                    {opt}
-                  </button>
-                ))}
+                {(mode === "duration" ? durationOptions : cycleOptions).map(
+                  (opt) => (
+                    <button
+                      key={opt}
+                      onClick={() => setValue(opt)}
+                      className={`flex aspect-square items-center justify-center rounded-full border text-sm font-medium backdrop-blur-md transition-all duration-500 ${
+                        value === opt
+                          ? "scale-110 border-white bg-white text-black shadow-[0_0_30px_rgba(255,255,255,0.4)]"
+                          : "border-white/10 bg-white/5 text-white/70 hover:border-white/20 hover:bg-white/10"
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  ),
+                )}
               </div>
             </motion.div>
           ) : (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white/[0.03] border border-white/10 rounded-[36px] p-12 flex flex-col items-center text-center gap-6 backdrop-blur-2xl"
+              className="flex flex-col items-center gap-6 rounded-[36px] border border-white/10 bg-white/[0.03] p-12 text-center backdrop-blur-2xl"
             >
-              <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white">
                 <Infinity size={40} strokeWidth={1} />
               </div>
               <div className="space-y-2">
-                <h3 className="text-xl font-light text-white">Unrestricted Flow</h3>
-                <p className="text-gray-500 text-sm leading-relaxed font-light max-w-[240px]">
-                  Experience a session without boundaries. You decide when to conclude your journey.
+                <h3 className="text-xl font-light text-white">
+                  Unrestricted Flow
+                </h3>
+                <p className="max-w-[240px] text-sm leading-relaxed font-light text-gray-500">
+                  Experience a session without boundaries. You decide when to
+                  conclude your journey.
                 </p>
               </div>
             </motion.div>
@@ -188,12 +244,15 @@ export function SessionSetup({ exercise, onBack, onConfirm, soundscape }: Sessio
 
         {/* CTA Button */}
         <div className="pt-12 pb-8">
-          <button 
+          <button
             onClick={() => onConfirm({ mode, value })}
-            className="w-full h-16 rounded-full bg-white text-black font-black text-sm uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(255,255,255,0.15)] group relative overflow-hidden"
+            className="group relative flex h-16 w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-white text-sm font-black tracking-[0.2em] text-black uppercase shadow-[0_20px_40px_rgba(255,255,255,0.15)] transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             <span className="relative z-10">Confirm Journey</span>
-            <Check size={20} className="relative z-10 group-hover:scale-110 transition-transform" />
+            <Check
+              size={20}
+              className="relative z-10 transition-transform group-hover:scale-110"
+            />
           </button>
         </div>
       </div>

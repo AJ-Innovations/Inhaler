@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import { Trophy, Clock, Zap, Home, RotateCcw, TrendingUp } from 'lucide-react';
-import { Exercise } from '../data';
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { motion } from "framer-motion";
+import { Clock, Home, RotateCcw, TrendingUp, Trophy, Zap } from "lucide-react";
+import React from "react";
+
+import { Exercise } from "../data";
 
 interface SessionCompleteProps {
   exercise: Exercise;
@@ -17,27 +18,39 @@ interface SessionCompleteProps {
 const HealthSparkline = () => {
   // Mock trend data for visualization
   const data = [20, 35, 25, 45, 40, 65, 55, 80];
-  const points = data.map((d, i) => `${(i / (data.length - 1)) * 100},${100 - d}`).join(' ');
+  const points = data
+    .map((d, i) => `${(i / (data.length - 1)) * 100},${100 - d}`)
+    .join(" ");
 
   return (
-    <div className="w-full bg-white/[0.03] border border-white/5 rounded-[32px] p-6 space-y-4">
+    <div className="w-full space-y-4 rounded-[32px] border border-white/5 bg-white/[0.03] p-6">
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10">
             <TrendingUp size={16} className="text-emerald-400" />
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] uppercase tracking-widest font-black text-gray-500">Health Index</span>
-            <span className="text-sm font-light text-white">+12% Improvement</span>
+            <span className="text-[10px] font-black tracking-widest text-gray-500 uppercase">
+              Health Index
+            </span>
+            <span className="text-sm font-light text-white">
+              +12% Improvement
+            </span>
           </div>
         </div>
         <div className="text-right">
-          <span className="text-lg font-light text-white tracking-tight">84.2</span>
+          <span className="text-lg font-light tracking-tight text-white">
+            84.2
+          </span>
         </div>
       </div>
-      
-      <div className="h-16 w-full relative group">
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
+
+      <div className="group relative h-16 w-full">
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          className="h-full w-full overflow-visible"
+        >
           <defs>
             <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#10b981" stopOpacity="0.2" />
@@ -45,10 +58,10 @@ const HealthSparkline = () => {
               <stop offset="100%" stopColor="#10b981" stopOpacity="1" />
             </linearGradient>
             <filter id="glow">
-              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+              <feGaussianBlur stdDeviation="2" result="coloredBlur" />
               <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
@@ -79,11 +92,32 @@ const HealthSparkline = () => {
   );
 };
 
-export function SessionComplete({ exercise, duration, cycles, onHome, onRestart }: SessionCompleteProps) {
+export function SessionComplete({
+  exercise,
+  duration,
+  cycles,
+  onHome,
+  onRestart,
+}: SessionCompleteProps) {
   const stats = [
-    { label: 'Time Mindful', value: `${Math.floor(duration / 60)}:${(duration % 60).toString().padStart(2, '0')}`, icon: Clock, color: 'text-blue-400' },
-    { label: 'Total Cycles', value: cycles.toString(), icon: RotateCcw, color: 'text-indigo-400' },
-    { label: 'Focus Points', value: (cycles * 10).toString(), icon: Zap, color: 'text-amber-400' },
+    {
+      label: "Time Mindful",
+      value: `${Math.floor(duration / 60)}:${(duration % 60).toString().padStart(2, "0")}`,
+      icon: Clock,
+      color: "text-blue-400",
+    },
+    {
+      label: "Total Cycles",
+      value: cycles.toString(),
+      icon: RotateCcw,
+      color: "text-indigo-400",
+    },
+    {
+      label: "Focus Points",
+      value: (cycles * 10).toString(),
+      icon: Zap,
+      color: "text-amber-400",
+    },
   ];
 
   return (
@@ -91,28 +125,32 @@ export function SessionComplete({ exercise, duration, cycles, onHome, onRestart 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/95 z-[300] flex flex-col items-center justify-center p-6 overflow-y-auto scrollbar-hide backdrop-blur-md"
+      className="scrollbar-hide fixed inset-0 z-[300] flex flex-col items-center justify-center overflow-y-auto bg-black/95 p-6 backdrop-blur-md"
     >
       {/* Decorative Premium Glow Elements */}
-      <div className="absolute -top-20 -right-20 w-80 h-80 bg-indigo-500/10 blur-[100px] pointer-events-none rounded-full" />
-      <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-emerald-500/10 blur-[100px] pointer-events-none rounded-full" />
+      <div className="pointer-events-none absolute -top-20 -right-20 h-80 w-80 rounded-full bg-indigo-500/10 blur-[100px]" />
+      <div className="pointer-events-none absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-emerald-500/10 blur-[100px]" />
 
-      <div className="max-w-[480px] w-full space-y-8 py-10 z-10 relative">
+      <div className="relative z-10 w-full max-w-[480px] space-y-8 py-10">
         {/* Lottie Celebration */}
-        <div className="relative h-64 flex items-center justify-center">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent pointer-events-none" />
+        <div className="relative flex h-64 items-center justify-center">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent" />
           <DotLottieReact
             src="https://lottie.host/8e6c46a6-f286-4f40-8b65-63567840139b/1O4FfO6lG1.lottie"
             loop={false}
             autoplay
-            className="w-full h-full scale-125"
+            className="h-full w-full scale-125"
           />
           <div className="absolute bottom-4 flex flex-col items-center space-y-1">
-            <div className="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 mb-2">
+            <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-500 shadow-lg shadow-indigo-500/20">
               <Trophy className="text-white" size={24} />
             </div>
-            <h2 className="text-2xl font-light text-white tracking-tight">Session Complete</h2>
-            <p className="text-[10px] text-gray-500 uppercase tracking-[0.4em] font-bold">{exercise.name} Mastery</p>
+            <h2 className="text-2xl font-light tracking-tight text-white">
+              Session Complete
+            </h2>
+            <p className="text-[10px] font-bold tracking-[0.4em] text-gray-500 uppercase">
+              {exercise.name} Mastery
+            </p>
           </div>
         </div>
 
@@ -124,12 +162,14 @@ export function SessionComplete({ exercise, duration, cycles, onHome, onRestart 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 + 0.5 }}
-              className="bg-white/[0.03] border border-white/5 rounded-[28px] p-4 flex flex-col items-center text-center space-y-2"
+              className="flex flex-col items-center space-y-2 rounded-[28px] border border-white/5 bg-white/[0.03] p-4 text-center"
             >
               <stat.icon className={stat.color} size={16} />
               <div className="space-y-0.5">
                 <p className="text-lg font-light text-white">{stat.value}</p>
-                <p className="text-[8px] text-gray-500 uppercase tracking-widest font-bold leading-none">{stat.label}</p>
+                <p className="text-[8px] leading-none font-bold tracking-widest text-gray-500 uppercase">
+                  {stat.label}
+                </p>
               </div>
             </motion.div>
           ))}
@@ -151,7 +191,7 @@ export function SessionComplete({ exercise, duration, cycles, onHome, onRestart 
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9 }}
             onClick={onRestart}
-            className="w-full h-16 rounded-full bg-white text-black font-black text-[12px] uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:shadow-[0_0_35px_rgba(255,255,255,0.25)] active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden cursor-pointer"
+            className="relative flex h-16 w-full cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-full bg-white text-[12px] font-black tracking-[0.2em] text-black uppercase shadow-[0_0_30px_rgba(255,255,255,0.15)] transition-all duration-300 hover:shadow-[0_0_35px_rgba(255,255,255,0.25)] active:scale-95"
           >
             <span className="relative z-10 flex items-center gap-2">
               <RotateCcw size={16} strokeWidth={3} />
@@ -159,24 +199,24 @@ export function SessionComplete({ exercise, duration, cycles, onHome, onRestart 
             </span>
             {/* Animated Premium Gloss Shimmer */}
             <motion.div
-              initial={{ x: '-100%' }}
-              animate={{ x: '100%' }}
+              initial={{ x: "-100%" }}
+              animate={{ x: "100%" }}
               transition={{
                 repeat: Infinity,
-                repeatType: 'loop',
+                repeatType: "loop",
                 duration: 2.5,
-                ease: 'linear',
+                ease: "linear",
               }}
-              className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-black/5 to-transparent pointer-events-none"
+              className="pointer-events-none absolute inset-0 h-full w-full bg-gradient-to-r from-transparent via-black/5 to-transparent"
             />
           </motion.button>
-          
+
           <motion.button
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1 }}
             onClick={onHome}
-            className="w-full h-16 rounded-full bg-white/[0.04] border border-white/10 text-white/80 hover:text-white hover:bg-white/[0.08] font-black text-[12px] uppercase tracking-[0.2em] active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer"
+            className="flex h-16 w-full cursor-pointer items-center justify-center gap-3 rounded-full border border-white/10 bg-white/[0.04] text-[12px] font-black tracking-[0.2em] text-white/80 uppercase transition-all duration-300 hover:bg-white/[0.08] hover:text-white active:scale-95"
           >
             <Home size={16} strokeWidth={2.5} />
             Return Home

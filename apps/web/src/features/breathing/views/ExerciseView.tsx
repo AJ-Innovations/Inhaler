@@ -1,55 +1,55 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, RotateCcw, Pause, Play, Music } from 'lucide-react';
-import { Exercise } from '../data';
-import { useBreathingTimer } from '../hooks/useBreathingTimer';
-import { useSoundscape } from '../hooks/useSoundscape';
-import { useVoiceAssistant } from '../hooks/useVoiceAssistant';
-import { useBinauralBeats } from '../hooks/useBinauralBeats';
-import { BreathingCircle } from '../components/BreathingCircle';
-import { SessionSettings } from '../components/SessionSettings';
-import { SessionConfig } from './SessionSetup';
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowLeft, Music, Pause, Play, RotateCcw } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+
+import { BreathingCircle } from "../components/BreathingCircle";
+import { SessionSettings } from "../components/SessionSettings";
+import { Exercise } from "../data";
+import { useBinauralBeats } from "../hooks/useBinauralBeats";
+import { useBreathingTimer } from "../hooks/useBreathingTimer";
+import { useSoundscape } from "../hooks/useSoundscape";
+import { useVoiceAssistant } from "../hooks/useVoiceAssistant";
+import { SessionConfig } from "./SessionSetup";
 
 const getAmbientImage = (activeSoundscape: string) => {
   switch (activeSoundscape) {
-    case 'zen-river':
-      return '/image/ambients/river.png';
-    case 'zen-fountain':
-      return '/image/ambients/whaterfalls.png';
-    case 'winter-rain':
-      return '/image/ambients/rain.png';
-    case 'light-rain':
-      return '/image/ambients/rain2.png';
-    case 'nature-birds':
-      return '/image/ambients/nature2.png';
-    case 'hz-transformation':
-      return '/image/ambients/galaxy.png';
-    case 'white-noise':
-      return '/image/ambients/galaxy2.png';
-    case 'pink-noise':
-      return '/image/ambients/galaxy3.png';
-    case 'brown-noise':
-      return '/image/ambients/nature.png';
-    case 'beach':
-      return '/image/ambients/beach.png';
-    case 'lake':
-      return '/image/ambients/lake4.png';
-    case 'marine':
-      return '/image/ambients/marain.png';
-    case 'desert':
-      return '/image/ambients/desert3.png';
-    case 'ethereal':
-      return '/image/ambients/loop.png';
-    case 'forest':
-      return '/image/ambients/forest.png';
-    case 'leaf':
+    case "zen-river":
+      return "/image/ambients/river.png";
+    case "zen-fountain":
+      return "/image/ambients/whaterfalls.png";
+    case "winter-rain":
+      return "/image/ambients/rain.png";
+    case "light-rain":
+      return "/image/ambients/rain2.png";
+    case "nature-birds":
+      return "/image/ambients/nature2.png";
+    case "hz-transformation":
+      return "/image/ambients/galaxy.png";
+    case "white-noise":
+      return "/image/ambients/galaxy2.png";
+    case "pink-noise":
+      return "/image/ambients/galaxy3.png";
+    case "brown-noise":
+      return "/image/ambients/nature.png";
+    case "beach":
+      return "/image/ambients/beach.png";
+    case "lake":
+      return "/image/ambients/lake4.png";
+    case "marine":
+      return "/image/ambients/marain.png";
+    case "desert":
+      return "/image/ambients/desert3.png";
+    case "ethereal":
+      return "/image/ambients/loop.png";
+    case "forest":
+      return "/image/ambients/forest.png";
+    case "leaf":
     default:
-      return '/image/ambients/leaf.png';
+      return "/image/ambients/leaf.png";
   }
 };
-
 
 interface ExerciseViewProps {
   exercise: Exercise;
@@ -70,20 +70,20 @@ export function ExerciseView({
   onRecordSession,
   soundscape,
   isAmbientSoundOn,
-  setIsAmbientSoundOn
+  setIsAmbientSoundOn,
 }: ExerciseViewProps) {
   // Local settings state (Moved up so it can be used by hooks)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const [voiceVolume, setVoiceVolume] = useState(0.8);
-  const [selectedVoiceId, setSelectedVoiceId] = useState('lauren');
+  const [selectedVoiceId, setSelectedVoiceId] = useState("lauren");
 
   const timer = useBreathingTimer(exercise.pattern);
 
   // Use a ref to avoid infinite loops with onComplete/onRecordSession
   const hasCompletedRef = useRef(false);
   const totalTimeRef = useRef(0);
-  
+
   useEffect(() => {
     totalTimeRef.current = timer.totalTime;
   }, [timer.totalTime]);
@@ -97,7 +97,7 @@ export function ExerciseView({
   const voiceAssistant = useVoiceAssistant(timer.phase, timer.isActive, {
     profileId: selectedVoiceId,
     isEnabled: isVoiceEnabled,
-    volume: voiceVolume
+    volume: voiceVolume,
   });
   const binaural = useBinauralBeats(timer.isActive || isSettingsOpen);
 
@@ -105,12 +105,12 @@ export function ExerciseView({
   useEffect(() => {
     if (hasCompletedRef.current) return;
 
-    if (config.mode === 'duration' && timer.totalTime >= config.value * 60) {
+    if (config.mode === "duration" && timer.totalTime >= config.value * 60) {
       hasCompletedRef.current = true;
       if (timer.isActive) timer.toggle();
       onRecordSession(exercise.id, timer.totalTime);
       onComplete(timer.totalTime, timer.cycles);
-    } else if (config.mode === 'cycles' && timer.cycles >= config.value) {
+    } else if (config.mode === "cycles" && timer.cycles >= config.value) {
       hasCompletedRef.current = true;
       if (timer.isActive) timer.toggle();
       onRecordSession(exercise.id, timer.totalTime);
@@ -120,12 +120,16 @@ export function ExerciseView({
 
   // Haptic Feedback for mobile
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'vibrate' in navigator && timer.isActive) {
-      if (timer.phase === 'Inhale') {
+    if (
+      typeof window !== "undefined" &&
+      "vibrate" in navigator &&
+      timer.isActive
+    ) {
+      if (timer.phase === "Inhale") {
         navigator.vibrate(100);
-      } else if (timer.phase === 'Exhale') {
+      } else if (timer.phase === "Exhale") {
         navigator.vibrate(100);
-      } else if (timer.phase.includes('Hold')) {
+      } else if (timer.phase.includes("Hold")) {
         navigator.vibrate(50);
       }
     }
@@ -159,10 +163,10 @@ export function ExerciseView({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex flex-col overflow-hidden w-full h-[100dvh] bg-black text-white selection:bg-white/20"
+      className="fixed inset-0 z-[100] flex h-[100dvh] w-full flex-col overflow-hidden bg-black text-white selection:bg-white/20"
     >
       {/* Immersive Ambient Background Layer */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-black">
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-black">
         <AnimatePresence mode="wait">
           <motion.div
             key={soundscape.activeSoundscape}
@@ -170,33 +174,36 @@ export function ExerciseView({
             animate={{ opacity: 1.0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.8, ease: "easeInOut" }}
-            className="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-105"
+            className="absolute inset-0 scale-105 bg-cover bg-center transition-all duration-1000"
             style={{
-              backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape)})`
+              backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape)})`,
             }}
           />
         </AnimatePresence>
       </div>
 
       {/* Header - Fixed Top */}
-      <div className="px-6 pt-8 pb-3 flex justify-between items-center bg-gradient-to-b from-black/40 to-transparent relative z-10">
+      <div className="relative z-10 flex items-center justify-between bg-gradient-to-b from-black/40 to-transparent px-6 pt-8 pb-3">
         <button
           onClick={onBack}
-          className="p-3 rounded-full bg-white/[0.04] backdrop-blur-md border border-white/15 text-gray-300 hover:text-white hover:bg-white/[0.08] transition-all active:scale-95 shadow-lg"
+          className="rounded-full border border-white/15 bg-white/[0.04] p-3 text-gray-300 shadow-lg backdrop-blur-md transition-all hover:bg-white/[0.08] hover:text-white active:scale-95"
         >
           <ArrowLeft size={20} />
         </button>
         <div className="text-center">
-          <h2 className="text-xl font-light text-white tracking-tight drop-shadow-md">{exercise.name}</h2>
-          <p className="text-[10px] uppercase tracking-widest text-white/70 mt-1 drop-shadow-sm font-semibold">{timer.phase}</p>
+          <h2 className="text-xl font-light tracking-tight text-white drop-shadow-md">
+            {exercise.name}
+          </h2>
+          <p className="mt-1 text-[10px] font-semibold tracking-widest text-white/70 uppercase drop-shadow-sm">
+            {timer.phase}
+          </p>
         </div>
         <div className="w-12" /> {/* Spacer to maintain title centering */}
       </div>
 
       {/* Main Content Area - Scrollable or Centered */}
-      <div className="flex-1 flex flex-col items-center justify-center w-full px-6 relative z-10 overflow-y-auto scrollbar-hide py-4">
-        <div className="mb-4">
-        </div>
+      <div className="scrollbar-hide relative z-10 flex w-full flex-1 flex-col items-center justify-center overflow-y-auto px-6 py-4">
+        <div className="mb-4"></div>
 
         <BreathingCircle
           phase={timer.phase}
@@ -208,50 +215,68 @@ export function ExerciseView({
         />
 
         {/* Progress Bar - Now dynamically shows either duration or cycles */}
-        <div className="w-full max-w-[340px] mt-12">
-          {config.mode === 'duration' && (
+        <div className="mt-12 w-full max-w-[340px]">
+          {config.mode === "duration" && (
             <div className="flex flex-col gap-3">
-              <div className="flex justify-between items-end">
-                <span className="text-[9px] uppercase tracking-widest text-white/50 font-bold">Duration</span>
+              <div className="flex items-end justify-between">
+                <span className="text-[9px] font-bold tracking-widest text-white/50 uppercase">
+                  Duration
+                </span>
                 <span className="text-xl font-light text-white">
-                  {Math.floor(timer.totalTime / 60)}:{(timer.totalTime % 60).toString().padStart(2, '0')} <span className="text-white/40 text-sm">/ {config.value}:00</span>
+                  {Math.floor(timer.totalTime / 60)}:
+                  {(timer.totalTime % 60).toString().padStart(2, "0")}{" "}
+                  <span className="text-sm text-white/40">
+                    / {config.value}:00
+                  </span>
                 </span>
               </div>
-              <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden relative shadow-lg">
-                <motion.div 
-                  className="absolute inset-y-0 left-0 bg-white" 
+              <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-white/10 shadow-lg">
+                <motion.div
+                  className="absolute inset-y-0 left-0 bg-white"
                   initial={{ width: 0 }}
-                  animate={{ width: `${Math.min((timer.totalTime / (config.value * 60)) * 100, 100)}%` }} 
+                  animate={{
+                    width: `${Math.min((timer.totalTime / (config.value * 60)) * 100, 100)}%`,
+                  }}
                   transition={{ ease: "linear", duration: 1 }}
                 />
               </div>
             </div>
           )}
 
-          {config.mode === 'cycles' && (
+          {config.mode === "cycles" && (
             <div className="flex flex-col gap-3">
-              <div className="flex justify-between items-end">
-                <span className="text-[9px] uppercase tracking-widest text-white/50 font-bold">Cycles</span>
+              <div className="flex items-end justify-between">
+                <span className="text-[9px] font-bold tracking-widest text-white/50 uppercase">
+                  Cycles
+                </span>
                 <span className="text-xl font-light text-white">
-                  {timer.cycles} <span className="text-white/40 text-sm">/ {config.value}</span>
+                  {timer.cycles}{" "}
+                  <span className="text-sm text-white/40">
+                    / {config.value}
+                  </span>
                 </span>
               </div>
-              <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden relative shadow-lg">
-                <motion.div 
-                  className="absolute inset-y-0 left-0 bg-white" 
+              <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-white/10 shadow-lg">
+                <motion.div
+                  className="absolute inset-y-0 left-0 bg-white"
                   initial={{ width: 0 }}
-                  animate={{ width: `${Math.min((timer.cycles / config.value) * 100, 100)}%` }} 
+                  animate={{
+                    width: `${Math.min((timer.cycles / config.value) * 100, 100)}%`,
+                  }}
                   transition={{ ease: "easeInOut", duration: 0.5 }}
                 />
               </div>
             </div>
           )}
 
-          {config.mode === 'infinite' && (
+          {config.mode === "infinite" && (
             <div className="flex flex-col items-center gap-1">
-              <span className="text-[9px] uppercase tracking-widest text-white/50 font-bold">Duration</span>
+              <span className="text-[9px] font-bold tracking-widest text-white/50 uppercase">
+                Duration
+              </span>
               <span className="text-2xl font-light text-white">
-                {Math.floor(timer.totalTime / 60)}:{(timer.totalTime % 60).toString().padStart(2, '0')}
+                {Math.floor(timer.totalTime / 60)}:
+                {(timer.totalTime % 60).toString().padStart(2, "0")}
               </span>
             </div>
           )}
@@ -259,25 +284,29 @@ export function ExerciseView({
       </div>
 
       {/* Sticky Bottom Controls */}
-      <div className="px-8 pt-4 pb-6 bg-gradient-to-t from-black/50 via-black/20 to-transparent relative z-10">
-        <div className="max-w-[400px] mx-auto flex items-center justify-center gap-10">
+      <div className="relative z-10 bg-gradient-to-t from-black/50 via-black/20 to-transparent px-8 pt-4 pb-6">
+        <div className="mx-auto flex max-w-[400px] items-center justify-center gap-10">
           <button
             onClick={handleReset}
-            className="w-14 h-14 flex items-center justify-center rounded-full bg-white/[0.04] backdrop-blur-md border border-white/15 text-gray-300 hover:text-white hover:bg-white/[0.08] transition-all active:scale-95 shadow-lg"
+            className="flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-gray-300 shadow-lg backdrop-blur-md transition-all hover:bg-white/[0.08] hover:text-white active:scale-95"
           >
             <RotateCcw size={22} />
           </button>
 
           <button
             onClick={timer.toggle}
-            className="w-24 h-24 flex items-center justify-center rounded-full bg-white/[0.12] backdrop-blur-lg border border-white/30 text-white hover:scale-105 active:scale-95 hover:bg-white/[0.18] transition-all shadow-[0_8px_32px_rgba(255,255,255,0.08)]"
+            className="flex h-24 w-24 items-center justify-center rounded-full border border-white/30 bg-white/[0.12] text-white shadow-[0_8px_32px_rgba(255,255,255,0.08)] backdrop-blur-lg transition-all hover:scale-105 hover:bg-white/[0.18] active:scale-95"
           >
-            {timer.isActive ? <Pause size={32} fill="white" /> : <Play size={32} className="ml-1" fill="white" />}
+            {timer.isActive ? (
+              <Pause size={32} fill="white" />
+            ) : (
+              <Play size={32} className="ml-1" fill="white" />
+            )}
           </button>
 
           <button
             onClick={() => setIsSettingsOpen(true)}
-            className="w-14 h-14 flex items-center justify-center rounded-full bg-white/[0.04] backdrop-blur-md border border-white/15 text-gray-300 hover:text-white hover:bg-white/[0.08] transition-all active:scale-95 shadow-lg"
+            className="flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-gray-300 shadow-lg backdrop-blur-md transition-all hover:bg-white/[0.08] hover:text-white active:scale-95"
           >
             <Music size={22} />
           </button>

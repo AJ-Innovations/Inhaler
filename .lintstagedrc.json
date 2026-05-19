@@ -1,0 +1,4 @@
+{
+  "**/*.{ts,tsx}": ["prettier --write", "node scripts/lint-staged-eslint.js"],
+  "**/*.{json,css,md}": ["prettier --write"]
+}

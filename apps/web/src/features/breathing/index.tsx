@@ -1,73 +1,88 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Wind } from 'lucide-react';
+import { AnimatePresence, motion } from "framer-motion";
+import { Wind } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 
-import { Exercise } from './data';
-import { useLibrary } from './hooks/useCustomExercises';
-import { CustomBuilder } from './views/CustomBuilder';
-import { BottomNav, TabType } from './components/BottomNav';
-import { ExploreView } from './views/ExploreView';
-import { LibraryView } from './views/LibraryView';
-import { ProfileView } from '../profile/ProfileView';
-import { ExerciseView } from './views/ExerciseView';
-import { DetailsView } from './views/DetailsView';
-import { SessionSetup, SessionConfig } from './views/SessionSetup';
-import { SessionComplete } from './views/SessionComplete';
-import { JournalView } from '../journal/JournalView';
-import { AchievementsView } from '../dashboard/AchievementsView';
-import { SubscriptionView } from '../subscription/SubscriptionView';
-import { AuthView } from '../auth/AuthView';
-import { OnboardingView } from '../onboarding/OnboardingView';
-import { useSoundscape } from './hooks/useSoundscape';
+import { AuthView } from "../auth/AuthView";
+import { AchievementsView } from "../dashboard/AchievementsView";
+import { JournalView } from "../journal/JournalView";
+import { OnboardingView } from "../onboarding/OnboardingView";
+import { ProfileView } from "../profile/ProfileView";
+import { SubscriptionView } from "../subscription/SubscriptionView";
+import { BottomNav, TabType } from "./components/BottomNav";
+import { Exercise } from "./data";
+import { useLibrary } from "./hooks/useCustomExercises";
+import { useSoundscape } from "./hooks/useSoundscape";
+import { CustomBuilder } from "./views/CustomBuilder";
+import { DetailsView } from "./views/DetailsView";
+import { ExerciseView } from "./views/ExerciseView";
+import { ExploreView } from "./views/ExploreView";
+import { LibraryView } from "./views/LibraryView";
+import { SessionComplete } from "./views/SessionComplete";
+import { SessionConfig, SessionSetup } from "./views/SessionSetup";
 
 const getAmbientImage = (activeSoundscape: string) => {
   switch (activeSoundscape) {
-    case 'zen-river':
-      return '/image/ambients/river.png';
-    case 'zen-fountain':
-      return '/image/ambients/whaterfalls.png';
-    case 'winter-rain':
-      return '/image/ambients/rain.png';
-    case 'light-rain':
-      return '/image/ambients/rain2.png';
-    case 'nature-birds':
-      return '/image/ambients/nature2.png';
-    case 'hz-transformation':
-      return '/image/ambients/galaxy.png';
-    case 'white-noise':
-      return '/image/ambients/galaxy2.png';
-    case 'pink-noise':
-      return '/image/ambients/galaxy3.png';
-    case 'brown-noise':
-      return '/image/ambients/nature.png';
-    case 'beach':
-      return '/image/ambients/beach.png';
-    case 'lake':
-      return '/image/ambients/lake4.png';
-    case 'marine':
-      return '/image/ambients/marain.png';
-    case 'desert':
-      return '/image/ambients/desert3.png';
-    case 'ethereal':
-      return '/image/ambients/loop.png';
-    case 'forest':
-      return '/image/ambients/forest.png';
-    case 'leaf':
+    case "zen-river":
+      return "/image/ambients/river.png";
+    case "zen-fountain":
+      return "/image/ambients/whaterfalls.png";
+    case "winter-rain":
+      return "/image/ambients/rain.png";
+    case "light-rain":
+      return "/image/ambients/rain2.png";
+    case "nature-birds":
+      return "/image/ambients/nature2.png";
+    case "hz-transformation":
+      return "/image/ambients/galaxy.png";
+    case "white-noise":
+      return "/image/ambients/galaxy2.png";
+    case "pink-noise":
+      return "/image/ambients/galaxy3.png";
+    case "brown-noise":
+      return "/image/ambients/nature.png";
+    case "beach":
+      return "/image/ambients/beach.png";
+    case "lake":
+      return "/image/ambients/lake4.png";
+    case "marine":
+      return "/image/ambients/marain.png";
+    case "desert":
+      return "/image/ambients/desert3.png";
+    case "ethereal":
+      return "/image/ambients/loop.png";
+    case "forest":
+      return "/image/ambients/forest.png";
+    case "leaf":
     default:
-      return '/image/ambients/leaf.png';
+      return "/image/ambients/leaf.png";
   }
 };
 
-type ViewType = 'home' | 'exercise' | 'details' | 'setup' | 'complete' | 'builder' | 'subscription' | 'auth';
+type ViewType =
+  | "home"
+  | "exercise"
+  | "details"
+  | "setup"
+  | "complete"
+  | "builder"
+  | "subscription"
+  | "auth";
 
 export function BreathingExercise() {
-  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
-  const [view, setView] = useState<ViewType>('home');
-  const [activeTab, setActiveTab] = useState<TabType>('explore');
-  const [sessionConfig, setSessionConfig] = useState<SessionConfig | null>(null);
-  const [sessionResults, setSessionResults] = useState<{ duration: number; cycles: number } | null>(null);
+  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
+    null,
+  );
+  const [view, setView] = useState<ViewType>("home");
+  const [activeTab, setActiveTab] = useState<TabType>("explore");
+  const [sessionConfig, setSessionConfig] = useState<SessionConfig | null>(
+    null,
+  );
+  const [sessionResults, setSessionResults] = useState<{
+    duration: number;
+    cycles: number;
+  } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
   const isPopStateRef = useRef(false);
   const wasExploreRef = useRef(true);
@@ -78,9 +93,9 @@ export function BreathingExercise() {
 
   // Persistence of selected ambient
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedAmbient = localStorage.getItem('spirox_active_ambient');
-      if (savedAmbient && savedAmbient !== 'leaf') {
+    if (typeof window !== "undefined") {
+      const savedAmbient = localStorage.getItem("spirox_active_ambient");
+      if (savedAmbient && savedAmbient !== "leaf") {
         soundscape.setActiveSoundscape(savedAmbient as any);
       }
     }
@@ -88,7 +103,10 @@ export function BreathingExercise() {
 
   useEffect(() => {
     if (soundscape.activeSoundscape) {
-      localStorage.setItem('spirox_active_ambient', soundscape.activeSoundscape);
+      localStorage.setItem(
+        "spirox_active_ambient",
+        soundscape.activeSoundscape,
+      );
     }
   }, [soundscape.activeSoundscape]);
 
@@ -100,23 +118,40 @@ export function BreathingExercise() {
 
   // Dynamic Push & Daily Routine Reminders
   const [dailyReminderEnabled, setDailyReminderEnabled] = useState(false);
-  const [dailyReminderTime, setDailyReminderTime] = useState('08:30');
+  const [dailyReminderTime, setDailyReminderTime] = useState("08:30");
 
   const {
-    customExercises, favorites, sessions, stats, customGoals,
-    toggleFavorite, deleteExercise, addExercise, recordSession, addCustomGoal, deleteCustomGoal,
-    userName, userAvatar, updateUserName, updateAvatar, updateUserCountry, clearAllData
+    customExercises,
+    favorites,
+    sessions,
+    stats,
+    customGoals,
+    toggleFavorite,
+    deleteExercise,
+    addExercise,
+    recordSession,
+    addCustomGoal,
+    deleteCustomGoal,
+    userName,
+    userAvatar,
+    updateUserName,
+    updateAvatar,
+    updateUserCountry,
+    clearAllData,
   } = useLibrary();
 
   // Load reminder settings from LocalStorage
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const enabled = localStorage.getItem('spirox_daily_reminder_enabled') === 'true';
-      const time = localStorage.getItem('spirox_daily_reminder_time') || '08:30';
+    if (typeof window !== "undefined") {
+      const enabled =
+        localStorage.getItem("spirox_daily_reminder_enabled") === "true";
+      const time =
+        localStorage.getItem("spirox_daily_reminder_time") || "08:30";
       setDailyReminderEnabled(enabled);
       setDailyReminderTime(time);
 
-      const completed = localStorage.getItem('spirox_onboarding_completed') === 'true';
+      const completed =
+        localStorage.getItem("spirox_onboarding_completed") === "true";
       setShowOnboarding(!completed);
     } else {
       setShowOnboarding(false);
@@ -124,65 +159,73 @@ export function BreathingExercise() {
   }, []);
 
   const triggerNotification = async (title: string, body: string) => {
-    if (!('Notification' in window)) return;
-    if (Notification.permission === 'granted') {
-      if ('serviceWorker' in navigator) {
+    if (!("Notification" in window)) return;
+    if (Notification.permission === "granted") {
+      if ("serviceWorker" in navigator) {
         const reg = await navigator.serviceWorker.ready;
         reg.showNotification(title, {
           body,
-          icon: '/icon-192.png',
-          badge: '/icon-192.png',
+          icon: "/icon-192.png",
+          badge: "/icon-192.png",
           vibrate: [100, 50, 100],
         } as any);
       } else {
-        new Notification(title, { body, icon: '/icon-192.png' });
+        new Notification(title, { body, icon: "/icon-192.png" });
       }
     }
   };
 
   const handleToggleReminder = async (enabled: boolean) => {
     if (enabled) {
-      if ('Notification' in window) {
+      if ("Notification" in window) {
         const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
+        if (permission === "granted") {
           setDailyReminderEnabled(true);
-          localStorage.setItem('spirox_daily_reminder_enabled', 'true');
-          triggerNotification('Reminders Enabled! 🧘', 'You will be notified daily at your scheduled breathing time.');
+          localStorage.setItem("spirox_daily_reminder_enabled", "true");
+          triggerNotification(
+            "Reminders Enabled! 🧘",
+            "You will be notified daily at your scheduled breathing time.",
+          );
         } else {
-          alert('Notification permission is required to enable daily reminders.');
+          alert(
+            "Notification permission is required to enable daily reminders.",
+          );
           setDailyReminderEnabled(false);
-          localStorage.setItem('spirox_daily_reminder_enabled', 'false');
+          localStorage.setItem("spirox_daily_reminder_enabled", "false");
         }
       } else {
-        alert('Notifications are not supported in this browser.');
+        alert("Notifications are not supported in this browser.");
       }
     } else {
       setDailyReminderEnabled(false);
-      localStorage.setItem('spirox_daily_reminder_enabled', 'false');
+      localStorage.setItem("spirox_daily_reminder_enabled", "false");
     }
   };
 
   const handleUpdateTime = (time: string) => {
     setDailyReminderTime(time);
-    localStorage.setItem('spirox_daily_reminder_time', time);
+    localStorage.setItem("spirox_daily_reminder_time", time);
   };
 
   // Scheduled Reminder Background Checker (Runs every 30s)
   useEffect(() => {
     if (!dailyReminderEnabled) return;
 
-    let lastNotifiedDate = '';
+    let lastNotifiedDate = "";
 
     const checkTimeAndNotify = () => {
       const now = new Date();
-      const currentHourMin = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const currentHourMin = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
       const todayStr = now.toDateString();
 
-      if (currentHourMin === dailyReminderTime && lastNotifiedDate !== todayStr) {
+      if (
+        currentHourMin === dailyReminderTime &&
+        lastNotifiedDate !== todayStr
+      ) {
         lastNotifiedDate = todayStr;
         triggerNotification(
-          'Mindfulness Time! 🧘',
-          'It is time for your scheduled breathing exercise. Take a minute to center yourself.'
+          "Mindfulness Time! 🧘",
+          "It is time for your scheduled breathing exercise. Take a minute to center yourself.",
         );
       }
     };
@@ -194,13 +237,18 @@ export function BreathingExercise() {
 
   // Register service worker and capture PWA installers
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     // 1. Register cache-first advanced service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
-        .then((reg) => console.log('Service Worker registered successfully:', reg.scope))
-        .catch((err) => console.error('Service Worker registration failed:', err));
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then((reg) =>
+          console.log("Service Worker registered successfully:", reg.scope),
+        )
+        .catch((err) =>
+          console.error("Service Worker registration failed:", err),
+        );
     }
 
     // 2. Detect Apple iOS Device
@@ -209,7 +257,9 @@ export function BreathingExercise() {
     setIsIOS(isApple);
 
     // 3. Detect if already running in standalone/installed mode
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as any).standalone;
     setIsInstalled(!!isStandalone);
 
     // 4. Capture native beforeinstallprompt event for Chromium/Chrome/Edge
@@ -226,8 +276,8 @@ export function BreathingExercise() {
       setDeferredPrompt(null);
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    window.addEventListener('appinstalled', handleAppInstalled);
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
 
     // Fallback: If it's iOS and not running in standalone, mark as installable (to show iOS tutorial modal)
     if (isApple && !isStandalone) {
@@ -235,8 +285,11 @@ export function BreathingExercise() {
     }
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      window.removeEventListener('appinstalled', handleAppInstalled);
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt,
+      );
+      window.removeEventListener("appinstalled", handleAppInstalled);
     };
   }, []);
 
@@ -245,7 +298,7 @@ export function BreathingExercise() {
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
     console.log(`User PWA Choice outcome: ${outcome}`);
-    if (outcome === 'accepted') {
+    if (outcome === "accepted") {
       setIsInstalled(true);
       setIsInstallable(false);
     }
@@ -253,35 +306,40 @@ export function BreathingExercise() {
   };
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
+    if (typeof window !== "undefined" && window.speechSynthesis) {
       window.speechSynthesis.getVoices();
-      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () =>
+        window.speechSynthesis.getVoices();
     }
   }, []);
 
   // Synchronize browser URL hash with React state for seamless hardware back gestures
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '');
-      
-      if (!hash || hash === 'explore') {
+      const hash = window.location.hash.replace("#", "");
+
+      if (!hash || hash === "explore") {
         isPopStateRef.current = true;
-        setView('home');
-        setActiveTab('explore');
-      } else if (hash === 'library' || hash === 'journal' || hash === 'profile') {
+        setView("home");
+        setActiveTab("explore");
+      } else if (
+        hash === "library" ||
+        hash === "journal" ||
+        hash === "profile"
+      ) {
         isPopStateRef.current = true;
-        setView('home');
+        setView("home");
         setActiveTab(hash as TabType);
       } else if (
-        hash === 'exercise' ||
-        hash === 'details' ||
-        hash === 'setup' ||
-        hash === 'complete' ||
-        hash === 'builder' ||
-        hash === 'subscription' ||
-        hash === 'auth'
+        hash === "exercise" ||
+        hash === "details" ||
+        hash === "setup" ||
+        hash === "complete" ||
+        hash === "builder" ||
+        hash === "subscription" ||
+        hash === "auth"
       ) {
         isPopStateRef.current = true;
         setView(hash as ViewType);
@@ -290,26 +348,26 @@ export function BreathingExercise() {
 
     // Set initial explore hash on load if not present
     if (!window.location.hash) {
-      window.location.replace('#explore');
+      window.location.replace("#explore");
       wasExploreRef.current = true;
     } else {
       handleHashChange();
     }
 
-    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener("hashchange", handleHashChange);
     return () => {
-      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener("hashchange", handleHashChange);
     };
   }, []);
 
   // Synchronize React state changes back to browser URL hash
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
-    const currentHash = window.location.hash.replace('#', '');
-    const expectedHash = view === 'home' ? activeTab : view;
+    const currentHash = window.location.hash.replace("#", "");
+    const expectedHash = view === "home" ? activeTab : view;
 
-    const isAtExplore = expectedHash === 'explore';
+    const isAtExplore = expectedHash === "explore";
 
     if (isPopStateRef.current) {
       isPopStateRef.current = false;
@@ -319,12 +377,12 @@ export function BreathingExercise() {
 
     if (currentHash !== expectedHash) {
       if (isAtExplore) {
-        window.location.replace('#explore');
+        window.location.replace("#explore");
       } else {
         if (wasExploreRef.current) {
-          window.location.hash = '#' + expectedHash;
+          window.location.hash = "#" + expectedHash;
         } else {
-          window.location.replace('#' + expectedHash);
+          window.location.replace("#" + expectedHash);
         }
       }
     }
@@ -333,55 +391,55 @@ export function BreathingExercise() {
   }, [view, activeTab]);
 
   const handleCompleteOnboarding = (planId: string, name?: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('spirox_onboarding_completed', 'true');
-      localStorage.setItem('spirox_active_plan', planId);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("spirox_onboarding_completed", "true");
+      localStorage.setItem("spirox_active_plan", planId);
       if (name) {
         updateUserName(name);
       }
-      const savedCountry = localStorage.getItem('spirox_user_country');
+      const savedCountry = localStorage.getItem("spirox_user_country");
       if (savedCountry) {
         updateUserCountry(savedCountry);
       }
     }
     setShowOnboarding(false);
-    setView('home');
+    setView("home");
   };
 
   const handleStart = (ex: Exercise) => {
     setSelectedExercise(ex);
-    setView('setup');
+    setView("setup");
   };
 
   const handleConfirmSetup = (config: SessionConfig) => {
     setSessionConfig(config);
-    setView('exercise');
+    setView("exercise");
   };
 
   const handleComplete = (duration: number, cycles: number) => {
     setSessionResults({ duration, cycles });
-    setView('complete');
+    setView("complete");
   };
 
   const handleDetails = (ex: Exercise) => {
     setSelectedExercise(ex);
-    setView('details');
+    setView("details");
   };
 
   const handleBack = () => {
-    setView('home');
-    if (typeof window !== 'undefined') window.speechSynthesis.cancel();
+    setView("home");
+    if (typeof window !== "undefined") window.speechSynthesis.cancel();
   };
 
   return (
     <div
-      className="h-screen w-full text-white selection:bg-white flex flex-col overflow-hidden relative bg-cover bg-center transition-all duration-1000 bg-black"
+      className="relative flex h-screen w-full flex-col overflow-hidden bg-black bg-cover bg-center text-white transition-all duration-1000 selection:bg-white"
       style={{
-        backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape || 'leaf')})`
+        backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape || "leaf")})`,
       }}
     >
       {/* Dynamic Ambient Background Overlay to guarantee contrast and glassmorphic premium feel */}
-      <div className="absolute inset-0 bg-black/50 z-0 pointer-events-none" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-black/50" />
       <AnimatePresence mode="wait">
         {showOnboarding === null ? (
           <motion.div
@@ -396,19 +454,22 @@ export function BreathingExercise() {
             key="onboarding-flow"
             onComplete={handleCompleteOnboarding}
           />
-        ) : view === 'home' ? (
+        ) : view === "home" ? (
           <motion.div
             key="home-layout"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex-1 flex flex-col overflow-hidden h-full"
+            className="flex h-full flex-1 flex-col overflow-hidden"
           >
             {/* Scrollable Content Area */}
-            <div id="breathing-scroll-container" className="flex-1 overflow-y-auto pb-32 scroll-smooth">
-              <div className="flex flex-col items-center w-full px-4 sm:px-0 max-w-[480px] mx-auto font-sans relative z-10">
+            <div
+              id="breathing-scroll-container"
+              className="flex-1 overflow-y-auto scroll-smooth pb-32"
+            >
+              <div className="relative z-10 mx-auto flex w-full max-w-[480px] flex-col items-center px-4 font-sans sm:px-0">
                 <AnimatePresence mode="wait">
-                  {activeTab === 'explore' && (
+                  {activeTab === "explore" && (
                     <ExploreView
                       key="explore"
                       onStart={handleStart}
@@ -418,14 +479,14 @@ export function BreathingExercise() {
                       onToggleFavorite={toggleFavorite}
                       stats={stats}
                       userAvatar={userAvatar}
-                      onProfileClick={() => setActiveTab('profile')}
+                      onProfileClick={() => setActiveTab("profile")}
                       soundscape={soundscape}
                       isAmbientSoundOn={isAmbientSoundOn}
                       setIsAmbientSoundOn={setIsAmbientSoundOn}
                     />
                   )}
-                  {activeTab === 'library' && (
-                    <div className="pt-12 w-full">
+                  {activeTab === "library" && (
+                    <div className="w-full pt-12">
                       <LibraryView
                         key="library"
                         onStart={handleStart}
@@ -434,12 +495,12 @@ export function BreathingExercise() {
                         favorites={favorites}
                         onToggleFavorite={toggleFavorite}
                         onDeleteCustom={deleteExercise}
-                        onCreate={() => setView('builder')}
+                        onCreate={() => setView("builder")}
                       />
                     </div>
                   )}
-                  {activeTab === 'achievements' && (
-                    <div className="pt-12 w-full">
+                  {activeTab === "achievements" && (
+                    <div className="w-full pt-12">
                       <AchievementsView
                         key="achievements"
                         stats={stats}
@@ -451,8 +512,8 @@ export function BreathingExercise() {
                       />
                     </div>
                   )}
-                  {activeTab === 'journal' && (
-                    <div className="pt-12 w-full">
+                  {activeTab === "journal" && (
+                    <div className="w-full pt-12">
                       <JournalView
                         key="journal"
                         sessions={sessions}
@@ -460,8 +521,8 @@ export function BreathingExercise() {
                       />
                     </div>
                   )}
-                  {activeTab === 'profile' && (
-                    <div className="pt-12 w-full">
+                  {activeTab === "profile" && (
+                    <div className="w-full pt-12">
                       <ProfileView
                         key="profile"
                         stats={stats}
@@ -470,8 +531,8 @@ export function BreathingExercise() {
                         onUpdateName={updateUserName}
                         onUpdateAvatar={updateAvatar}
                         onResetData={clearAllData}
-                        onUpgrade={() => setView('subscription')}
-                        onLogin={() => setView('auth')}
+                        onUpgrade={() => setView("subscription")}
+                        onLogin={() => setView("auth")}
                         isInstallable={isInstallable && !isInstalled}
                         isIOS={isIOS}
                         onInstallPWA={handleInstallPWA}
@@ -493,33 +554,37 @@ export function BreathingExercise() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="flex-1 h-full w-full overflow-hidden"
+            className="h-full w-full flex-1 overflow-hidden"
           >
-            {view === 'subscription' && (
+            {view === "subscription" && (
               <SubscriptionView
                 key="subscription"
-                onBack={() => setView('home')}
+                onBack={() => setView("home")}
               />
             )}
-            {view === 'auth' && (
+            {view === "auth" && (
               <div className="h-full w-full overflow-y-auto">
                 <AuthView
                   key="auth"
-                  onBack={() => setView('home')}
-                  onSuccess={() => setView('home')}
+                  onBack={() => setView("home")}
+                  onSuccess={() => setView("home")}
                 />
               </div>
             )}
-            {view === 'builder' && (
+            {view === "builder" && (
               <div className="h-full w-full overflow-y-auto">
                 <CustomBuilder
                   key="builder"
-                  onBack={() => setView('home')}
-                  onSave={(ex) => { addExercise(ex); setView('home'); setActiveTab('library'); }}
+                  onBack={() => setView("home")}
+                  onSave={(ex) => {
+                    addExercise(ex);
+                    setView("home");
+                    setActiveTab("library");
+                  }}
                 />
               </div>
             )}
-            {view === 'setup' && selectedExercise && (
+            {view === "setup" && selectedExercise && (
               <div className="h-full w-full overflow-y-auto">
                 <SessionSetup
                   key="setup"
@@ -530,13 +595,13 @@ export function BreathingExercise() {
                 />
               </div>
             )}
-            {view === 'exercise' && selectedExercise && sessionConfig && (
-              <div className="fixed inset-0 overflow-hidden z-[100] w-full h-[100dvh]">
+            {view === "exercise" && selectedExercise && sessionConfig && (
+              <div className="fixed inset-0 z-[100] h-[100dvh] w-full overflow-hidden">
                 <ExerciseView
                   key="exercise"
                   exercise={selectedExercise}
                   config={sessionConfig}
-                  onBack={() => setView('setup')}
+                  onBack={() => setView("setup")}
                   onComplete={handleComplete}
                   onRecordSession={recordSession}
                   soundscape={soundscape}
@@ -545,7 +610,7 @@ export function BreathingExercise() {
                 />
               </div>
             )}
-            {view === 'complete' && selectedExercise && sessionResults && (
+            {view === "complete" && selectedExercise && sessionResults && (
               <div className="h-full w-full overflow-y-auto">
                 <SessionComplete
                   key="complete"
@@ -553,17 +618,17 @@ export function BreathingExercise() {
                   duration={sessionResults.duration}
                   cycles={sessionResults.cycles}
                   onHome={handleBack}
-                  onRestart={() => setView('exercise')}
+                  onRestart={() => setView("exercise")}
                 />
               </div>
             )}
-            {view === 'details' && selectedExercise && (
+            {view === "details" && selectedExercise && (
               <div className="h-full w-full overflow-y-auto">
                 <DetailsView
                   key="details"
                   exercise={selectedExercise}
                   onBack={handleBack}
-                  onStart={() => setView('setup')}
+                  onStart={() => setView("setup")}
                 />
               </div>
             )}
