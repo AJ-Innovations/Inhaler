@@ -11,6 +11,7 @@ import { Wind } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
 import { BottomNav, TabType } from "./components/BottomNav";
+import { SidebarNav } from "./components/SidebarNav";
 import { Exercise } from "./data";
 import { useLibrary } from "./hooks/useCustomExercises";
 import { useSoundscape } from "./hooks/useSoundscape";
@@ -450,7 +451,7 @@ export function BreathingExercise() {
       }}
     >
       {/* Dynamic Ambient Background Overlay to guarantee contrast and glassmorphic premium feel */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-black/50" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-black/25" />
       <AnimatePresence mode="wait">
         {showOnboarding === null ? (
           <motion.div
@@ -471,14 +472,17 @@ export function BreathingExercise() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex h-full flex-1 flex-col overflow-hidden"
+            className="flex h-full flex-1 flex-col overflow-hidden md:flex-row"
           >
+            {/* Sidebar Navigation for Desktop and Large Screens */}
+            <SidebarNav activeTab={activeTab} setActiveTab={setActiveTab} />
+
             {/* Scrollable Content Area */}
             <div
               id="breathing-scroll-container"
-              className="flex-1 overflow-y-auto scroll-smooth pb-32"
+              className="flex-1 overflow-y-auto scroll-smooth pb-32 md:pl-28"
             >
-              <div className="relative z-10 mx-auto flex w-full max-w-[480px] flex-col items-center px-4 font-sans sm:px-0">
+              <div className="relative z-10 mx-auto flex w-full max-w-[480px] flex-col items-center px-4 pt-6 font-sans sm:px-0 md:max-w-[1000px] md:px-8 lg:max-w-[1200px]">
                 <AnimatePresence mode="wait">
                   {activeTab === "explore" && (
                     <ExploreView
