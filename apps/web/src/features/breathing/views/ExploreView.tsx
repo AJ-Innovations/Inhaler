@@ -316,16 +316,17 @@ export function ExploreView({
       exit={{ opacity: 0, y: -10 }}
       className="animate-fadeIn w-full"
     >
-      {/* Dynamic Greeting & Weekly Calendar Widget */}
-      {!hasActiveSearch && (
-        <div className="flex flex-col gap-3 px-1 pt-6 pb-4">
-          <div className="flex w-full items-center justify-between">
+      {/* Dynamic Greeting & Weekly Calendar Widget + Unified Desktop Search */}
+      <div className="top-0 right-0 left-0 z-50 flex flex-col gap-6 bg-transparent px-4 pt-6 pb-4 sm:fixed sm:px-8 md:left-28 md:flex-row md:items-center md:justify-between md:px-12">
+        {/* Greeting & Weekly Calendar Widget */}
+        <div className="flex flex-col gap-2 md:max-w-[45%]">
+          <div className="flex items-center justify-between gap-4 md:justify-start">
             <h1 className="text-3xl font-light tracking-tight text-white drop-shadow-md">
               {getGreeting()}
             </h1>
 
-            {/* Quick Ambient Sanctuary Icons in the same row */}
-            <div className="flex items-center gap-2">
+            {/* Quick Ambient Sanctuary Icons - Mobile Only */}
+            <div className="flex items-center gap-2 md:hidden">
               <button
                 onClick={handleToggleSound}
                 className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-md backdrop-blur-md transition-all active:scale-90 ${
@@ -361,7 +362,7 @@ export function ExploreView({
                   key={day.name}
                   className={`relative text-xs transition-all ${
                     isToday
-                      ? "scale-110 text-white"
+                      ? "scale-110 font-semibold text-white"
                       : "font-medium text-white/20"
                   }`}
                 >
@@ -371,60 +372,86 @@ export function ExploreView({
             })}
           </div>
         </div>
-      )}
-      {/* Sticky Top Bar containing Search & Rounded Profile Icon */}
-      <div className="sticky top-0 z-50 flex w-full items-center gap-3 pt-4 pb-2">
-        {/* Search Bar */}
-        <div className="relative z-50 flex-1">
-          <div className="group relative flex items-center">
-            <Search
-              className="absolute left-4 z-50 text-white/50 transition-colors group-focus-within:text-white"
-              size={18}
-            />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search practices, benefits, or goals..."
-              className="h-12 w-full rounded-full border border-white/10 bg-white/5 pr-10 pl-12 text-sm text-white placeholder-white/50 shadow-inner backdrop-blur-xs transition-all duration-300 focus:border-white/20 focus:bg-white/[0.02] focus:outline-none"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-4 rounded-full p-1 text-gray-500 transition-colors hover:bg-white/10 hover:text-white"
-              >
-                <X size={14} />
-              </button>
-            )}
+
+        {/* Unified Desktop Controls (Sanctuary controls, Search, Profile Avatar) */}
+        <div className="flex w-full flex-1 items-center gap-3 md:max-w-[50%]">
+          {/* Quick Ambient Sanctuary Icons - Desktop Only */}
+          <div className="hidden items-center gap-2 md:flex">
+            <button
+              onClick={handleToggleSound}
+              className={`flex h-12 w-12 items-center justify-center rounded-full border shadow-md backdrop-blur-md transition-all active:scale-90 ${
+                isAmbientSoundOn
+                  ? "border-white/20 bg-white/10 text-white"
+                  : "border-white/5 bg-white/[0.03] text-white/40 hover:bg-white/[0.06] hover:text-white"
+              }`}
+              title={`Ambient Sound: ${isAmbientSoundOn ? "ON" : "OFF"}`}
+            >
+              {isAmbientSoundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}
+            </button>
+
+            <button
+              onClick={() => setIsAmbientSelectorOpen(true)}
+              className="flex h-12 w-12 items-center justify-center rounded-full border border-white/5 bg-white/[0.03] text-white/40 shadow-md backdrop-blur-md transition-all hover:bg-white/[0.06] hover:text-white active:scale-90"
+              title="Change Ambient Sanctuary"
+            >
+              <Compass size={18} />
+            </button>
+          </div>
+
+          <div className="top-0 right-0 left-0 flex w-full justify-between gap-2 max-sm:sticky">
+            {/* Search Bar */}
+            <div className="relative flex-1">
+              <div className="group relative flex items-center">
+                <Search
+                  className="absolute left-4 z-50 text-white/50 transition-colors group-focus-within:text-white"
+                  size={18}
+                />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search practices, benefits, or goals..."
+                  className="h-12 w-full rounded-full border border-white/10 bg-white/5 pr-10 pl-12 text-sm text-white placeholder-white/50 shadow-inner backdrop-blur-xs transition-all duration-300 focus:border-white/20 focus:bg-white/[0.02] focus:outline-none"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-4 rounded-full p-1 text-gray-500 transition-colors hover:bg-white/10 hover:text-white"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Profile Avatar Trigger Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={onProfileClick}
+              className="relative flex h-12 w-12 flex-shrink-0 cursor-pointer items-center justify-center overflow-visible rounded-full border border-white/10 bg-white/[0.03] shadow-lg transition-all hover:border-white/20"
+            >
+              <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full">
+                {userAvatar ? (
+                  <img
+                    src={userAvatar}
+                    alt="Avatar"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <UserRound size={22} className="text-white/40" />
+                )}
+              </div>
+            </motion.button>
           </div>
         </div>
-
-        {/* Profile Avatar Trigger Button */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onProfileClick}
-          className="relative flex h-12 w-12 flex-shrink-0 cursor-pointer items-center justify-center overflow-visible rounded-full border border-white/10 bg-white/[0.03] shadow-lg transition-all hover:border-white/20"
-        >
-          <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full">
-            {userAvatar ? (
-              <img
-                src={userAvatar}
-                alt="Avatar"
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <UserRound size={22} className="text-white/40" />
-            )}
-          </div>
-        </motion.button>
       </div>
       {!hasActiveSearch ? (
         <div className="w-full">
           {/* Explore Hero Section Fold */}
-          <div className="relative flex h-[calc(100vh-200px)] min-h-[400px] flex-col pb-40">
+          <div className="relative flex h-[calc(100vh-200px)] min-h-[540px] flex-col items-center justify-center max-sm:pb-[200px] md:h-[calc(100vh-60px)] md:min-h-[580px]">
             {/* Hero Section */}
-            <section className="group relative mt-4 w-full flex-1 touch-pan-y overflow-hidden rounded-[48px]">
+            <section className="group relative w-full flex-1 touch-pan-y overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeSlide.id}
@@ -436,7 +463,7 @@ export function ExploreView({
                     if (info.offset.x > 50) handleManualNav(-1);
                     else if (info.offset.x < -50) handleManualNav(1);
                   }}
-                  className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 overflow-hidden rounded-[48px] p-8 text-center shadow-2xl"
+                  className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 overflow-hidden text-center sm:gap-6 sm:p-8"
                 >
                   <div
                     className={`absolute inset-0 bg-gradient-to-br opacity-30 blur-[120px] transition-all duration-1000 ${activeSlide.bg}`}
@@ -446,13 +473,16 @@ export function ExploreView({
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.2 }}
-                    className={`relative z-10 flex h-20 w-20 items-center justify-center rounded-[28px] shadow-inner ${activeSlide.color}`}
+                    className={`relative z-10 flex h-14 w-14 items-center justify-center rounded-[20px] shadow-inner sm:h-20 sm:w-20 sm:rounded-[28px] ${activeSlide.color}`}
                   >
-                    <activeSlide.icon size={36} strokeWidth={1.5} />
+                    <activeSlide.icon
+                      className="relative z-10 h-7 w-7 text-white sm:h-9 sm:w-9"
+                      strokeWidth={1.5}
+                    />
                     <div className="absolute inset-0 rounded-full bg-white opacity-10 blur-3xl" />
                   </motion.div>
 
-                  <div className="pointer-events-none relative z-10 mt-2 space-y-4">
+                  <div className="pointer-events-none relative z-10 mt-1 space-y-2 sm:mt-2 sm:space-y-4">
                     <div className="overflow-hidden">
                       <motion.div
                         initial={{ y: "100%", opacity: 0 }}
@@ -462,13 +492,13 @@ export function ExploreView({
                           duration: 0.5,
                           ease: "easeOut",
                         }}
-                        className="text-[11px] font-black tracking-[0.4em] text-white/70 uppercase"
+                        className="text-[10px] font-black tracking-[0.4em] text-white/70 uppercase sm:text-[11px]"
                       >
                         {activeSlide.label}
                       </motion.div>
                     </div>
 
-                    <div className="overflow-hidden py-1">
+                    <div className="overflow-hidden py-0.5 sm:py-1">
                       <motion.h2
                         initial={{ y: "100%", opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
@@ -477,7 +507,7 @@ export function ExploreView({
                           duration: 1,
                           ease: [0.16, 1, 0.3, 1],
                         }}
-                        className="text-5xl leading-tight font-light tracking-tight text-white"
+                        className="text-5xl leading-tight font-light tracking-tight text-white lg:text-8xl"
                       >
                         {activeSlide.title}
                       </motion.h2>
@@ -492,7 +522,7 @@ export function ExploreView({
                           duration: 1,
                           ease: [0.16, 1, 0.3, 1],
                         }}
-                        className="mx-auto max-w-[320px] text-sm leading-relaxed font-light text-white/80"
+                        className="mx-auto max-w-[280px] text-sm leading-relaxed font-light text-white/80 sm:max-w-[500px] md:text-2xl"
                       >
                         {activeSlide.subtitle}
                       </motion.p>
@@ -504,16 +534,35 @@ export function ExploreView({
                       e.stopPropagation();
                       onStart(activeSlide.exercise);
                     }}
-                    className="group relative z-20 mt-1 flex h-10 items-center justify-center gap-2 rounded-full bg-white px-8 text-[9px] font-bold tracking-widest text-black uppercase shadow-[0_20px_40px_rgba(255,255,255,0.12)] transition-all hover:scale-105 active:scale-95"
+                    className="group relative z-20 mt-2 flex h-11 items-center justify-center gap-3 overflow-hidden rounded-full bg-white px-6 text-[10px] font-black tracking-[0.2em] text-black uppercase shadow-[0_20px_40px_rgba(255,255,255,0.15)] transition-all duration-300 hover:scale-105 hover:shadow-[0_25px_50px_rgba(255,255,255,0.25)] active:scale-95 sm:mt-3 sm:h-14 sm:px-10 md:text-[11px]"
                   >
-                    <Play size={10} fill="currentColor" />
-                    <span>Begin Session</span>
+                    <span className="relative z-10 flex items-center gap-2.5">
+                      <Play
+                        size={12}
+                        fill="currentColor"
+                        strokeWidth={0}
+                        className="transition-transform group-hover:scale-110"
+                      />
+                      Begin Session
+                    </span>
+                    {/* Animated premium sheen effect */}
+                    <motion.div
+                      initial={{ x: "-100%" }}
+                      animate={{ x: "100%" }}
+                      transition={{
+                        repeat: Infinity,
+                        repeatType: "loop",
+                        duration: 3,
+                        ease: "linear",
+                      }}
+                      className="pointer-events-none absolute inset-0 h-full w-full bg-gradient-to-r from-transparent via-black/[0.05] to-transparent"
+                    />
                   </button>
                 </motion.div>
               </AnimatePresence>
             </section>
 
-            {/* Bouncing Scroll Indicator */}
+            {/* Bouncing Scroll Indicator - Lowered on Desktop */}
             <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{
@@ -521,7 +570,7 @@ export function ExploreView({
                 duration: 1.5,
                 ease: "easeInOut",
               }}
-              className="pointer-events-none absolute bottom-30 left-1/2 z-50 -translate-x-1/2 text-white/50"
+              className="pointer-events-none absolute bottom-30 left-1/2 z-50 -translate-x-1/2 text-white/50 md:bottom-8"
             >
               <ChevronDown size={32} />
             </motion.div>
@@ -546,11 +595,11 @@ export function ExploreView({
                   </span>
                 </div>
 
-                <div className="scrollbar-hide mask-fade-edges -mx-1 flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-4">
+                <div className="scrollbar-hide mask-fade-edges -mx-1 flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-4 md:grid md:snap-none md:grid-cols-2 md:overflow-x-visible md:pb-0 lg:grid-cols-3">
                   {customExercises.map((ex) => (
                     <div
                       key={ex.id}
-                      className="w-[95vw] shrink-0 snap-center sm:w-[420px]"
+                      className="w-[95vw] shrink-0 snap-center sm:w-[420px] md:w-full md:shrink md:snap-align-none"
                     >
                       <ExerciseCard
                         exercise={ex}
@@ -588,11 +637,11 @@ export function ExploreView({
                     </span>
                   </div>
 
-                  <div className="scrollbar-hide mask-fade-edges -mx-1 flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-4">
+                  <div className="scrollbar-hide mask-fade-edges -mx-1 flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-4 md:grid md:snap-none md:grid-cols-2 md:overflow-x-visible md:pb-0 lg:grid-cols-3">
                     {catExercises.map((ex) => (
                       <div
                         key={ex.id}
-                        className="w-[95vw] shrink-0 snap-center sm:w-[420px]"
+                        className="w-[95vw] shrink-0 snap-center sm:w-[420px] md:w-full md:shrink md:snap-align-none"
                       >
                         <ExerciseCard
                           exercise={ex}
@@ -640,7 +689,7 @@ export function ExploreView({
                       {filteredCustomExercises.length} found
                     </span>
                   </div>
-                  <div className="flex flex-col gap-5">
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {filteredCustomExercises.map((ex) => (
                       <ExerciseCard
                         key={ex.id}
@@ -665,7 +714,7 @@ export function ExploreView({
                       {filteredGlobalExercises.length} found
                     </span>
                   </div>
-                  <div className="flex flex-col gap-5">
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {filteredGlobalExercises.map((ex) => (
                       <ExerciseCard
                         key={ex.id}
@@ -691,64 +740,131 @@ export function ExploreView({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[600] flex flex-col overflow-y-auto bg-black/85 p-6 backdrop-blur-3xl"
+            style={{
+              backdropFilter: "blur(40px)",
+              WebkitBackdropFilter: "blur(40px)",
+            }}
+            className="fixed inset-0 z-[600] flex flex-col overflow-hidden bg-black/25 md:pl-28"
           >
-            <div className="mx-auto flex w-full max-w-[480px] flex-1 flex-col pt-8">
-              <div className="mb-8 flex items-center justify-between">
+            {/* Sticky Header - Pinned at the top */}
+            <div className="w-full flex-shrink-0 bg-transparent px-6 py-4 md:px-12 md:pt-8">
+              <div className="mx-auto flex w-full max-w-[480px] items-center justify-between md:max-w-[1000px] lg:max-w-[1200px]">
                 <div className="space-y-1">
-                  <h2 className="text-2xl font-light tracking-tight text-white">
+                  <h2 className="text-2xl font-light tracking-tight text-white drop-shadow-md">
                     Ambient Sanctuary
                   </h2>
-                  <p className="text-xs font-light text-white/40">
+                  <p className="text-xs font-light text-white/60 drop-shadow-sm">
                     Set your visual & auditory environment
                   </p>
                 </div>
                 <button
                   onClick={() => setIsAmbientSelectorOpen(false)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-all hover:bg-white/10 active:scale-90"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/15 active:scale-90"
                 >
-                  <X size={18} className="text-white" />
+                  <X size={24} className="text-white" />
                 </button>
               </div>
+            </div>
 
-              <div className="grid grid-cols-2 gap-4 pb-12">
-                {ambientList.map((item) => {
-                  const isActive = soundscape.activeSoundscape === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => {
-                        soundscape.setActiveSoundscape(item.id);
-                        if (item.id !== "none") {
-                          setIsAmbientSoundOn(true);
-                        } else {
-                          setIsAmbientSoundOn(false);
-                        }
-                      }}
-                      className={`group relative flex aspect-[3/4] flex-col overflow-hidden rounded-2xl border text-left shadow-md transition-all duration-300 active:scale-95 ${
-                        isActive
-                          ? "border-white shadow-[0_0_15px_rgba(255,255,255,0.15)] ring-1 ring-white/30"
-                          : "border-white/10 hover:border-white/20"
-                      }`}
-                    >
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="absolute inset-0 h-full w-full object-cover opacity-60 transition-transform duration-500 group-hover:scale-110 group-hover:opacity-80"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            {/* GPU-Accelerated CSS for Butter-Smooth Soundwaves */}
+            <style>{`
+              @keyframes wave-dance {
+                0%, 100% { height: 4px; }
+                50% { height: 16px; }
+              }
+              .animate-wave-1 { animation: wave-dance 1.2s infinite ease-in-out; }
+              .animate-wave-2 { animation: wave-dance 1.2s infinite ease-in-out 0.25s; }
+              .animate-wave-3 { animation: wave-dance 1.2s infinite ease-in-out 0.5s; }
+              .animate-wave-4 { animation: wave-dance 1.2s infinite ease-in-out 0.75s; }
+              .animate-wave-5 { animation: wave-dance 1.2s infinite ease-in-out 1.0s; }
+            `}</style>
 
-                      <div className="relative z-10 mt-auto space-y-0.5 p-3.5">
-                        <span className="block truncate text-[10px] font-bold tracking-wide text-white">
-                          {item.name}
-                        </span>
-                        <span className="block text-[8px] font-medium tracking-widest text-white/40 uppercase">
-                          {item.id === "none" ? "Silent" : "Audio + Visual"}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
+            {/* Scrollable Content Area - Rest of screen */}
+            <div className="w-full flex-1 overflow-y-auto px-6 pb-16 md:px-12">
+              <div className="mx-auto flex w-full max-w-[480px] flex-col md:max-w-[1000px] lg:max-w-[1200px]">
+                <div className="grid grid-cols-2 gap-5 pt-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                  {ambientList.map((item) => {
+                    const isActive = soundscape.activeSoundscape === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => {
+                          if (isActive) {
+                            if (isAmbientSoundOn) {
+                              setIsAmbientSoundOn(false);
+                              soundscape.pauseSoundscape();
+                            } else {
+                              setIsAmbientSoundOn(true);
+                              soundscape.setActiveSoundscape(item.id);
+                            }
+                          } else {
+                            soundscape.setActiveSoundscape(item.id);
+                            setIsAmbientSoundOn(true);
+                          }
+                        }}
+                        className={`group relative flex aspect-[3/4] w-full flex-col overflow-hidden rounded-3xl border text-left transition-all duration-300 active:scale-95 ${
+                          isActive
+                            ? "border-white bg-white/10 ring-1 ring-white/20"
+                            : "border-white/5 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]"
+                        }`}
+                      >
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+                            isActive
+                              ? "opacity-95"
+                              : "opacity-75 group-hover:opacity-90"
+                          }`}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-transparent" />
+
+                        {/* Premium Dynamic Audio Soundwave Bars Animation */}
+                        {isActive && isAmbientSoundOn && (
+                          <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+                            <div className="flex h-6 items-end justify-center gap-[3px]">
+                              <div
+                                className="animate-wave-1 w-[3px] rounded-full bg-white"
+                                style={{ height: "4px" }}
+                              />
+                              <div
+                                className="animate-wave-2 w-[3px] rounded-full bg-white"
+                                style={{ height: "4px" }}
+                              />
+                              <div
+                                className="animate-wave-3 w-[3px] rounded-full bg-white"
+                                style={{ height: "4px" }}
+                              />
+                              <div
+                                className="animate-wave-4 w-[3px] rounded-full bg-white"
+                                style={{ height: "4px" }}
+                              />
+                              <div
+                                className="animate-wave-5 w-[3px] rounded-full bg-white"
+                                style={{ height: "4px" }}
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="relative z-10 mt-auto flex w-full flex-col gap-1.5 p-4">
+                          <span className="block truncate text-xs font-medium tracking-wide text-white">
+                            {item.name}
+                          </span>
+                          <span
+                            className={`w-fit rounded-full px-2 py-0.5 text-[7.5px] font-bold tracking-widest uppercase inline-fit ${
+                              isActive
+                                ? "border border-white bg-white text-black"
+                                : "border border-white/10 bg-white/10 text-white/60"
+                            }`}
+                          >
+                            {item.id === "leaf" ? "Silent" : "Audio + Visual"}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </motion.div>
