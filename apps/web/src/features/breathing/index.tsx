@@ -433,7 +433,7 @@ export function BreathingExercise() {
 
   return (
     <div
-      className="relative flex h-screen w-full flex-col overflow-hidden bg-black bg-cover bg-center text-white transition-all duration-1000 selection:bg-white"
+      className="relative flex h-[100dvh] w-screen flex-col overflow-hidden bg-black bg-cover bg-center bg-no-repeat text-white transition-all duration-1000 selection:bg-white"
       style={{
         backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape || "leaf")})`,
       }}
