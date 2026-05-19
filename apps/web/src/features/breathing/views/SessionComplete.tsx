@@ -131,7 +131,7 @@ export function SessionComplete({
       <div className="pointer-events-none absolute -top-20 -right-20 h-80 w-80 rounded-full bg-indigo-500/10 blur-[100px]" />
       <div className="pointer-events-none absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-emerald-500/10 blur-[100px]" />
 
-      <div className="relative z-10 w-full max-w-[480px] space-y-8 py-10">
+      <div className="relative z-10 w-full max-w-[480px] space-y-8 py-10 md:max-w-[600px]">
         {/* Lottie Celebration */}
         <div className="relative flex h-64 items-center justify-center">
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent" />
