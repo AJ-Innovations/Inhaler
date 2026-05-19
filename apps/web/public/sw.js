@@ -1,4 +1,4 @@
-const CACHE_NAME = "inhaler-cache-v1";
+const CACHE_NAME = "spirox-cache-v1";
 const ASSETS_TO_CACHE = [
   "/",
   "/manifest.json",
