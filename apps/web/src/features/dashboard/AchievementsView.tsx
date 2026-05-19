@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  Exercise,
+  exercises as defaultExercises,
+} from "@features/breathing/data";
+import {
+  Badge,
+  CustomGoal,
+} from "@features/breathing/hooks/useCustomExercises";
 import { motion } from "framer-motion";
 import {
   Activity,
@@ -26,15 +34,6 @@ import {
   Zap,
 } from "lucide-react";
 import React, { useState } from "react";
-
-import {
-  Exercise,
-  exercises as defaultExercises,
-} from "@/features/breathing/data";
-import {
-  Badge,
-  CustomGoal,
-} from "@/features/breathing/hooks/useCustomExercises";
 
 interface AchievementsViewProps {
   stats: {

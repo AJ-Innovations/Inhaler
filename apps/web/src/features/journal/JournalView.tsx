@@ -1,5 +1,7 @@
 "use client";
 
+import { exercises } from "@features/breathing/data";
+import { Badge } from "@features/breathing/hooks/useCustomExercises";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Activity,
@@ -14,9 +16,6 @@ import {
   Zap,
 } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-
-import { exercises } from "@/features/breathing/data";
-import { Badge } from "@/features/breathing/hooks/useCustomExercises";
 
 interface JournalViewProps {
   sessions: {

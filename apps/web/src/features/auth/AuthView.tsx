@@ -1,5 +1,6 @@
 "use client";
 
+import { supabase } from "@libs/supabaseClient";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
@@ -11,8 +12,6 @@ import {
   User,
 } from "lucide-react";
 import React, { useState } from "react";
-
-import { supabase } from "@/lib/supabaseClient";
 
 interface AuthViewProps {
   onBack: () => void;

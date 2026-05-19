@@ -1,5 +1,7 @@
 "use client";
 
+import { AuthView } from "@features/auth/AuthView";
+import { SubscriptionView } from "@features/subscription/SubscriptionView";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
@@ -19,9 +21,6 @@ import {
   Zap,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
-
-import { AuthView } from "@/features/auth/AuthView";
-import { SubscriptionView } from "@/features/subscription/SubscriptionView";
 
 interface OnboardingViewProps {
   onComplete: (planId: string, userName?: string) => void;
