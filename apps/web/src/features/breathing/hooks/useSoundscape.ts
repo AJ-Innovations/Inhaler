@@ -100,6 +100,37 @@ export function useSoundscape(isPlaying: boolean = false) {
     noiseNodeRef.current.start();
   }, [volume, stopNoise]);
 
+  const playPromiseRef = useRef<Promise<void> | null>(null);
+
+  const safePlay = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio || !audio.src || audio.src === window.location.href) return;
+    
+    const promise = audio.play();
+    playPromiseRef.current = promise;
+    promise.catch(err => {
+      if (err.name !== 'AbortError' && err.name !== 'NotSupportedError') {
+        console.warn("Audio play failed:", err);
+      }
+    });
+  }, []);
+
+  const safePause = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    
+    if (playPromiseRef.current) {
+      playPromiseRef.current.then(() => {
+        audio.pause();
+      }).catch(() => {
+        audio.pause();
+      });
+      playPromiseRef.current = null;
+    } else {
+      audio.pause();
+    }
+  }, []);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -112,32 +143,34 @@ export function useSoundscape(isPlaying: boolean = false) {
     const isNoise = activeSoundscape.includes('noise');
 
     if (!isPlaying) {
-      audio.pause();
+      safePause();
       stopNoise();
       return;
     }
 
     if (isNoise) {
-      audio.pause();
+      safePause();
       const type = activeSoundscape.split('-')[0] as 'white' | 'pink' | 'brown';
       startNoise(type);
     } else {
       stopNoise();
       const sound = soundscapes.find(s => s.id === activeSoundscape);
       if (sound && sound.url) {
-        if (audio.src !== window.location.origin + sound.url) {
+        const absoluteUrl = new URL(sound.url, window.location.href).href;
+        if (audio.src !== absoluteUrl) {
+          safePause();
           audio.src = sound.url;
         }
         audio.volume = volume;
-        audio.play().catch(err => console.error("Audio play failed:", err));
+        safePlay();
       }
     }
 
     return () => {
-      audio.pause();
+      safePause();
       stopNoise();
     };
-  }, [activeSoundscape, isPlaying, startNoise, stopNoise]);
+  }, [activeSoundscape, isPlaying, startNoise, stopNoise, safePlay, safePause, volume]);
 
   useEffect(() => {
     if (audioRef.current) audioRef.current.volume = volume;

@@ -68,7 +68,9 @@ export function useVoiceAssistant(
       if (playPromise !== undefined) {
         playPromise.catch((error) => {
           // Playback interrupted (e.g. rapid phase changes), ignore safely
-          console.warn('Voice audio playback interrupted:', error);
+          if (error.name !== 'AbortError' && error.name !== 'NotSupportedError') {
+            console.warn('Voice audio playback failed:', error);
+          }
         });
       }
     } catch (err) {
