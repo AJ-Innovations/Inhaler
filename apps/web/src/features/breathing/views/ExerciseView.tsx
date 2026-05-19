@@ -331,6 +331,10 @@ export function ExerciseView({
         onSelectBinaural={binaural.toggleBinaural}
         binauralVolume={binaural.binauralVolume}
         onSetBinauralVolume={binaural.setBinauralVolume}
+        isAmbientSoundOn={isAmbientSoundOn}
+        setIsAmbientSoundOn={setIsAmbientSoundOn}
+        pauseSoundscape={soundscape.pauseSoundscape}
+        setActiveSoundscape={soundscape.setActiveSoundscape}
       />
     </motion.div>
   );
