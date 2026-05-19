@@ -22,17 +22,15 @@ const HealthSparkline = () => {
     .join(" ");
 
   return (
-    <div className="w-full space-y-4 rounded-[32px] border border-white/5 bg-white/[0.03] p-6">
+    <div className="w-full space-y-3 pt-2">
       <div className="flex items-center justify-between px-1">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10">
-            <TrendingUp size={16} className="text-emerald-400" />
-          </div>
+        <div className="flex items-center gap-2">
+          <TrendingUp size={15} className="text-white/60" />
           <div className="flex flex-col">
-            <span className="text-[10px] font-black tracking-widest text-gray-500 uppercase">
+            <span className="text-[8.5px] font-bold tracking-widest text-white/40 uppercase">
               Health Index
             </span>
-            <span className="text-sm font-light text-white">
+            <span className="text-[10px] font-light text-white/60">
               +12% Improvement
             </span>
           </div>
@@ -44,45 +42,42 @@ const HealthSparkline = () => {
         </div>
       </div>
 
-      <div className="group relative h-16 w-full">
+      <div className="group relative h-12 w-full px-1">
         <svg
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
           className="h-full w-full overflow-visible"
         >
           <defs>
-            <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#10b981" stopOpacity="0.2" />
-              <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#10b981" stopOpacity="1" />
+            <linearGradient
+              id="whiteLineGradient"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.2" />
+              <stop offset="50%" stopColor="#ffffff" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
             </linearGradient>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-              <feMerge>
-                <feMergeNode in="coloredBlur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
           </defs>
           <motion.polyline
             fill="none"
-            stroke="url(#lineGradient)"
-            strokeWidth="3"
+            stroke="url(#whiteLineGradient)"
+            strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
             points={points}
-            filter="url(#glow)"
             initial={{ pathLength: 0 }}
             animate={{ pathLength: 1 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           />
-          {/* Subtle area fill */}
           <motion.path
             d={`M 0 100 L ${points} L 100 100 Z`}
-            fill="url(#lineGradient)"
-            className="opacity-[0.05]"
+            fill="url(#whiteLineGradient)"
+            className="opacity-[0.02]"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.05 }}
+            animate={{ opacity: 0.02 }}
             transition={{ delay: 1 }}
           />
         </svg>
@@ -103,19 +98,16 @@ export function SessionComplete({
       label: "Time Mindful",
       value: `${Math.floor(duration / 60)}:${(duration % 60).toString().padStart(2, "0")}`,
       icon: Clock,
-      color: "text-blue-400",
     },
     {
       label: "Total Cycles",
       value: cycles.toString(),
       icon: RotateCcw,
-      color: "text-indigo-400",
     },
     {
       label: "Focus Points",
       value: (cycles * 10).toString(),
       icon: Zap,
-      color: "text-amber-400",
     },
   ];
 
@@ -124,45 +116,46 @@ export function SessionComplete({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="scrollbar-hide fixed inset-0 z-[300] flex flex-col items-center justify-center overflow-y-auto bg-black/95 p-6 backdrop-blur-md"
+      className="scrollbar-hide fixed inset-0 z-[300] flex flex-col items-center justify-start overflow-y-auto bg-black/20 p-4 backdrop-blur-sm sm:justify-center sm:p-6"
     >
-      {/* Decorative Premium Glow Elements */}
-      <div className="pointer-events-none absolute -top-20 -right-20 h-80 w-80 rounded-full bg-indigo-500/10 blur-[100px]" />
-      <div className="pointer-events-none absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-emerald-500/10 blur-[100px]" />
+      {/* Decorative Premium Subtle Glow Elements */}
+      <div className="pointer-events-none absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-white/5 blur-[140px]" />
+      <div className="pointer-events-none absolute -bottom-40 -left-40 h-[600px] w-[600px] rounded-full bg-white/5 blur-[140px]" />
 
-      <div className="relative z-10 w-full max-w-[480px] space-y-8 py-10 md:max-w-[600px]">
+      {/* Main Glassmorphic Wrapper Card */}
+      <div className="relative z-10 my-auto w-full max-w-[420px] space-y-7 rounded-[40px] border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.2)] backdrop-blur-md sm:space-y-8 sm:p-8">
         {/* Premium Visual Celebration Beacon */}
-        <div className="relative flex h-64 w-full items-center justify-center overflow-hidden">
+        <div className="relative flex h-52 w-full items-center justify-center overflow-hidden">
           {/* Pulsing Concentric Rings */}
           <motion.div
-            animate={{ scale: [1, 1.4, 1], opacity: [0.15, 0.4, 0.15] }}
+            animate={{ scale: [1, 1.3, 1], opacity: [0.1, 0.3, 0.1] }}
             transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-            className="absolute h-56 w-56 rounded-full border border-indigo-500/20 bg-indigo-500/5"
+            className="absolute h-44 w-44 rounded-full border border-white/10 bg-white/5"
           />
           <motion.div
-            animate={{ scale: [1, 1.25, 1], opacity: [0.2, 0.5, 0.2] }}
+            animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.4, 0.15] }}
             transition={{
               repeat: Infinity,
               duration: 3,
               ease: "easeInOut",
               delay: 0.5,
             }}
-            className="absolute h-40 w-40 rounded-full border border-emerald-500/20 bg-emerald-500/5"
+            className="absolute h-32 w-32 rounded-full border border-white/10 bg-white/5"
           />
           <motion.div
-            animate={{ scale: [1, 1.12, 1], opacity: [0.3, 0.6, 0.3] }}
+            animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.5, 0.2] }}
             transition={{
               repeat: Infinity,
               duration: 2,
               ease: "easeInOut",
               delay: 1,
             }}
-            className="absolute h-28 w-28 rounded-full border border-white/10 bg-white/5"
+            className="absolute h-20 w-20 rounded-full border border-white/10 bg-white/5"
           />
 
           {/* Floating Sparkles & Particles */}
           <div className="absolute inset-0 z-0">
-            {[...Array(12)].map((_, i) => (
+            {[...Array(8)].map((_, i) => (
               <motion.div
                 key={i}
                 initial={{
@@ -175,7 +168,7 @@ export function SessionComplete({
                   x: `${50 + (Math.random() - 0.5) * 80}%`,
                   y: `${50 + (Math.random() - 0.5) * 80}%`,
                   scale: [0, Math.random() * 1.5 + 0.5, 0],
-                  opacity: [0, 0.8, 0],
+                  opacity: [0, 0.6, 0],
                 }}
                 transition={{
                   repeat: Infinity,
@@ -183,81 +176,79 @@ export function SessionComplete({
                   delay: Math.random() * 2,
                   ease: "easeOut",
                 }}
-                className={`absolute h-1.5 w-1.5 rounded-full ${
-                  i % 3 === 0
-                    ? "bg-indigo-400"
-                    : i % 3 === 1
-                      ? "bg-emerald-400"
-                      : "bg-amber-400"
-                } blur-[0.5px]`}
+                className="absolute h-1 w-1 rounded-full bg-white/40 blur-[0.2px]"
               />
             ))}
           </div>
 
-          <div className="absolute bottom-4 z-10 flex flex-col items-center space-y-1">
+          {/* Centered Trophy Badge */}
+          <motion.div
+            initial={{ scale: 0.8, rotate: -15, opacity: 0 }}
+            animate={{ scale: 1, rotate: 0, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 15 }}
+            className="absolute z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-gradient-to-br from-white/15 to-white/5 shadow-lg"
+          >
+            <Trophy className="relative z-10 h-5 w-5 text-white" />
             <motion.div
-              initial={{ scale: 0.8, rotate: -15, opacity: 0 }}
-              animate={{ scale: 1, rotate: 0, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 200, damping: 15 }}
-              className="relative mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-emerald-500 shadow-xl shadow-indigo-500/20"
-            >
-              <Trophy className="relative z-10 text-white" size={24} />
-              <motion.div
-                animate={{ scale: [1, 1.2, 1], opacity: [0, 0.4, 0] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="absolute inset-0 rounded-full bg-white"
-              />
-            </motion.div>
-            <h2 className="text-2xl font-light tracking-tight text-white">
+              animate={{ scale: [1, 1.2, 1], opacity: [0, 0.3, 0] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="absolute inset-0 rounded-full bg-white"
+            />
+          </motion.div>
+
+          {/* Text Stack */}
+          <div className="absolute right-0 bottom-1 left-0 z-10 flex flex-col items-center justify-center text-center">
+            <h2 className="text-xl font-light tracking-tight text-white">
               Session Complete
             </h2>
-            <p className="text-[10px] font-bold tracking-[0.4em] text-gray-500 uppercase">
+            <p className="mt-0.5 text-[9px] font-bold tracking-[0.4em] text-white/40 uppercase">
               {exercise.name} Mastery
             </p>
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-3">
+        {/* Stats Grid (Minimalist, No Boxes, Pure White) */}
+        <div className="grid grid-cols-3 gap-2 border-t border-white/5 pt-2">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 + 0.5 }}
-              className="flex flex-col items-center space-y-2 rounded-[28px] border border-white/5 bg-white/[0.03] p-4 text-center"
+              className="flex flex-col items-center justify-center space-y-1.5 text-center"
             >
-              <stat.icon className={stat.color} size={16} />
-              <div className="space-y-0.5">
-                <p className="text-lg font-light text-white">{stat.value}</p>
-                <p className="text-[8px] leading-none font-bold tracking-widest text-gray-500 uppercase">
-                  {stat.label}
-                </p>
-              </div>
+              <stat.icon className="text-white/60" size={16} />
+              <span className="text-lg font-light tracking-tight text-white sm:text-xl">
+                {stat.value}
+              </span>
+              <span className="text-[7.5px] leading-none font-bold tracking-widest text-white/40 uppercase sm:text-[8.5px]">
+                {stat.label}
+              </span>
             </motion.div>
           ))}
         </div>
 
-        {/* Health Improvement Line Graph */}
+        {/* Health Improvement Line Graph (Minimalist, No Boxes, Pure White) */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
+          className="border-t border-white/5 pt-1"
         >
           <HealthSparkline />
         </motion.div>
 
         {/* Actions */}
-        <div className="flex flex-col gap-3 pt-4">
+        <div className="flex flex-col gap-3 pt-2">
           <motion.button
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9 }}
             onClick={onRestart}
-            className="relative flex h-16 w-full cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-full bg-white text-[12px] font-black tracking-[0.2em] text-black uppercase shadow-[0_0_30px_rgba(255,255,255,0.15)] transition-all duration-300 hover:shadow-[0_0_35px_rgba(255,255,255,0.25)] active:scale-95"
+            className="relative flex h-14 w-full cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-full bg-white text-[12px] font-black tracking-[0.2em] text-black uppercase shadow-[0_0_30px_rgba(255,255,255,0.15)] transition-all duration-300 hover:shadow-[0_0_35px_rgba(255,255,255,0.25)] active:scale-95"
           >
             <span className="relative z-10 flex items-center gap-2">
-              <RotateCcw size={16} strokeWidth={3} />
+              <RotateCcw size={15} strokeWidth={3} />
               Restart Session
             </span>
             {/* Animated Premium Gloss Shimmer */}
@@ -279,9 +270,9 @@ export function SessionComplete({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1 }}
             onClick={onHome}
-            className="flex h-16 w-full cursor-pointer items-center justify-center gap-3 rounded-full border border-white/10 bg-white/[0.04] text-[12px] font-black tracking-[0.2em] text-white/80 uppercase transition-all duration-300 hover:bg-white/[0.08] hover:text-white active:scale-95"
+            className="flex h-14 w-full cursor-pointer items-center justify-center gap-3 rounded-full border border-white/15 bg-white/5 text-[12px] font-black tracking-[0.2em] text-white uppercase transition-all duration-300 hover:bg-white/10 active:scale-95"
           >
-            <Home size={16} strokeWidth={2.5} />
+            <Home size={15} strokeWidth={2.5} />
             Return Home
           </motion.button>
         </div>
