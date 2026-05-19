@@ -10,10 +10,250 @@ interface SubscriptionViewProps {
   onPlanSelected?: (planId: string) => void;
 }
 
+interface PricingTier {
+  symbol: string;
+  proMonthly: string;
+  proYearly: string;
+  proStrikethrough: string | null;
+  premiumMonthly: string;
+  premiumYearly: string;
+  premiumStrikethrough: string | null;
+  periodMonthly: string;
+  periodYearly: string;
+}
+
+const pricingTiers: Record<string, PricingTier> = {
+  US: {
+    symbol: '$',
+    proMonthly: '0.99',
+    proYearly: '9.99',
+    proStrikethrough: '12',
+    premiumMonthly: '4.99',
+    premiumYearly: '49.99',
+    premiumStrikethrough: '60',
+    periodMonthly: '/ month',
+    periodYearly: '/ year',
+  },
+  GB: {
+    symbol: '£',
+    proMonthly: '0.99',
+    proYearly: '9.99',
+    proStrikethrough: '12',
+    premiumMonthly: '4.49',
+    premiumYearly: '44.99',
+    premiumStrikethrough: '54',
+    periodMonthly: '/ month',
+    periodYearly: '/ year',
+  },
+  EU: {
+    symbol: '€',
+    proMonthly: '0.99',
+    proYearly: '9.99',
+    proStrikethrough: '12',
+    premiumMonthly: '4.99',
+    premiumYearly: '49.99',
+    premiumStrikethrough: '60',
+    periodMonthly: '/ month',
+    periodYearly: '/ year',
+  },
+  IN: {
+    symbol: '₹',
+    proMonthly: '29',
+    proYearly: '249',
+    proStrikethrough: '348',
+    premiumMonthly: '99',
+    premiumYearly: '899',
+    premiumStrikethrough: '1188',
+    periodMonthly: '/ month',
+    periodYearly: '/ year',
+  },
+  CA: {
+    symbol: 'C$',
+    proMonthly: '1.49',
+    proYearly: '14.99',
+    proStrikethrough: '18',
+    premiumMonthly: '6.99',
+    premiumYearly: '69.99',
+    premiumStrikethrough: '84',
+    periodMonthly: '/ month',
+    periodYearly: '/ year',
+  },
+  AU: {
+    symbol: 'A$',
+    proMonthly: '1.49',
+    proYearly: '14.99',
+    proStrikethrough: '18',
+    premiumMonthly: '7.49',
+    premiumYearly: '74.99',
+    premiumStrikethrough: '90',
+    periodMonthly: '/ month',
+    periodYearly: '/ year',
+  },
+  JP: {
+    symbol: '¥',
+    proMonthly: '150',
+    proYearly: '1,500',
+    proStrikethrough: '1,800',
+    premiumMonthly: '700',
+    premiumYearly: '7,000',
+    premiumStrikethrough: '8,400',
+    periodMonthly: '/ 月',
+    periodYearly: '/ 年',
+  },
+  KR: {
+    symbol: '₩',
+    proMonthly: '990',
+    proYearly: '9,900',
+    proStrikethrough: '11,880',
+    premiumMonthly: '4,900',
+    premiumYearly: '49,000',
+    premiumStrikethrough: '58,800',
+    periodMonthly: '/ 월',
+    periodYearly: '/ 년',
+  },
+  AE: {
+    symbol: 'AED ',
+    proMonthly: '2.99',
+    proYearly: '29.99',
+    proStrikethrough: '36',
+    premiumMonthly: '14.99',
+    premiumYearly: '149.99',
+    premiumStrikethrough: '180',
+    periodMonthly: '/ month',
+    periodYearly: '/ year',
+  },
+  SA: {
+    symbol: 'SR ',
+    proMonthly: '2.99',
+    proYearly: '29.99',
+    proStrikethrough: '36',
+    premiumMonthly: '12.99',
+    premiumYearly: '129.99',
+    premiumStrikethrough: '156',
+    periodMonthly: '/ month',
+    periodYearly: '/ year',
+  },
+  BR: {
+    symbol: 'R$ ',
+    proMonthly: '2.99',
+    proYearly: '29.99',
+    proStrikethrough: '36',
+    premiumMonthly: '14.99',
+    premiumYearly: '149.99',
+    premiumStrikethrough: '180',
+    periodMonthly: '/ mês',
+    periodYearly: '/ ano',
+  },
+  TR: {
+    symbol: '₺',
+    proMonthly: '9.99',
+    proYearly: '99.99',
+    proStrikethrough: '120',
+    premiumMonthly: '49.99',
+    premiumYearly: '499.99',
+    premiumStrikethrough: '600',
+    periodMonthly: '/ ay',
+    periodYearly: '/ yıl',
+  },
+  ID: {
+    symbol: 'Rp ',
+    proMonthly: '5.000',
+    proYearly: '49.000',
+    proStrikethrough: '60.000',
+    premiumMonthly: '24.000',
+    premiumYearly: '240.000',
+    premiumStrikethrough: '288.000',
+    periodMonthly: '/ bulan',
+    periodYearly: '/ tahun',
+  },
+  VN: {
+    symbol: '₫',
+    proMonthly: '9,000',
+    proYearly: '90,000',
+    proStrikethrough: '108,000',
+    premiumMonthly: '49,000',
+    premiumYearly: '490,000',
+    premiumStrikethrough: '588,000',
+    periodMonthly: '/ tháng',
+    periodYearly: '/ năm',
+  },
+  DEFAULT: {
+    symbol: '$',
+    proMonthly: '0.99',
+    proYearly: '9.99',
+    proStrikethrough: '12',
+    premiumMonthly: '4.99',
+    premiumYearly: '49.99',
+    premiumStrikethrough: '60',
+    periodMonthly: '/ month',
+    periodYearly: '/ year',
+  }
+};
+
 export function SubscriptionView({ onBack, isOnboarding, onPlanSelected }: SubscriptionViewProps) {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [activeIndex, setActiveIndex] = useState(1); // Default to the Pro plan (index 1)
   const touchStart = useRef<number | null>(null);
+
+  const [activeTier, setActiveTier] = useState<PricingTier>(pricingTiers.DEFAULT);
+  const [detectedCountry, setDetectedCountry] = useState<string>('US');
+
+  const applyCountry = (country: string) => {
+    const cc = country.toUpperCase();
+    setDetectedCountry(cc);
+    const euroZone = ['DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'AT', 'IE', 'FI', 'PT', 'GR', 'EE', 'LV', 'LT', 'SK', 'SI', 'CY', 'MT', 'HR'];
+    if (pricingTiers[cc]) {
+      setActiveTier(pricingTiers[cc]);
+    } else if (euroZone.includes(cc)) {
+      setActiveTier(pricingTiers.EU);
+    } else {
+      setActiveTier(pricingTiers.DEFAULT);
+    }
+  };
+
+  React.useEffect(() => {
+    let active = true;
+    async function fetchGeo() {
+      // 0. Try localStorage first
+      if (typeof window !== 'undefined') {
+        const savedCountry = localStorage.getItem('spirox_user_country');
+        if (savedCountry) {
+          applyCountry(savedCountry);
+          return;
+        }
+      }
+
+      // 1. Try ipapi.co (Primary HTTPS)
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (res.ok) {
+          const data = await res.json();
+          if (active && data.country_code) {
+            applyCountry(data.country_code);
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Primary Geo-IP (ipapi.co) failed, trying backup...', e);
+      }
+
+      // 2. Try freeipapi.com (Highly reliable CORS-friendly Backup)
+      try {
+        const res = await fetch('https://freeipapi.com/api/json');
+        if (res.ok) {
+          const data = await res.json();
+          if (active && data.countryCode) {
+            applyCountry(data.countryCode);
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Backup Geo-IP (freeipapi.com) failed, using default US.');
+      }
+    }
+    fetchGeo();
+    return () => { active = false; };
+  }, []);
 
   // Colour tokens keyed directly off activeIndex — re-derived on every render
   const toggleOnClass = [
@@ -53,6 +293,9 @@ export function SubscriptionView({ onBack, isOnboarding, onPlanSelected }: Subsc
       id: 'free',
       name: 'Free',
       price: 0,
+      displayPrice: '0',
+      strikethrough: null,
+      period: billingCycle === 'monthly' ? activeTier.periodMonthly : activeTier.periodYearly,
       description: 'Ideal for individual users.',
       features: [
         'Access to basic breathing routines',
@@ -73,10 +316,10 @@ export function SubscriptionView({ onBack, isOnboarding, onPlanSelected }: Subsc
     {
       id: 'pro',
       name: 'Pro',
-      price: billingCycle === 'monthly' ? 1 : 10 / 12,
-      displayPrice: billingCycle === 'monthly' ? '1' : '10',
-      strikethrough: billingCycle === 'yearly' ? '12' : null,
-      period: billingCycle === 'monthly' ? '/ month' : '/ year',
+      price: billingCycle === 'monthly' ? parseFloat(activeTier.proMonthly.replace(/,/g, '')) : parseFloat(activeTier.proYearly.replace(/,/g, '')) / 12,
+      displayPrice: billingCycle === 'monthly' ? activeTier.proMonthly : activeTier.proYearly,
+      strikethrough: billingCycle === 'yearly' ? activeTier.proStrikethrough : null,
+      period: billingCycle === 'monthly' ? activeTier.periodMonthly : activeTier.periodYearly,
       description: 'Ideal for daily users building a consistent breathing habit.',
       features: [
         'All Free features included',
@@ -98,10 +341,10 @@ export function SubscriptionView({ onBack, isOnboarding, onPlanSelected }: Subsc
     {
       id: 'premium',
       name: 'Premium',
-      price: billingCycle === 'monthly' ? 5 : 50 / 12,
-      displayPrice: billingCycle === 'monthly' ? '5' : '50',
-      strikethrough: billingCycle === 'yearly' ? '60' : null,
-      period: billingCycle === 'monthly' ? '/ month' : '/ year',
+      price: billingCycle === 'monthly' ? parseFloat(activeTier.premiumMonthly.replace(/,/g, '')) : parseFloat(activeTier.premiumYearly.replace(/,/g, '')) / 12,
+      displayPrice: billingCycle === 'monthly' ? activeTier.premiumMonthly : activeTier.premiumYearly,
+      strikethrough: billingCycle === 'yearly' ? activeTier.premiumStrikethrough : null,
+      period: billingCycle === 'monthly' ? activeTier.periodMonthly : activeTier.periodYearly,
       description: 'Designed for serious users seeking total mental and physical mastery.',
       features: [
         'All Pro features included',
@@ -251,14 +494,14 @@ export function SubscriptionView({ onBack, isOnboarding, onPlanSelected }: Subsc
                         <div className="flex items-baseline gap-4">
                           {plan.strikethrough && (
                             <span className={`text-2xl text-gray-200 font-light line-through decoration-2 tracking-tighter self-center mb-1 ${colors.badge.replace('bg-', 'decoration-').replace('/10', '/50')}`}>
-                              ${plan.strikethrough}
+                              {activeTier.symbol}{plan.strikethrough}
                             </span>
                           )}
                           <span className={`text-4xl font-light tracking-tighter transition-colors duration-500 ${billingCycle === 'yearly' ? colors.priceColor : 'text-white'
                             }`}>
-                            ${plan.displayPrice || plan.price}
+                            {plan.id === 'free' ? '' : activeTier.symbol}{plan.displayPrice || plan.price}
                           </span>
-                          <span className="text-xs text-gray-300 font-medium">{plan.period || '/ month'}</span>
+                          <span className="text-xs text-gray-300 font-medium">{plan.period}</span>
                         </div>
 
                         {billingCycle === 'yearly' && plan.id !== 'free' && (
@@ -362,6 +605,36 @@ export function SubscriptionView({ onBack, isOnboarding, onPlanSelected }: Subsc
             <span className={`px-2 py-0.5 rounded-full border text-[8px] font-black uppercase tracking-tighter transition-all duration-300 ${badgeColorClass}`}>
               Save 20%
             </span>
+          </div>
+        </div>
+
+        {/* Country Preview / Selector (Dynamic PPP) */}
+        <div className="flex flex-col items-center justify-center gap-1 pb-6 shrink-0 opacity-80 hover:opacity-100 transition-opacity relative z-[20]">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/5 bg-white/5 backdrop-blur-md">
+            <span className="text-[9px] uppercase tracking-widest text-white/50 font-bold">Country Preview:</span>
+            <select
+              value={detectedCountry}
+              onChange={(e) => {
+                applyCountry(e.target.value);
+              }}
+              className="bg-transparent text-white text-[9px] font-black uppercase tracking-wider border-none outline-none cursor-pointer focus:ring-0"
+              style={{ colorScheme: 'dark' }}
+            >
+              <option value="US" className="bg-neutral-900 text-white">United States ($)</option>
+              <option value="IN" className="bg-neutral-900 text-white">India (₹)</option>
+              <option value="GB" className="bg-neutral-900 text-white">United Kingdom (£)</option>
+              <option value="EU" className="bg-neutral-900 text-white">Eurozone (€)</option>
+              <option value="CA" className="bg-neutral-900 text-white">Canada (C$)</option>
+              <option value="AU" className="bg-neutral-900 text-white">Australia (A$)</option>
+              <option value="JP" className="bg-neutral-900 text-white">Japan (¥)</option>
+              <option value="KR" className="bg-neutral-900 text-white">South Korea (₩)</option>
+              <option value="AE" className="bg-neutral-900 text-white">UAE (AED)</option>
+              <option value="SA" className="bg-neutral-900 text-white">Saudi Arabia (SR)</option>
+              <option value="BR" className="bg-neutral-900 text-white">Brazil (R$)</option>
+              <option value="TR" className="bg-neutral-900 text-white">Turkey (₺)</option>
+              <option value="ID" className="bg-neutral-900 text-white">Indonesia (Rp)</option>
+              <option value="VN" className="bg-neutral-900 text-white">Vietnam (₫)</option>
+            </select>
           </div>
         </div>
       </div>
