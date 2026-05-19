@@ -285,7 +285,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
       />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/80" />
 
-      <div className="relative mx-auto flex h-full w-full max-w-[480px] flex-1 flex-col">
+      <div className="relative mx-auto flex h-full w-full max-w-[480px] flex-1 flex-col transition-all duration-300 md:max-w-[760px] lg:max-w-[900px]">
         <div className="scrollbar-hide relative z-10 flex h-full flex-1 flex-col justify-center overflow-y-auto px-6 py-10">
           <AnimatePresence mode="wait">
             {/* STEP: Intro Screen */}
@@ -382,7 +382,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                   </p>
                 </div>
 
-                <div className="space-y-3">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   {goals.map((g) => (
                     <button
                       key={g.id}
@@ -437,7 +437,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                   </p>
                 </div>
 
-                <div className="space-y-3">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                   {stressLevels.map((s) => (
                     <button
                       key={s.id}
@@ -494,7 +494,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                   </p>
                 </div>
 
-                <div className="space-y-3">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                   {experienceLevels.map((e) => (
                     <button
                       key={e.id}
