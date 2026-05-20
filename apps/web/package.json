@@ -23,6 +23,7 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@types/three": "^0.184.1",
     "autoprefixer": "^10.5.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "latest",
@@ -30,6 +31,7 @@
     "eslint-plugin-sonarjs": "^4.0.3",
     "postcss": "^8.5.14",
     "tailwindcss": "^4.3.0",
+    "three": "^0.184.0",
     "typescript": "latest"
   }
 }
