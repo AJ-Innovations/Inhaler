@@ -67,7 +67,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
   ) || {
     code: selectedCountry,
     name: selectedCountry === "US" ? "United States" : selectedCountry,
-    flag: "🌐",
+    flag: `https://flagcdn.com/w40/${selectedCountry.toLowerCase()}.png`,
   };
   const detectedCountryName =
     countries.find((c) => c.code === detectedCountry)?.name || "United States";
@@ -78,7 +78,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
       setIsLoadingCountries(true);
       try {
         const res = await fetch(
-          "https://restcountries.com/v3.1/all?fields=name,cca2,flag",
+          "https://restcountries.com/v3.1/all?fields=name,cca2,flags",
         );
         if (res.ok) {
           const data = await res.json();
@@ -86,7 +86,10 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
             .map((c: any) => ({
               code: c.cca2.toUpperCase(),
               name: c.name.common,
-              flag: c.flag || "🌐",
+              flag:
+                c.flags?.png ||
+                c.flags?.svg ||
+                `https://flagcdn.com/w40/${c.cca2.toLowerCase()}.png`,
             }))
             .sort((a: any, b: any) => a.name.localeCompare(b.name));
           if (active) {
@@ -98,14 +101,46 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
         // Fallback static list in case of network/API limits
         if (active) {
           setCountries([
-            { code: "US", name: "United States", flag: "🇺🇸" },
-            { code: "IN", name: "India", flag: "🇮🇳" },
-            { code: "GB", name: "United Kingdom", flag: "🇬🇧" },
-            { code: "CA", name: "Canada", flag: "🇨🇦" },
-            { code: "AU", name: "Australia", flag: "🇦🇺" },
-            { code: "DE", name: "Germany", flag: "🇩🇪" },
-            { code: "FR", name: "France", flag: "🇫🇷" },
-            { code: "JP", name: "Japan", flag: "🇯🇵" },
+            {
+              code: "US",
+              name: "United States",
+              flag: "https://flagcdn.com/w40/us.png",
+            },
+            {
+              code: "IN",
+              name: "India",
+              flag: "https://flagcdn.com/w40/in.png",
+            },
+            {
+              code: "GB",
+              name: "United Kingdom",
+              flag: "https://flagcdn.com/w40/gb.png",
+            },
+            {
+              code: "CA",
+              name: "Canada",
+              flag: "https://flagcdn.com/w40/ca.png",
+            },
+            {
+              code: "AU",
+              name: "Australia",
+              flag: "https://flagcdn.com/w40/au.png",
+            },
+            {
+              code: "DE",
+              name: "Germany",
+              flag: "https://flagcdn.com/w40/de.png",
+            },
+            {
+              code: "FR",
+              name: "France",
+              flag: "https://flagcdn.com/w40/fr.png",
+            },
+            {
+              code: "JP",
+              name: "Japan",
+              flag: "https://flagcdn.com/w40/jp.png",
+            },
           ]);
         }
       } finally {
@@ -599,10 +634,12 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                           className="mr-3 shrink-0 text-white/60"
                         />
                         {selectedCountryData ? (
-                          <span className="flex items-center gap-2 truncate">
-                            <span className="shrink-0 text-base">
-                              {selectedCountryData.flag}
-                            </span>
+                          <span className="flex items-center gap-3 truncate">
+                            <img
+                              src={selectedCountryData.flag}
+                              alt={selectedCountryData.name}
+                              className="h-3.5 w-5 shrink-0 rounded-[2px] border border-white/10 object-cover shadow-sm"
+                            />
                             <span className="truncate">
                               {selectedCountryData.name}
                             </span>
@@ -669,15 +706,17 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                                     setSearchQuery("");
                                     setIsDropdownOpen(false);
                                   }}
-                                  className={`flex w-full items-center gap-3 rounded-full px-4 py-2.5 text-left text-xs transition-all ${
+                                  className={`flex w-full items-center gap-3 rounded-full px-4 py-2 text-left text-xs transition-all ${
                                     selectedCountry === c.code
                                       ? "bg-white/15 font-medium text-white"
                                       : "text-white/80 hover:bg-white/5 hover:text-white"
                                   }`}
                                 >
-                                  <span className="shrink-0 text-base">
-                                    {c.flag}
-                                  </span>
+                                  <img
+                                    src={c.flag}
+                                    alt={c.name}
+                                    className="h-3 w-4.5 shrink-0 rounded-[2px] border border-white/10 object-cover shadow-sm"
+                                  />
                                   <span className="truncate">{c.name}</span>
                                 </button>
                               ))
