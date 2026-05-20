@@ -306,9 +306,13 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                       duration: 6,
                       ease: "easeInOut",
                     }}
-                    className="relative flex h-24 w-24 items-center justify-center rounded-full border border-white/10 bg-gradient-to-br from-emerald-500/20 via-blue-500/20 to-indigo-500/20 shadow-[0_0_50px_rgba(16,185,129,0.15)]"
+                    className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-gradient-to-br from-emerald-500/20 via-blue-500/20 to-indigo-500/20 shadow-[0_0_50px_rgba(255,255,255,0.05)]"
                   >
-                    <Sparkles size={40} className="animate-pulse text-white" />
+                    <img
+                      src="/image/logo/spirox-logo.webp"
+                      alt="Spirox Logo"
+                      className="h-full w-full object-cover"
+                    />
                     <div className="absolute inset-0 rounded-full bg-emerald-500/5 blur-xl" />
                   </motion.div>
                 </div>
@@ -337,7 +341,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                         duration: 0.8,
                         ease: [0.16, 1, 0.3, 1],
                       }}
-                      className="mx-auto max-w-[280px] text-sm leading-relaxed font-light text-white/70"
+                      className="mx-auto max-w-[280px] text-sm leading-relaxed font-light text-gray-200"
                     >
                       Take a moment to align your body and mind. Let's calibrate
                       your customized, high-performance breathing journey.
@@ -347,7 +351,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
 
                 <button
                   onClick={() => setStep("q_goal")}
-                  className="relative mt-8 flex h-14 w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-white text-[10px] font-black tracking-[0.2em] text-black uppercase shadow-[0_20px_40px_rgba(255,255,255,0.06)] transition-all hover:scale-105 active:scale-95"
+                  className="relative mx-auto mt-8 flex h-14 w-full max-w-[320px] items-center justify-center gap-3 overflow-hidden rounded-full bg-white text-[10px] font-black tracking-[0.2em] text-black uppercase shadow-[0_20px_40px_rgba(255,255,255,0.06)] transition-all hover:scale-105 active:scale-95"
                 >
                   <span className="relative z-10">
                     Start Diaphragm Calibration
