@@ -98,6 +98,9 @@ export function SidebarNav({ activeTab, setActiveTab }: SidebarNavProps) {
               <span className="text-[9px] font-black tracking-widest whitespace-nowrap text-white/40 uppercase">
                 Breathing Companion
               </span>
+              <span className="mt-0.5 text-[8.5px] font-light tracking-wide whitespace-nowrap text-white/60 italic">
+                "One breath is all it takes"
+              </span>
             </motion.div>
           )}
         </AnimatePresence>
