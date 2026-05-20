@@ -94,7 +94,7 @@ export function VRBreathingCanvas({
 
     // Standard camera
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    camera.position.set(0, 0, 0);
+    camera.position.set(0, 0, 4);
     cameraPivot.add(camera);
 
     // Stereoscopic cameras (Left & Right eye for Google Cardboard split-screen)
@@ -112,8 +112,8 @@ export function VRBreathingCanvas({
     );
 
     // Set interpupillary distance (IPD) to ~0.065 units in virtual coordinates
-    cameraLeft.position.set(-0.15, 0, 0);
-    cameraRight.position.set(0.15, 0, 0);
+    cameraLeft.position.set(-0.15, 0, 4);
+    cameraRight.position.set(0.15, 0, 4);
     cameraPivot.add(cameraLeft);
     cameraPivot.add(cameraRight);
 
@@ -127,18 +127,18 @@ export function VRBreathingCanvas({
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     // --- 2. Environment (Curved 180° Dome Screen) ---
-    const domeRadius = 16;
-    const domeAspect = 1.77; // Aspect ratio matching widescreen imagery
+    const domeRadius = 14;
+    const domeAspect = 1.1; // Optimized aspect ratio to bend Y axis vertically and show up/down sides properly
     const thetaLength = Math.PI / domeAspect;
     const thetaStart = Math.PI / 2 - thetaLength / 2;
 
-    // A beautiful 180° dome (hemisphere slice) centered in front of the camera
+    // A beautiful dome wrapping around the camera (center at -Z is further away, sides bend inside like a bowl)
     const domeGeo = new THREE.SphereGeometry(
       domeRadius,
       64,
       64,
-      Math.PI, // phiStart (covers from X=-R to X=+R through negative Z)
-      Math.PI, // phiLength (180 degrees horizontally)
+      Math.PI * 0.85, // phiStart (centered perfectly around negative Z)
+      Math.PI * 1.3, // phiLength (wraps behind the camera to prevent black edges)
       thetaStart, // thetaStart (centered vertically around equator)
       thetaLength, // thetaLength (height arc matching aspect ratio)
     );
@@ -208,9 +208,9 @@ export function VRBreathingCanvas({
         targetRotationY += deltaX * 0.003;
         targetRotationX += deltaY * 0.003;
 
-        // Clamp orientation targets safely to avoid revealing dome edges
-        targetRotationY = Math.max(-1.2, Math.min(1.2, targetRotationY));
-        targetRotationX = Math.max(-0.6, Math.min(0.6, targetRotationX));
+        // Clamp orientation targets safely (wraps around perfectly, allowing wider immersive exploration)
+        targetRotationY = Math.max(-1.0, Math.min(1.0, targetRotationY));
+        targetRotationX = Math.max(-0.4, Math.min(0.4, targetRotationX));
       }
 
       previousMousePosition = { x: clientX, y: clientY };
@@ -254,9 +254,9 @@ export function VRBreathingCanvas({
         targetRotationY = THREE.MathUtils.degToRad(alpha);
       }
 
-      // Clamp orientation targets safely to avoid revealing dome edges
-      targetRotationY = Math.max(-1.2, Math.min(1.2, targetRotationY));
-      targetRotationX = Math.max(-0.6, Math.min(0.6, targetRotationX));
+      // Clamp orientation targets safely (wraps around perfectly, allowing wider immersive exploration)
+      targetRotationY = Math.max(-1.0, Math.min(1.0, targetRotationY));
+      targetRotationX = Math.max(-0.4, Math.min(0.4, targetRotationX));
     };
 
     window.addEventListener("deviceorientation", handleDeviceOrientation);
