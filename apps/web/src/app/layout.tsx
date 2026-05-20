@@ -3,9 +3,9 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
-  title: "Spirox | Breathing Exercises",
+  title: "Spirox | One Breath is All It Takes",
   description:
-    "A premium breathing exercise app for mindfulness and relaxation.",
+    "Premium breathing exercises for mindfulness and relaxation. One breath is all it takes.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
