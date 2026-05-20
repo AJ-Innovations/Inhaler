@@ -487,10 +487,11 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                         setSelectedGoal(g.id);
                         setTimeout(() => setStep("q_stress"), 300);
                       }}
-                      className={`flex w-full items-center gap-4 rounded-full border p-5 text-left transition-all duration-300 ${selectedGoal === g.id
-                        ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
-                        : "border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]"
-                        }`}
+                      className={`flex w-full items-center gap-4 rounded-full border p-5 text-left transition-all duration-300 ${
+                        selectedGoal === g.id
+                          ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
+                          : "border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]"
+                      }`}
                     >
                       <div
                         className={`shrink-0 rounded-full bg-white/5 p-3 ${g.color}`}
@@ -541,10 +542,11 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                         setSelectedStress(s.id);
                         setTimeout(() => setStep("q_experience"), 300);
                       }}
-                      className={`flex w-full items-center gap-4 rounded-full border p-5 text-left transition-all duration-300 ${selectedStress === s.id
-                        ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
-                        : "border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]"
-                        }`}
+                      className={`flex w-full items-center gap-4 rounded-full border p-5 text-left transition-all duration-300 ${
+                        selectedStress === s.id
+                          ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
+                          : "border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]"
+                      }`}
                     >
                       <div className="space-y-1">
                         <h4 className="text-md leading-none font-semibold text-white">
@@ -597,10 +599,11 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                         setSelectedExperience(e.id);
                         setTimeout(() => setStep("q_country"), 300);
                       }}
-                      className={`flex w-full items-center gap-4 rounded-full border p-5 text-left transition-all duration-300 ${selectedExperience === e.id
-                        ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
-                        : "border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]"
-                        }`}
+                      className={`flex w-full items-center gap-4 rounded-full border p-5 text-left transition-all duration-300 ${
+                        selectedExperience === e.id
+                          ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
+                          : "border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]"
+                      }`}
                     >
                       <div className="space-y-1">
                         <h4 className="text-md leading-none font-semibold text-white">
@@ -675,8 +678,9 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                       </div>
                       <ChevronLeft
                         size={16}
-                        className={`text-white/60 transition-transform duration-300 ${isDropdownOpen ? "rotate-90" : "-rotate-90"
-                          }`}
+                        className={`text-white/60 transition-transform duration-300 ${
+                          isDropdownOpen ? "rotate-90" : "-rotate-90"
+                        }`}
                       />
                     </button>
 
@@ -707,10 +711,10 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                               Loading countries...
                             </div>
                           ) : countries.filter((c) =>
-                            c.name
-                              .toLowerCase()
-                              .includes(searchQuery.toLowerCase()),
-                          ).length === 0 ? (
+                              c.name
+                                .toLowerCase()
+                                .includes(searchQuery.toLowerCase()),
+                            ).length === 0 ? (
                             <div className="py-4 text-center text-sm text-white/40">
                               No countries found
                             </div>
@@ -730,10 +734,11 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                                     setSearchQuery("");
                                     setIsDropdownOpen(false);
                                   }}
-                                  className={`text-md flex w-full items-center gap-3 rounded-full px-4 py-2 text-left transition-all ${selectedCountry === c.code
-                                    ? "bg-white/15 font-medium text-white"
-                                    : "text-white/80 hover:bg-white/5 hover:text-white"
-                                    }`}
+                                  className={`text-md flex w-full items-center gap-3 rounded-full px-4 py-2 text-left transition-all ${
+                                    selectedCountry === c.code
+                                      ? "bg-white/15 font-medium text-white"
+                                      : "text-white/80 hover:bg-white/5 hover:text-white"
+                                  }`}
                                 >
                                   <img
                                     src={c.flag}
@@ -939,10 +944,11 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                   </div>
                   {/* Accent glow on card */}
                   <div
-                    className={`pointer-events-none absolute -right-20 -bottom-20 h-40 w-40 rounded-full opacity-40 blur-[60px] ${chosenPlan === "premium"
-                      ? "bg-amber-500"
-                      : "bg-indigo-500"
-                      }`}
+                    className={`pointer-events-none absolute -right-20 -bottom-20 h-40 w-40 rounded-full opacity-40 blur-[60px] ${
+                      chosenPlan === "premium"
+                        ? "bg-amber-500"
+                        : "bg-indigo-500"
+                    }`}
                   />
                 </div>
 
