@@ -1,4 +1,4 @@
-const CACHE_NAME = "spirox-cache-v1";
+const CACHE_NAME = "spirox-cache-v2";
 const ASSETS_TO_CACHE = [
   "/",
   "/manifest.json",
@@ -42,27 +42,82 @@ self.addEventListener("fetch", (event) => {
   // Only handle GET requests
   if (event.request.method !== "GET") return;
 
-  event.respondWith(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.match(event.request).then((cachedResponse) => {
-        const fetchPromise = fetch(event.request)
-          .then((networkResponse) => {
-            // Cache the new response for future use
-            if (networkResponse.ok) {
-              cache.put(event.request, networkResponse.clone());
-            }
-            return networkResponse;
-          })
-          .catch(() => {
-            // If network fails, we already have the cached response (or undefined)
-            return cachedResponse;
-          });
+  // Prevent handling non-http/https protocols (like chrome-extension://)
+  if (!event.request.url.startsWith("http")) return;
 
-        // Return cached response if available, otherwise wait for network
-        return cachedResponse || fetchPromise;
-      });
-    }),
-  );
+  const url = new URL(event.request.url);
+
+  // 1. Navigation requests (HTML document like `/`) -> Network-First
+  // Ensures the user always gets the latest page version when online, fallback to cache when offline
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse.ok) {
+            const cacheCopy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, cacheCopy);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          // Offline fallback
+          return caches.match(event.request).then((cachedResponse) => {
+            return cachedResponse || caches.match("/");
+          });
+        })
+    );
+    return;
+  }
+
+  // 2. Next.js static files (hashed & immutable) -> Cache-First
+  // Saves bandwidth and loads assets instantly as filenames change on new builds anyway
+  if (url.pathname.startsWith("/_next/static/")) {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(event.request).then((networkResponse) => {
+          if (networkResponse.ok) {
+            const cacheCopy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, cacheCopy);
+            });
+          }
+          return networkResponse;
+        });
+      })
+    );
+    return;
+  }
+
+  // 3. Other static assets (images, audios, public assets, fonts, manifest) -> Stale-While-Revalidate
+  // Serves from cache immediately for rapid loading, but fetches latest from network to keep it updated
+  if (
+    url.origin === self.location.origin &&
+    !url.pathname.startsWith("/api/") &&
+    !url.pathname.startsWith("/_next/data/")
+  ) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then((cache) => {
+        return cache.match(event.request).then((cachedResponse) => {
+          const fetchPromise = fetch(event.request)
+            .then((networkResponse) => {
+              if (networkResponse.ok) {
+                cache.put(event.request, networkResponse.clone());
+              }
+              return networkResponse;
+            })
+            .catch(() => cachedResponse);
+
+          return cachedResponse || fetchPromise;
+        });
+      })
+    );
+    return;
+  }
 });
 
 // Push Notifications Listener

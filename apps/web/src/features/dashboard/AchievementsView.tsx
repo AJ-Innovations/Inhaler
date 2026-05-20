@@ -10,23 +10,15 @@ import {
 } from "@features/breathing/hooks/useCustomExercises";
 import { motion } from "framer-motion";
 import {
-  Activity,
-  Brain,
   Calendar,
   CheckCircle2,
   ChevronLeft,
   Clock,
-  Cloud,
-  Heart,
   Lock,
-  LucideIcon,
-  Moon,
   Play,
   Plus,
   Repeat,
-  Shield,
   Sparkles,
-  Sun,
   Target,
   Trash2,
   Trophy,
@@ -34,6 +26,8 @@ import {
   Zap,
 } from "lucide-react";
 import React, { useState } from "react";
+
+import { GOAL_ICONS, TargetArrow } from "./data/goalIcons";
 
 interface AchievementsViewProps {
   stats: {
@@ -57,42 +51,6 @@ interface AchievementsViewProps {
   onDeleteGoal: (id: string) => void;
   onStart: (ex: Exercise) => void;
 }
-
-// Icon mapping helper
-const GOAL_ICONS: Record<string, LucideIcon> = {
-  wind: Wind,
-  heart: Heart,
-  zap: Zap,
-  brain: Brain,
-  activity: Activity,
-  sun: Sun,
-  moon: Moon,
-  cloud: Cloud,
-  shield: Shield,
-  trophy: Trophy,
-  target: Target,
-  calendar: Calendar,
-};
-
-const TargetArrow = ({ size = 20, strokeWidth = 2, className = "" }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={strokeWidth}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    <circle cx="12" cy="12" r="10" />
-    <circle cx="12" cy="12" r="6" />
-    <circle cx="12" cy="12" r="2" />
-    <path d="M12 12l7-7" />
-    <path d="M19 8V5h-3" />
-  </svg>
-);
 
 export function AchievementsView({
   stats,

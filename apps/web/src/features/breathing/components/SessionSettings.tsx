@@ -66,43 +66,7 @@ const IconMap = {
   forest: Trees,
 };
 
-const getAmbientImage = (activeSoundscape: string) => {
-  switch (activeSoundscape) {
-    case "zen-river":
-      return "/image/ambients/river.png";
-    case "zen-fountain":
-      return "/image/ambients/whaterfalls.png";
-    case "winter-rain":
-      return "/image/ambients/rain.png";
-    case "light-rain":
-      return "/image/ambients/rain2.png";
-    case "nature-birds":
-      return "/image/ambients/nature2.png";
-    case "hz-transformation":
-      return "/image/ambients/galaxy.png";
-    case "white-noise":
-      return "/image/ambients/galaxy2.png";
-    case "pink-noise":
-      return "/image/ambients/galaxy3.png";
-    case "brown-noise":
-      return "/image/ambients/nature.png";
-    case "beach":
-      return "/image/ambients/beach.png";
-    case "lake":
-      return "/image/ambients/lake4.png";
-    case "marine":
-      return "/image/ambients/marain.png";
-    case "desert":
-      return "/image/ambients/desert3.png";
-    case "ethereal":
-      return "/image/ambients/loop.png";
-    case "forest":
-      return "/image/ambients/forest.png";
-    case "leaf":
-    default:
-      return "/image/ambients/leaf.png";
-  }
-};
+import { getAmbientImage } from "../data";
 
 export function SessionSettings({
   activeSoundscape,

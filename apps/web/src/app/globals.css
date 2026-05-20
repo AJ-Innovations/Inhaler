@@ -40,8 +40,10 @@
 
   /* Hide scrollbar for IE, Edge and Firefox */
   * {
-    -ms-overflow-style: none !important; /* IE and Edge */
-    scrollbar-width: none !important; /* Firefox */
+    -ms-overflow-style: none !important;
+    /* IE and Edge */
+    scrollbar-width: none !important;
+    /* Firefox */
   }
 
   /* Specific utility for extra insurance */
@@ -49,6 +51,7 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
@@ -59,6 +62,7 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
