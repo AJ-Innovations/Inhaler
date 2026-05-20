@@ -94,7 +94,7 @@ export function VRBreathingCanvas({
 
     // Standard camera
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    camera.position.set(0, 0, 8);
+    camera.position.set(0, 0, 0);
     cameraPivot.add(camera);
 
     // Stereoscopic cameras (Left & Right eye for Google Cardboard split-screen)
@@ -112,8 +112,8 @@ export function VRBreathingCanvas({
     );
 
     // Set interpupillary distance (IPD) to ~0.065 units in virtual coordinates
-    cameraLeft.position.set(-0.15, 0, 8);
-    cameraRight.position.set(0.15, 0, 8);
+    cameraLeft.position.set(-0.15, 0, 0);
+    cameraRight.position.set(0.15, 0, 0);
     cameraPivot.add(cameraLeft);
     cameraPivot.add(cameraRight);
 
@@ -126,8 +126,22 @@ export function VRBreathingCanvas({
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // --- 2. Environment (Flat 2D Parallax Plane) ---
-    const planeGeo = new THREE.PlaneGeometry(42, 26);
+    // --- 2. Environment (Curved 180° Dome Screen) ---
+    const domeRadius = 16;
+    const domeAspect = 1.77; // Aspect ratio matching widescreen imagery
+    const thetaLength = Math.PI / domeAspect;
+    const thetaStart = Math.PI / 2 - thetaLength / 2;
+
+    // A beautiful 180° dome (hemisphere slice) centered in front of the camera
+    const domeGeo = new THREE.SphereGeometry(
+      domeRadius,
+      64,
+      64,
+      Math.PI, // phiStart (covers from X=-R to X=+R through negative Z)
+      Math.PI, // phiLength (180 degrees horizontally)
+      thetaStart, // thetaStart (centered vertically around equator)
+      thetaLength, // thetaLength (height arc matching aspect ratio)
+    );
 
     const textureLoader = new THREE.TextureLoader();
     let currentTexturePath = getAmbientImage(activeSoundscape);
@@ -136,7 +150,7 @@ export function VRBreathingCanvas({
       color: 0xffffff,
       opacity: 1.0,
       transparent: false,
-      side: THREE.DoubleSide, // Ensure visibility
+      side: THREE.DoubleSide, // Ensure visibility from inside
       fog: false, // Ignore scene fog to keep it bright and crisp
     });
 
@@ -154,9 +168,9 @@ export function VRBreathingCanvas({
       },
     );
 
-    const plane = new THREE.Mesh(planeGeo, planeMat);
-    plane.position.set(0, 0, 0); // Static plane centered at origin
-    scene.add(plane);
+    const domeMesh = new THREE.Mesh(domeGeo, planeMat);
+    domeMesh.position.set(0, 0, 0); // Centered at origin around cameras
+    scene.add(domeMesh);
 
     // --- 3. Lighting System ---
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.35);
@@ -194,9 +208,9 @@ export function VRBreathingCanvas({
         targetRotationY += deltaX * 0.003;
         targetRotationX += deltaY * 0.003;
 
-        // Clamp orientation targets tightly to avoid revealing plane edges
-        targetRotationY = Math.max(-0.4, Math.min(0.4, targetRotationY));
-        targetRotationX = Math.max(-0.4, Math.min(0.4, targetRotationX));
+        // Clamp orientation targets safely to avoid revealing dome edges
+        targetRotationY = Math.max(-1.2, Math.min(1.2, targetRotationY));
+        targetRotationX = Math.max(-0.6, Math.min(0.6, targetRotationX));
       }
 
       previousMousePosition = { x: clientX, y: clientY };
@@ -240,9 +254,9 @@ export function VRBreathingCanvas({
         targetRotationY = THREE.MathUtils.degToRad(alpha);
       }
 
-      // Clamp orientation targets tightly to avoid revealing plane edges
-      targetRotationY = Math.max(-0.4, Math.min(0.4, targetRotationY));
-      targetRotationX = Math.max(-0.4, Math.min(0.4, targetRotationX));
+      // Clamp orientation targets safely to avoid revealing dome edges
+      targetRotationY = Math.max(-1.2, Math.min(1.2, targetRotationY));
+      targetRotationX = Math.max(-0.6, Math.min(0.6, targetRotationX));
     };
 
     window.addEventListener("deviceorientation", handleDeviceOrientation);
@@ -296,8 +310,8 @@ export function VRBreathingCanvas({
       cameraPivot.rotation.x = currentRotationX;
       cameraPivot.rotation.y = currentRotationY;
 
-      // Gentle ambient breathing drift for a premium depth feeling
-      plane.position.z = Math.sin(time * 0.8) * 0.08;
+      // Gentle ambient breathing expansion pulse for a premium depth feeling
+      domeMesh.scale.setScalar(1.0 + Math.sin(time * 0.8) * 0.015);
 
       // --- 8. Render Pipeline Execution (Dual Viewport Stereoscopic or Standard Single) ---
       const w = container.clientWidth;
@@ -361,7 +375,7 @@ export function VRBreathingCanvas({
       window.removeEventListener("deviceorientation", handleDeviceOrientation);
 
       // Dispose WebGL Geometries and Materials
-      planeGeo.dispose();
+      domeGeo.dispose();
       planeMat.dispose();
       renderer.dispose();
     };
