@@ -298,28 +298,9 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                 transition={{ duration: 0.5 }}
                 className="flex h-full flex-col items-center justify-center space-y-12 text-center"
               >
-                <div className="space-y-4">
-                  <motion.div
-                    animate={{ scale: [1, 1.08, 1] }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 6,
-                      ease: "easeInOut",
-                    }}
-                    className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-gradient-to-br from-emerald-500/20 via-blue-500/20 to-indigo-500/20 shadow-[0_0_50px_rgba(255,255,255,0.05)]"
-                  >
-                    <img
-                      src="/image/logo/spirox-logo.webp"
-                      alt="Spirox Logo"
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="absolute inset-0 rounded-full bg-emerald-500/5 blur-xl" />
-                  </motion.div>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="overflow-hidden pb-2">
-                    <motion.h1
+                <div className="space-y-6">
+                  <div className="flex justify-center overflow-hidden pb-2">
+                    <motion.img
                       initial={{ y: "100%", opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{
@@ -327,10 +308,10 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                         duration: 0.8,
                         ease: [0.16, 1, 0.3, 1],
                       }}
-                      className="text-6xl font-light tracking-tight text-white"
-                    >
-                      SPIROX
-                    </motion.h1>
+                      src="/image/logo/spirox-logo.webp"
+                      alt="Spirox Logo"
+                      className="h-20 w-auto object-contain"
+                    />
                   </div>
                   <div className="overflow-hidden">
                     <motion.p
