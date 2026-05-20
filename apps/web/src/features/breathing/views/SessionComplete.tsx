@@ -276,6 +276,21 @@ export function SessionComplete({
             Return Home
           </motion.button>
         </div>
+
+        {/* Elegant Brand Footer */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.4 }}
+          transition={{ delay: 1.2 }}
+          className="flex flex-col items-center justify-center pt-2 text-center"
+        >
+          <span className="text-[9px] font-medium tracking-[0.15em] text-white uppercase">
+            "One breath is all it takes"
+          </span>
+          <span className="mt-1 text-[8px] font-light tracking-wider text-white/70">
+            © 2026 Spirox. All rights reserved.
+          </span>
+        </motion.div>
       </div>
     </motion.div>
   );
