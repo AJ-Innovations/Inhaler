@@ -151,7 +151,39 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
     }
 
     async function detectGeo() {
-      // 1. Try ipapi.co
+      // 1. Try ipinfo.io (gold standard daily IP geolocation database)
+      try {
+        const res = await fetch("https://ipinfo.io/json");
+        if (res.ok) {
+          const data = await res.json();
+          if (active && data.country) {
+            const cc = data.country.toUpperCase();
+            setDetectedCountry(cc);
+            setSelectedCountry(cc);
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn("Onboarding ipinfo lookup failed, trying next...");
+      }
+
+      // 2. Try ipwho.is (highly accurate free geo provider with SSL support)
+      try {
+        const res = await fetch("https://ipwho.is/");
+        if (res.ok) {
+          const data = await res.json();
+          if (active && data.success && data.country_code) {
+            const cc = data.country_code.toUpperCase();
+            setDetectedCountry(cc);
+            setSelectedCountry(cc);
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn("Onboarding ipwho lookup failed, trying next...");
+      }
+
+      // 3. Try ipapi.co
       try {
         const res = await fetch("https://ipapi.co/json/");
         if (res.ok) {
@@ -170,7 +202,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
         );
       }
 
-      // 2. Try freeipapi.com
+      // 4. Try freeipapi.com
       try {
         const res = await fetch("https://freeipapi.com/api/json");
         if (res.ok) {
@@ -610,7 +642,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                   <h2 className="text-3xl leading-tight font-light tracking-tight text-white">
                     Where are you breathing from?
                   </h2>
-                  <p className="px-4 text-sm font-light text-gray-400">
+                  <p className="px-4 text-sm font-light text-gray-300">
                     We've detected your country as{" "}
                     <span className="font-semibold text-emerald-400">
                       {detectedCountryName}
@@ -626,19 +658,15 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                     <button
                       type="button"
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                      className="flex h-14 w-full cursor-pointer items-center justify-between rounded-full border border-white/10 bg-white/5 px-6 text-sm font-light text-white backdrop-blur-md transition-all hover:bg-white/10"
+                      className="text-md flex h-14 w-full cursor-pointer items-center justify-between rounded-full border border-white/10 bg-white/5 px-6 font-light text-white backdrop-blur-md transition-all hover:bg-white/10"
                     >
                       <div className="flex items-center truncate">
-                        <Globe
-                          size={18}
-                          className="mr-3 shrink-0 text-white/60"
-                        />
                         {selectedCountryData ? (
                           <span className="flex items-center gap-3 truncate">
                             <img
                               src={selectedCountryData.flag}
                               alt={selectedCountryData.name}
-                              className="h-3.5 w-5 shrink-0 rounded-[2px] border border-white/10 object-cover shadow-sm"
+                              className="h-5 w-7 shrink-0 rounded-[2px] border border-white/10 object-cover shadow-sm"
                             />
                             <span className="truncate">
                               {selectedCountryData.name}
@@ -657,20 +685,20 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                     </button>
 
                     {isDropdownOpen && (
-                      <div className="absolute top-[62px] right-0 left-0 z-50 overflow-hidden rounded-[24px] border border-white/10 bg-black/95 p-3 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+                      <div className="absolute top-[62px] right-0 left-0 z-50 overflow-hidden rounded-[24px] border border-white/5 bg-white/5 p-3 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
                         <div className="relative mb-2 flex items-center">
                           <input
                             type="text"
                             placeholder="Search country..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="h-10 w-full rounded-full border border-white/10 bg-white/5 px-4 pr-10 text-xs font-light text-white placeholder:text-white/30 focus:border-white/20 focus:bg-white/10 focus:outline-none"
+                            className="text-md h-10 w-full rounded-full border border-white/10 bg-white/5 px-4 pr-10 font-light text-white placeholder:text-white/30 focus:border-white/20 focus:bg-white/10 focus:outline-none"
                           />
                           {searchQuery && (
                             <button
                               type="button"
                               onClick={() => setSearchQuery("")}
-                              className="absolute right-3 text-[9px] tracking-wider text-white/40 uppercase hover:text-white"
+                              className="absolute right-3 text-[12px] tracking-wider text-white/40 uppercase hover:text-white"
                             >
                               clear
                             </button>
@@ -687,7 +715,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                                 .toLowerCase()
                                 .includes(searchQuery.toLowerCase()),
                             ).length === 0 ? (
-                            <div className="py-4 text-center text-xs text-white/40">
+                            <div className="py-4 text-center text-sm text-white/40">
                               No countries found
                             </div>
                           ) : (
@@ -706,7 +734,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                                     setSearchQuery("");
                                     setIsDropdownOpen(false);
                                   }}
-                                  className={`flex w-full items-center gap-3 rounded-full px-4 py-2 text-left text-xs transition-all ${
+                                  className={`text-md flex w-full items-center gap-3 rounded-full px-4 py-2 text-left transition-all ${
                                     selectedCountry === c.code
                                       ? "bg-white/15 font-medium text-white"
                                       : "text-white/80 hover:bg-white/5 hover:text-white"
@@ -715,7 +743,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                                   <img
                                     src={c.flag}
                                     alt={c.name}
-                                    className="h-3 w-4.5 shrink-0 rounded-[2px] border border-white/10 object-cover shadow-sm"
+                                    className="h-4 w-7 shrink-0 rounded-[2px] border border-white/10 object-cover shadow-sm"
                                   />
                                   <span className="truncate">{c.name}</span>
                                 </button>
@@ -726,19 +754,23 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                     )}
                   </div>
 
-                  <button
-                    onClick={() => {
-                      localStorage.setItem(
-                        "spirox_user_country",
-                        selectedCountry,
-                      );
-                      setStep("calibrating");
-                    }}
-                    className="relative flex h-14 w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-white text-[10px] font-black tracking-[0.2em] text-black uppercase shadow-[0_20px_40px_rgba(255,255,255,0.06)] transition-all hover:scale-105 active:scale-95"
-                  >
-                    Confirm & Start Calibration
-                    <ArrowRight size={16} strokeWidth={3} />
-                  </button>
+                  {!isDropdownOpen ? (
+                    <button
+                      onClick={() => {
+                        localStorage.setItem(
+                          "spirox_user_country",
+                          selectedCountry,
+                        );
+                        setStep("calibrating");
+                      }}
+                      className="relative flex h-14 w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-white text-[10px] font-black tracking-[0.2em] text-black uppercase shadow-[0_20px_40px_rgba(255,255,255,0.06)] transition-all hover:scale-105 active:scale-95"
+                    >
+                      Confirm & Start Calibration
+                      <ArrowRight size={16} strokeWidth={3} />
+                    </button>
+                  ) : (
+                    <div className="h-14" />
+                  )}
                 </div>
 
                 <button
