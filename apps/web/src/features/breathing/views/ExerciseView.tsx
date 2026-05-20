@@ -200,7 +200,28 @@ export function ExerciseView({
             {timer.phase}
           </p>
         </div>
-        <div className="w-12" /> {/* Spacer to maintain title centering */}
+        <button
+          onClick={() => setIsVROpen(true)}
+          className="rounded-full border border-cyan-500/20 bg-cyan-950/10 p-3 text-cyan-300 shadow-lg backdrop-blur-md transition-all hover:border-cyan-400/40 hover:bg-cyan-950/20 hover:text-cyan-200 active:scale-95"
+          title="Enter VR Mode"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M2 10V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2" />
+            <path d="M12 6v4" />
+            <path d="M2 14v4a2 2 0 0 0 2 2h4.5a1.5 1.5 0 0 0 1.25-.67l1-1.66a1.5 1.5 0 0 1 2.5 0l1 1.66A1.5 1.5 0 0 0 15.5 20H20a2 2 0 0 0 2-2v-4" />
+            <rect x="4" y="9" width="6" height="5" rx="1" />
+            <rect x="14" y="9" width="6" height="5" rx="1" />
+          </svg>
+        </button>
       </div>
 
       {/* Main Content Area - Scrollable or Centered */}
@@ -306,38 +327,12 @@ export function ExerciseView({
             )}
           </button>
 
-          {/* Stacking Music and VR button vertically underneath each other */}
-          <div className="flex flex-col items-center gap-3">
-            <button
-              onClick={() => setIsSettingsOpen(true)}
-              className="flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-gray-300 shadow-lg backdrop-blur-md transition-all hover:bg-white/[0.08] hover:text-white active:scale-95"
-            >
-              <Music size={22} />
-            </button>
-
-            <button
-              onClick={() => setIsVROpen(true)}
-              className="flex h-12 w-12 items-center justify-center rounded-full border border-cyan-500/20 bg-cyan-950/10 text-cyan-300 shadow-lg backdrop-blur-md transition-all hover:border-cyan-400/40 hover:bg-cyan-950/20 hover:text-cyan-200 active:scale-95"
-              title="Enter VR Mode"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M2 10V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2" />
-                <path d="M12 6v4" />
-                <path d="M2 14v4a2 2 0 0 0 2 2h4.5a1.5 1.5 0 0 0 1.25-.67l1-1.66a1.5 1.5 0 0 1 2.5 0l1 1.66A1.5 1.5 0 0 0 15.5 20H20a2 2 0 0 0 2-2v-4" />
-                <rect x="4" y="9" width="6" height="5" rx="1" />
-                <rect x="14" y="9" width="6" height="5" rx="1" />
-              </svg>
-            </button>
-          </div>
+          <button
+            onClick={() => setIsSettingsOpen(true)}
+            className="flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-gray-300 shadow-lg backdrop-blur-md transition-all hover:bg-white/[0.08] hover:text-white active:scale-95"
+          >
+            <Music size={22} />
+          </button>
         </div>
       </div>
 
