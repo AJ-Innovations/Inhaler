@@ -472,7 +472,7 @@ export function SubscriptionView({
       exit={{ opacity: 0, x: -20 }}
       className={`flex h-[100dvh] w-full flex-col overflow-hidden`}
     >
-      <div className="mx-auto flex h-full w-full max-w-[480px] flex-col overflow-hidden transition-all duration-500 lg:max-w-[1200px]">
+      <div className="mx-auto flex h-full w-full max-w-[480px] flex-col overflow-hidden transition-all duration-500 lg:max-w-7xl">
         {/* Sticky Top Header Bar with Centered Title, Back button & Gorgeous Subtitle */}
         <div className="sticky top-0 z-50 flex w-full shrink-0 flex-col items-center gap-1 bg-transparent px-6 py-4">
           <div className="flex w-full items-center justify-between">
@@ -510,11 +510,10 @@ export function SubscriptionView({
                 <button
                   key={plan.id}
                   onClick={() => setActiveIndex(index)}
-                  className={`flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full text-[10px] font-black tracking-[0.15em] uppercase transition-all duration-300 ${
-                    isSelected
-                      ? selectedClass
-                      : "text-gray-300 hover:bg-white/[0.04] hover:text-white"
-                  }`}
+                  className={`flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full text-[10px] font-black tracking-[0.15em] uppercase transition-all duration-300 ${isSelected
+                    ? selectedClass
+                    : "text-gray-300 hover:bg-white/[0.04] hover:text-white"
+                    }`}
                 >
                   <PlanIcon size={11} />
                   {plan.name}
@@ -532,7 +531,7 @@ export function SubscriptionView({
         >
           {/* Track — slides via translateX */}
           <div
-            className="flex h-[520px] w-full flex-row items-stretch gap-4 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] lg:grid lg:h-auto lg:grid-cols-3 lg:gap-6"
+            className="flex h-[520px] w-full flex-row items-stretch gap-4 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] lg:grid lg:h-auto lg:grid-cols-3 lg:gap-8"
             style={{
               transform: isDesktop
                 ? "none"
@@ -546,11 +545,10 @@ export function SubscriptionView({
                 <div
                   key={plan.id}
                   onClick={() => setActiveIndex(index)}
-                  className={`relative flex h-full w-full min-w-full cursor-pointer flex-col justify-between rounded-[36px] border p-6 backdrop-blur-3xl transition-all duration-500 lg:min-w-0 ${
-                    isActive || isDesktop
-                      ? `${colors.highlight} ${colors.border} scale-100 opacity-100`
-                      : `bg-white/[0.02] ${colors.border} scale-95 opacity-40 hover:opacity-70`
-                  }`}
+                  className={`relative flex h-full w-full min-w-full cursor-pointer flex-col justify-between rounded-[36px] p-6 lg:p-8 backdrop-blur-3xl transition-all duration-500 lg:min-w-0 ${isActive || isDesktop
+                    ? "bg-white/[0.06] border border-white/20 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] scale-100 opacity-100"
+                    : "bg-white/[0.02] border border-white/5 scale-95 opacity-40 hover:opacity-70"
+                    }`}
                 >
                   <div className="shrink-0 space-y-4">
                     {plan.popular && (
@@ -565,10 +563,10 @@ export function SubscriptionView({
                     {(plan.highlight ||
                       plan.id === "premium" ||
                       plan.id === "free") && (
-                      <div
-                        className={`pointer-events-none absolute -top-20 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full blur-[60px] ${colors.glow}`}
-                      />
-                    )}
+                        <div
+                          className={`pointer-events-none absolute -top-20 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full blur-[60px] ${colors.glow}`}
+                        />
+                      )}
 
                     <div className="space-y-4">
                       <div className="space-y-1">
@@ -591,11 +589,10 @@ export function SubscriptionView({
                             </span>
                           )}
                           <span
-                            className={`text-4xl font-light tracking-tighter transition-colors duration-500 ${
-                              billingCycle === "yearly"
-                                ? colors.priceColor
-                                : "text-white"
-                            }`}
+                            className={`text-4xl font-light tracking-tighter transition-colors duration-500 ${billingCycle === "yearly"
+                              ? colors.priceColor
+                              : "text-white"
+                              }`}
                           >
                             {plan.id === "free" ? "" : activeTier.symbol}
                             {plan.displayPrice || plan.price}
@@ -706,9 +703,8 @@ export function SubscriptionView({
         {/* Billing Toggle Footer */}
         <div className="flex shrink-0 items-center justify-center gap-4 py-6">
           <span
-            className={`text-[10px] font-bold tracking-widest uppercase transition-colors duration-300 ${
-              billingCycle === "monthly" ? "text-white" : "text-gray-300"
-            }`}
+            className={`text-[10px] font-bold tracking-widest uppercase transition-colors duration-300 ${billingCycle === "monthly" ? "text-white" : "text-gray-300"
+              }`}
           >
             Monthly
           </span>
@@ -719,9 +715,8 @@ export function SubscriptionView({
                 prev === "monthly" ? "yearly" : "monthly",
               )
             }
-            className={`relative h-6 w-12 shrink-0 rounded-full border border-white/10 p-1 transition-all duration-500 ${
-              billingCycle === "yearly" ? toggleOnClass : "bg-white/10"
-            }`}
+            className={`relative h-6 w-12 shrink-0 rounded-full border border-white/10 p-1 transition-all duration-500 ${billingCycle === "yearly" ? toggleOnClass : "bg-white/10"
+              }`}
           >
             <motion.div
               animate={{ x: billingCycle === "monthly" ? 0 : 24 }}
@@ -731,9 +726,8 @@ export function SubscriptionView({
 
           <div className="flex items-center gap-2">
             <span
-              className={`text-[10px] font-bold tracking-widest uppercase transition-colors duration-300 ${
-                billingCycle === "yearly" ? "text-white" : "text-gray-300"
-              }`}
+              className={`text-[10px] font-bold tracking-widest uppercase transition-colors duration-300 ${billingCycle === "yearly" ? "text-white" : "text-gray-300"
+                }`}
             >
               Yearly
             </span>
