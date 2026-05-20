@@ -41,7 +41,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600&display=swap"
           rel="stylesheet"
         />
-        <link rel="icon" href="/icon-192.png" />
+        <link rel="icon" href="/icon-192.png" type="image/png" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
       <body suppressHydrationWarning className="bg-black">
