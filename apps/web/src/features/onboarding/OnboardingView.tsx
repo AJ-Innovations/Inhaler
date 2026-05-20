@@ -51,25 +51,70 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
   const [detectedCountry, setDetectedCountry] = useState("US");
   const [selectedCountry, setSelectedCountry] = useState("US");
 
-  const countryNames: Record<string, string> = {
-    US: "United States",
-    IN: "India",
-    GB: "United Kingdom",
-    EU: "Eurozone",
-    CA: "Canada",
-    AU: "Australia",
-    JP: "Japan",
-    KR: "South Korea",
-    AE: "United Arab Emirates",
-    SA: "Saudi Arabia",
-    BR: "Brazil",
-    TR: "Turkey",
-    ID: "Indonesia",
-    VN: "Vietnam",
+  // Dynamic Country Fetching States
+  interface CountryData {
+    code: string;
+    name: string;
+    flag: string;
+  }
+  const [countries, setCountries] = useState<CountryData[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLoadingCountries, setIsLoadingCountries] = useState(false);
+
+  const selectedCountryData = countries.find(
+    (c) => c.code === selectedCountry,
+  ) || {
+    code: selectedCountry,
+    name: selectedCountry === "US" ? "United States" : selectedCountry,
+    flag: "🌐",
   };
+  const detectedCountryName =
+    countries.find((c) => c.code === detectedCountry)?.name || "United States";
 
   useEffect(() => {
     let active = true;
+    async function fetchCountries() {
+      setIsLoadingCountries(true);
+      try {
+        const res = await fetch(
+          "https://restcountries.com/v3.1/all?fields=name,cca2,flag",
+        );
+        if (res.ok) {
+          const data = await res.json();
+          const list = data
+            .map((c: any) => ({
+              code: c.cca2.toUpperCase(),
+              name: c.name.common,
+              flag: c.flag || "🌐",
+            }))
+            .sort((a: any, b: any) => a.name.localeCompare(b.name));
+          if (active) {
+            setCountries(list);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to fetch country list:", e);
+        // Fallback static list in case of network/API limits
+        if (active) {
+          setCountries([
+            { code: "US", name: "United States", flag: "🇺🇸" },
+            { code: "IN", name: "India", flag: "🇮🇳" },
+            { code: "GB", name: "United Kingdom", flag: "🇬🇧" },
+            { code: "CA", name: "Canada", flag: "🇨🇦" },
+            { code: "AU", name: "Australia", flag: "🇦🇺" },
+            { code: "DE", name: "Germany", flag: "🇩🇪" },
+            { code: "FR", name: "France", flag: "🇫🇷" },
+            { code: "JP", name: "Japan", flag: "🇯🇵" },
+          ]);
+        }
+      } finally {
+        if (active) {
+          setIsLoadingCountries(false);
+        }
+      }
+    }
+
     async function detectGeo() {
       // 1. Try ipapi.co
       try {
@@ -106,6 +151,8 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
         console.warn("Onboarding geo backup failed.");
       }
     }
+
+    fetchCountries();
     detectGeo();
     return () => {
       active = false;
@@ -212,29 +259,29 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
   const goals = [
     {
       id: "sleep",
-      title: "Deep Sleep & Insomnia Cure",
-      desc: "Fall asleep faster and maximize recovery.",
+      title: "Sleep & Recovery",
+      desc: "Fall asleep faster and maximize rest.",
       icon: Moon,
       color: "text-white",
     },
     {
       id: "stress",
-      title: "Anxiety & Quick Stress Relief",
-      desc: "Settle your nervous system in 2 minutes.",
+      title: "Stress & Anxiety",
+      desc: "Calm your nervous system in minutes.",
       icon: Zap,
       color: "text-white",
     },
     {
       id: "focus",
-      title: "Extreme Focus & Brain Clarity",
-      desc: "Navy SEAL method to lock in attention.",
+      title: "Focus & Clarity",
+      desc: "Sharpen attention and lock in focus.",
       icon: Brain,
       color: "text-white",
     },
     {
       id: "power",
-      title: "Athletic Grit & Endurance",
-      desc: "Expand CO2 tolerance and lung volume.",
+      title: "Energy & Breath",
+      desc: "Expand endurance and lung capacity.",
       icon: Wind,
       color: "text-white",
     },
@@ -243,36 +290,36 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
   const stressLevels = [
     {
       id: "daily",
-      title: "Almost Constantly (Daily)",
-      desc: "Always on-edge, multi-tasking under pressure.",
+      title: "High Stress (Daily)",
+      desc: "Always on-edge under pressure.",
     },
     {
       id: "weekly",
-      title: "Frequently (A few times a week)",
-      desc: "Struggling during peak deadlines and stress spikes.",
+      title: "Moderate Stress",
+      desc: "Struggling during key peak days.",
     },
     {
       id: "rarely",
-      title: "Occasionally or Rarely",
-      desc: "Just seeking general focus and preventative calm.",
+      title: "Low Stress",
+      desc: "Seeking proactive preventative calm.",
     },
   ];
 
   const experienceLevels = [
     {
       id: "beginner",
-      title: "Beginner / First Steps",
-      desc: "I want simple patterns and audio guidance.",
+      title: "Beginner",
+      desc: "New to breathing exercises.",
     },
     {
       id: "intermediate",
-      title: "Intermediate / Occasional",
-      desc: "I understand box-breathing and breath holds.",
+      title: "Intermediate",
+      desc: "Familiar with box-breathing & holds.",
     },
     {
       id: "advanced",
-      title: "Advanced / Daily Meditator",
-      desc: "I want extreme challenges and advanced detox.",
+      title: "Advanced",
+      desc: "Regular breathwork practitioner.",
     },
   ];
 
@@ -310,7 +357,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                       }}
                       src="/image/logo/spirox-logo.webp"
                       alt="Spirox Logo"
-                      className="h-20 w-auto object-contain"
+                      className="h-50 w-auto object-contain"
                     />
                   </div>
                   <div className="overflow-hidden">
@@ -322,7 +369,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                         duration: 0.8,
                         ease: [0.16, 1, 0.3, 1],
                       }}
-                      className="mx-auto max-w-[280px] text-sm leading-relaxed font-light text-gray-200"
+                      className="mx-auto max-w-[450px] text-sm leading-relaxed font-light text-gray-200 lg:text-lg"
                     >
                       Take a moment to align your body and mind. Let's calibrate
                       your customized, high-performance breathing journey.
@@ -332,11 +379,9 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
 
                 <button
                   onClick={() => setStep("q_goal")}
-                  className="relative mx-auto mt-8 flex h-14 w-full max-w-[320px] items-center justify-center gap-3 overflow-hidden rounded-full bg-white text-[10px] font-black tracking-[0.2em] text-black uppercase shadow-[0_20px_40px_rgba(255,255,255,0.06)] transition-all hover:scale-105 active:scale-95"
+                  className="relative mx-auto mt-8 flex h-14 w-full max-w-[320px] items-center justify-center gap-3 overflow-hidden rounded-full bg-white text-[14px] font-black tracking-[0.2em] text-black uppercase shadow-[0_20px_40px_rgba(255,255,255,0.06)] transition-all hover:scale-105 active:scale-95"
                 >
-                  <span className="relative z-10">
-                    Start Diaphragm Calibration
-                  </span>
+                  <span className="relative z-10">Start Your Journey</span>
                   <ArrowRight
                     size={16}
                     strokeWidth={3}
@@ -353,21 +398,21 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
-                className="flex h-full flex-col justify-center space-y-8"
+                className="mx-auto flex w-full max-w-[480px] flex-col justify-center space-y-8 text-center"
               >
-                <div className="space-y-4">
-                  <span className="text-[9px] font-black tracking-[0.3em] text-white uppercase">
-                    Step 1 of 3
+                <div className="space-y-2">
+                  <span className="text-[9px] font-black tracking-[0.3em] text-white/50 uppercase">
+                    Step 1 of 4
                   </span>
                   <h2 className="text-3xl leading-tight font-light tracking-tight text-white">
-                    What is your primary goal today?
+                    What is your primary goal?
                   </h2>
-                  <p className="text-md font-light text-gray-300">
+                  <p className="text-sm font-light text-gray-400">
                     We will tailor your initial sessions based on this choice.
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="flex flex-col gap-4">
                   {goals.map((g) => (
                     <button
                       key={g.id}
@@ -377,7 +422,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                       }}
                       className={`flex w-full items-center gap-4 rounded-full border p-5 text-left transition-all duration-300 ${
                         selectedGoal === g.id
-                          ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/5 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
+                          ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
                           : "border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]"
                       }`}
                     >
@@ -390,7 +435,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                         <h4 className="text-md leading-none font-semibold text-white">
                           {g.title}
                         </h4>
-                        <p className="text-[12px] font-light text-gray-300">
+                        <p className="mt-1 text-[12px] font-light text-gray-400">
                           {g.desc}
                         </p>
                       </div>
@@ -407,22 +452,22 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
-                className="flex h-full flex-col justify-center space-y-8"
+                className="mx-auto flex w-full max-w-[480px] flex-col justify-center space-y-8 text-center"
               >
                 <div className="space-y-2">
-                  <span className="text-[9px] font-black tracking-[0.3em] text-white uppercase">
-                    Step 2 of 3
+                  <span className="text-[9px] font-black tracking-[0.3em] text-white/50 uppercase">
+                    Step 2 of 4
                   </span>
                   <h2 className="text-3xl leading-tight font-light tracking-tight text-white">
                     How often do you feel overwhelmed?
                   </h2>
-                  <p className="text-md font-light text-gray-300">
+                  <p className="text-sm font-light text-gray-400">
                     Helps customize routine reminders and heart-rate recovery
                     cycles.
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="flex flex-col gap-4">
                   {stressLevels.map((s) => (
                     <button
                       key={s.id}
@@ -430,9 +475,9 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                         setSelectedStress(s.id);
                         setTimeout(() => setStep("q_experience"), 300);
                       }}
-                      className={`w-full rounded-full border p-5 text-left transition-all duration-300 ${
+                      className={`flex w-full items-center gap-4 rounded-full border p-5 text-left transition-all duration-300 ${
                         selectedStress === s.id
-                          ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/5 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
+                          ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
                           : "border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]"
                       }`}
                     >
@@ -440,7 +485,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                         <h4 className="text-md leading-none font-semibold text-white">
                           {s.title}
                         </h4>
-                        <p className="mt-1 text-[12px] font-light text-gray-300">
+                        <p className="mt-1 text-[12px] font-light text-gray-400">
                           {s.desc}
                         </p>
                       </div>
@@ -450,7 +495,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
 
                 <button
                   onClick={() => setStep("q_goal")}
-                  className="mt-2 inline-flex items-center gap-2 text-xs text-gray-600 transition-colors hover:text-white"
+                  className="mx-auto inline-flex items-center gap-2 text-xs text-gray-500 transition-colors hover:text-white"
                 >
                   <ChevronLeft size={16} /> Back
                 </button>
@@ -464,22 +509,22 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
-                className="flex h-full flex-col justify-center space-y-8"
+                className="mx-auto flex w-full max-w-[480px] flex-col justify-center space-y-8 text-center"
               >
                 <div className="space-y-2">
-                  <span className="text-[9px] font-black tracking-[0.3em] text-white uppercase">
-                    Step 3 of 3
+                  <span className="text-[9px] font-black tracking-[0.3em] text-white/50 uppercase">
+                    Step 3 of 4
                   </span>
                   <h2 className="text-3xl leading-tight font-light tracking-tight text-white">
                     What is your experience level?
                   </h2>
-                  <p className="text-md font-light text-gray-300">
+                  <p className="text-sm font-light text-gray-400">
                     Determines inhale/hold intervals and unlocking advanced
                     options.
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="flex flex-col gap-4">
                   {experienceLevels.map((e) => (
                     <button
                       key={e.id}
@@ -487,9 +532,9 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                         setSelectedExperience(e.id);
                         setTimeout(() => setStep("q_country"), 300);
                       }}
-                      className={`w-full rounded-full border p-5 text-left transition-all duration-300 ${
+                      className={`flex w-full items-center gap-4 rounded-full border p-5 text-left transition-all duration-300 ${
                         selectedExperience === e.id
-                          ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/5 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
+                          ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
                           : "border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]"
                       }`}
                     >
@@ -497,7 +542,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                         <h4 className="text-md leading-none font-semibold text-white">
                           {e.title}
                         </h4>
-                        <p className="mt-1 text-[12px] font-light text-gray-300">
+                        <p className="mt-1 text-[12px] font-light text-gray-400">
                           {e.desc}
                         </p>
                       </div>
@@ -507,7 +552,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
 
                 <button
                   onClick={() => setStep("q_stress")}
-                  className="mt-2 inline-flex items-center gap-2 text-xs text-gray-600 transition-colors hover:text-white"
+                  className="mx-auto inline-flex items-center gap-2 text-xs text-gray-500 transition-colors hover:text-white"
                 >
                   <ChevronLeft size={16} /> Back
                 </button>
@@ -521,52 +566,125 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
-                className="flex h-full flex-col justify-center space-y-8"
+                className="mx-auto flex w-full max-w-[480px] flex-col justify-center space-y-8 text-center"
               >
                 <div className="space-y-2">
-                  <span className="text-[9px] font-black tracking-[0.3em] text-white uppercase">
+                  <span className="text-[9px] font-black tracking-[0.3em] text-white/50 uppercase">
                     Step 4 of 4
                   </span>
                   <h2 className="text-3xl leading-tight font-light tracking-tight text-white">
                     Where are you breathing from?
                   </h2>
-                  <p className="text-md font-light text-gray-300">
+                  <p className="px-4 text-sm font-light text-gray-400">
                     We've detected your country as{" "}
                     <span className="font-semibold text-emerald-400">
-                      {countryNames[detectedCountry] || "United States"}
+                      {detectedCountryName}
                     </span>
                     . Confirm or select your country below to personalize your
                     pricing and routines.
                   </p>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="group relative">
-                    <div className="absolute top-1/2 left-6 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-emerald-400">
-                      <Globe size={18} />
-                    </div>
-                    <select
-                      value={selectedCountry}
-                      onChange={(e) => setSelectedCountry(e.target.value)}
-                      className="h-14 w-full cursor-pointer rounded-full border border-white/10 bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all focus:border-emerald-500/50 focus:bg-white/[0.05] focus:outline-none"
-                      style={{ colorScheme: "dark" }}
+                <div className="relative mx-auto w-full max-w-[320px] space-y-4">
+                  {/* Custom Searchable Dropdown */}
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className="flex h-14 w-full cursor-pointer items-center justify-between rounded-full border border-white/10 bg-white/5 px-6 text-sm font-light text-white backdrop-blur-md transition-all hover:bg-white/10"
                     >
-                      {Object.entries(countryNames).map(([code, name]) => (
-                        <option
-                          key={code}
-                          value={code}
-                          className="bg-neutral-900 text-white"
-                        >
-                          {name}
-                        </option>
-                      ))}
-                      <option
-                        value="DEFAULT"
-                        className="bg-neutral-900 text-white"
-                      >
-                        Other Country / Global
-                      </option>
-                    </select>
+                      <div className="flex items-center truncate">
+                        <Globe
+                          size={18}
+                          className="mr-3 shrink-0 text-white/60"
+                        />
+                        {selectedCountryData ? (
+                          <span className="flex items-center gap-2 truncate">
+                            <span className="shrink-0 text-base">
+                              {selectedCountryData.flag}
+                            </span>
+                            <span className="truncate">
+                              {selectedCountryData.name}
+                            </span>
+                          </span>
+                        ) : (
+                          <span className="text-white/40">Select Country</span>
+                        )}
+                      </div>
+                      <ChevronLeft
+                        size={16}
+                        className={`text-white/60 transition-transform duration-300 ${
+                          isDropdownOpen ? "rotate-90" : "-rotate-90"
+                        }`}
+                      />
+                    </button>
+
+                    {isDropdownOpen && (
+                      <div className="absolute top-[62px] right-0 left-0 z-50 overflow-hidden rounded-[24px] border border-white/10 bg-black/95 p-3 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+                        <div className="relative mb-2 flex items-center">
+                          <input
+                            type="text"
+                            placeholder="Search country..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="h-10 w-full rounded-full border border-white/10 bg-white/5 px-4 pr-10 text-xs font-light text-white placeholder:text-white/30 focus:border-white/20 focus:bg-white/10 focus:outline-none"
+                          />
+                          {searchQuery && (
+                            <button
+                              type="button"
+                              onClick={() => setSearchQuery("")}
+                              className="absolute right-3 text-[9px] tracking-wider text-white/40 uppercase hover:text-white"
+                            >
+                              clear
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="scrollbar-hide max-h-48 space-y-1 overflow-y-auto pr-1">
+                          {isLoadingCountries ? (
+                            <div className="py-4 text-center text-xs text-white/40">
+                              Loading countries...
+                            </div>
+                          ) : countries.filter((c) =>
+                              c.name
+                                .toLowerCase()
+                                .includes(searchQuery.toLowerCase()),
+                            ).length === 0 ? (
+                            <div className="py-4 text-center text-xs text-white/40">
+                              No countries found
+                            </div>
+                          ) : (
+                            countries
+                              .filter((c) =>
+                                c.name
+                                  .toLowerCase()
+                                  .includes(searchQuery.toLowerCase()),
+                              )
+                              .map((c) => (
+                                <button
+                                  key={c.code}
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedCountry(c.code);
+                                    setSearchQuery("");
+                                    setIsDropdownOpen(false);
+                                  }}
+                                  className={`flex w-full items-center gap-3 rounded-full px-4 py-2.5 text-left text-xs transition-all ${
+                                    selectedCountry === c.code
+                                      ? "bg-white/15 font-medium text-white"
+                                      : "text-white/80 hover:bg-white/5 hover:text-white"
+                                  }`}
+                                >
+                                  <span className="shrink-0 text-base">
+                                    {c.flag}
+                                  </span>
+                                  <span className="truncate">{c.name}</span>
+                                </button>
+                              ))
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <button
@@ -586,7 +704,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
 
                 <button
                   onClick={() => setStep("q_experience")}
-                  className="mt-2 inline-flex items-center gap-2 text-xs text-gray-600 transition-colors hover:text-white"
+                  className="mx-auto inline-flex items-center gap-2 text-xs text-gray-500 transition-colors hover:text-white"
                 >
                   <ChevronLeft size={16} /> Back
                 </button>
