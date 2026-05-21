@@ -1,15 +1,20 @@
 /**
  * Secure Media Cache — IndexedDB wrapper for AES-256-GCM encrypted media
  *
- * This module stores binary media (audio/images) securely offline.
+ * This module stores binary media securely offline, separated by file type.
  * Data is fetched, encrypted instantly, and saved as ArrayBuffers in IndexedDB.
  */
 
 import { encryptBuffer, decryptBuffer } from "./crypto";
 
 const DB_NAME = "SpiroxMediaDB";
-const STORE_NAME = "secure_media";
-const DB_VERSION = 1;
+const DB_VERSION = 2; // Incremented for schema split
+
+export type MediaType = "audio" | "image" | "video";
+
+function getStoreName(type: MediaType): string {
+  return `secure_${type}`;
+}
 
 let dbPromise: Promise<IDBDatabase> | null = null;
 
@@ -37,10 +42,20 @@ function getDB(): Promise<IDBDatabase> {
 
     request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        // Create an object store with 'url' as the key
-        db.createObjectStore(STORE_NAME, { keyPath: "url" });
+
+      // Cleanup legacy v1 store if it exists
+      if (db.objectStoreNames.contains("secure_media")) {
+        db.deleteObjectStore("secure_media");
       }
+
+      // Create distinct object stores per media type
+      const stores: MediaType[] = ["audio", "image", "video"];
+      stores.forEach((type) => {
+        const storeName = getStoreName(type);
+        if (!db.objectStoreNames.contains(storeName)) {
+          db.createObjectStore(storeName, { keyPath: "url" });
+        }
+      });
     };
   });
 
@@ -48,9 +63,12 @@ function getDB(): Promise<IDBDatabase> {
 }
 
 /**
- * Downloads a media file, encrypts it, and caches it in IndexedDB
+ * Downloads a media file, encrypts it, and caches it in the designated IndexedDB store
  */
-export async function downloadAndCacheMedia(url: string): Promise<void> {
+export async function downloadAndCacheMedia(
+  url: string,
+  type: MediaType = "audio",
+): Promise<void> {
   try {
     // 1. Fetch the binary data
     const response = await fetch(url);
@@ -67,9 +85,11 @@ export async function downloadAndCacheMedia(url: string): Promise<void> {
 
     // 3. Store in IndexedDB
     const db = await getDB();
+    const storeName = getStoreName(type);
+
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, "readwrite");
-      const store = transaction.objectStore(STORE_NAME);
+      const transaction = db.transaction(storeName, "readwrite");
+      const store = transaction.objectStore(storeName);
 
       const request = store.put({
         url,
@@ -80,31 +100,34 @@ export async function downloadAndCacheMedia(url: string): Promise<void> {
 
       request.onsuccess = () => resolve();
       request.onerror = () =>
-        reject(new Error("Failed to store encrypted media"));
+        reject(new Error(`Failed to store encrypted ${type}`));
     });
   } catch (error) {
-    console.error(`Error caching media from ${url}:`, error);
+    console.error(`Error caching ${type} from ${url}:`, error);
     throw error;
   }
 }
 
 /**
  * Retrieves a media file from the cache, decrypts it, and returns a temporary blob:// URL.
- * You MUST call URL.revokeObjectURL() on the returned URL when you are done with it to prevent memory leaks.
- * Returns null if the file is not in the cache or decryption fails.
+ * You MUST call URL.revokeObjectURL() on the returned URL when you are done with it.
  */
-export async function getDecryptedBlobUrl(url: string): Promise<string | null> {
+export async function getDecryptedBlobUrl(
+  url: string,
+  type: MediaType = "audio",
+): Promise<string | null> {
   try {
     const db = await getDB();
+    const storeName = getStoreName(type);
 
     // 1. Retrieve the encrypted object from IndexedDB
     const record = await new Promise<any>((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, "readonly");
-      const store = transaction.objectStore(STORE_NAME);
+      const transaction = db.transaction(storeName, "readonly");
+      const store = transaction.objectStore(storeName);
       const request = store.get(url);
 
       request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(new Error("Failed to retrieve media"));
+      request.onerror = () => reject(new Error(`Failed to retrieve ${type}`));
     });
 
     if (!record) return null; // Not in cache
@@ -113,10 +136,9 @@ export async function getDecryptedBlobUrl(url: string): Promise<string | null> {
     const decryptedBuffer = await decryptBuffer(record.data);
     if (!decryptedBuffer) {
       console.warn(
-        `Decryption failed for cached media: ${url}. Removing from cache.`,
+        `Decryption failed for cached ${type}: ${url}. Removing from cache.`,
       );
-      // If decryption fails (tampered or key changed), remove it from cache
-      await clearMediaFromCache(url);
+      await clearMediaFromCache(url, type);
       return null;
     }
 
@@ -124,44 +146,63 @@ export async function getDecryptedBlobUrl(url: string): Promise<string | null> {
     const blob = new Blob([decryptedBuffer], { type: record.contentType });
     return URL.createObjectURL(blob);
   } catch (error) {
-    console.error(`Error retrieving cached media for ${url}:`, error);
+    console.error(`Error retrieving cached ${type} for ${url}:`, error);
     return null;
   }
 }
 
 /**
- * Removes a specific media file from the cache
+ * Removes a specific media file from its designated cache store
  */
-export async function clearMediaFromCache(url: string): Promise<void> {
+export async function clearMediaFromCache(
+  url: string,
+  type: MediaType = "audio",
+): Promise<void> {
   try {
     const db = await getDB();
+    const storeName = getStoreName(type);
+
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, "readwrite");
-      const store = transaction.objectStore(STORE_NAME);
+      const transaction = db.transaction(storeName, "readwrite");
+      const store = transaction.objectStore(storeName);
       const request = store.delete(url);
 
       request.onsuccess = () => resolve();
-      request.onerror = () => reject(new Error("Failed to delete media"));
+      request.onerror = () => reject(new Error(`Failed to delete ${type}`));
     });
   } catch (error) {
-    console.error(`Error clearing media cache for ${url}:`, error);
+    console.error(`Error clearing ${type} cache for ${url}:`, error);
   }
 }
 
 /**
- * Clears the entire secure media cache
+ * Clears the entire secure media cache across all file types
  */
 export async function clearAllMediaCache(): Promise<void> {
   try {
     const db = await getDB();
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, "readwrite");
-      const store = transaction.objectStore(STORE_NAME);
-      const request = store.clear();
+    const stores: MediaType[] = ["audio", "image", "video"];
 
-      request.onsuccess = () => resolve();
-      request.onerror = () => reject(new Error("Failed to clear all media"));
+    const clearPromises = stores.map((type) => {
+      const storeName = getStoreName(type);
+      return new Promise<void>((resolve, reject) => {
+        // Check if store exists in case of partial initialization
+        if (!db.objectStoreNames.contains(storeName)) {
+          resolve();
+          return;
+        }
+
+        const transaction = db.transaction(storeName, "readwrite");
+        const store = transaction.objectStore(storeName);
+        const request = store.clear();
+
+        request.onsuccess = () => resolve();
+        request.onerror = () =>
+          reject(new Error(`Failed to clear ${storeName}`));
+      });
     });
+
+    await Promise.all(clearPromises);
   } catch (error) {
     console.error("Error clearing all media cache:", error);
   }

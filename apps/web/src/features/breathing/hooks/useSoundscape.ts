@@ -234,10 +234,10 @@ export function useSoundscape(isPlaying: boolean = false) {
 
         (async () => {
           try {
-            let blobUrl = await getDecryptedBlobUrl(absoluteUrl);
+            let blobUrl = await getDecryptedBlobUrl(absoluteUrl, "audio");
             if (!blobUrl) {
-              await downloadAndCacheMedia(absoluteUrl);
-              blobUrl = await getDecryptedBlobUrl(absoluteUrl);
+              await downloadAndCacheMedia(absoluteUrl, "audio");
+              blobUrl = await getDecryptedBlobUrl(absoluteUrl, "audio");
             }
             if (blobUrl) {
               // Only update source if it's different to prevent stuttering
@@ -313,10 +313,10 @@ export function useSoundscape(isPlaying: boolean = false) {
 
           (async () => {
             try {
-              let blobUrl = await getDecryptedBlobUrl(absoluteUrl);
+              let blobUrl = await getDecryptedBlobUrl(absoluteUrl, "audio");
               if (!blobUrl) {
-                await downloadAndCacheMedia(absoluteUrl);
-                blobUrl = await getDecryptedBlobUrl(absoluteUrl);
+                await downloadAndCacheMedia(absoluteUrl, "audio");
+                blobUrl = await getDecryptedBlobUrl(absoluteUrl, "audio");
               }
               if (blobUrl) {
                 if (audio.src !== blobUrl) {
