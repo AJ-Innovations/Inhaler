@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Lock, Mail, User } from "lucide-react";
-import React from "react";
+import { ArrowRight, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import React, { useState } from "react";
 import { SocialAuth } from "./SocialAuth";
 import { useAuthFlow } from "../hooks/useAuthFlow";
 
@@ -11,7 +11,7 @@ interface AuthFormProps {
 export function AuthForm({ flow }: AuthFormProps) {
   const {
     mode,
-    setMode,
+    switchMode,
     email,
     setEmail,
     password,
@@ -25,6 +25,8 @@ export function AuthForm({ flow }: AuthFormProps) {
     setAuthFlow,
     handleAuth,
   } = flow;
+
+  const [showPassword, setShowPassword] = useState(false);
 
   // Helper to clear specific field error on change
   const clearError = (field: string) => {
@@ -52,7 +54,7 @@ export function AuthForm({ flow }: AuthFormProps) {
           <h1 className="text-3xl font-light tracking-tight text-white">
             {mode === "login" ? "Welcome Back" : "Join Spirox"}
           </h1>
-          <p className="text-xs font-light text-gray-500">
+          <p className="text-xs font-light text-gray-300">
             {mode === "login"
               ? "Sign in to continue your journey."
               : "Start your journey to mindfulness today."}
@@ -84,7 +86,7 @@ export function AuthForm({ flow }: AuthFormProps) {
                         setName(e.target.value);
                         clearError("name");
                       }}
-                      className={`h-14 w-full rounded-full border bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-600 focus:bg-white/[0.05] focus:outline-none ${
+                      className={`h-14 w-full rounded-full border bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-300 focus:bg-white/[0.05] focus:outline-none ${
                         formErrors.name
                           ? "border-red-500/50 focus:border-red-500/80"
                           : "border-white/10 focus:border-emerald-500/50"
@@ -114,7 +116,7 @@ export function AuthForm({ flow }: AuthFormProps) {
                   setEmail(e.target.value);
                   clearError("email");
                 }}
-                className={`h-14 w-full rounded-full border bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-600 focus:bg-white/[0.05] focus:outline-none ${
+                className={`h-14 w-full rounded-full border bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-300 focus:bg-white/[0.05] focus:outline-none ${
                   formErrors.email
                     ? "border-red-500/50 focus:border-red-500/80"
                     : "border-white/10 focus:border-emerald-500/50"
@@ -134,19 +136,26 @@ export function AuthForm({ flow }: AuthFormProps) {
                 <Lock size={16} />
               </div>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   clearError("password");
                 }}
-                className={`h-14 w-full rounded-full border bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-600 focus:bg-white/[0.05] focus:outline-none ${
+                className={`h-14 w-full rounded-full border bg-white/[0.03] pr-12 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-300 focus:bg-white/[0.05] focus:outline-none ${
                   formErrors.password
                     ? "border-red-500/50 focus:border-red-500/80"
                     : "border-white/10 focus:border-emerald-500/50"
                 }`}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute top-1/2 right-4 -translate-y-1/2 text-gray-500 transition-colors hover:text-white"
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
             </div>
             {formErrors.password && (
               <p className="pl-6 text-[10px] text-red-400">
@@ -159,7 +168,7 @@ export function AuthForm({ flow }: AuthFormProps) {
             <div className="flex justify-end px-2">
               <button
                 onClick={() => setAuthFlow("forgot_email")}
-                className="text-[10px] font-black tracking-widest text-gray-600 uppercase transition-colors hover:text-emerald-400"
+                className="text-[10px] font-black tracking-widest text-gray-300 uppercase transition-colors hover:text-emerald-400"
               >
                 Forgot Password?
               </button>
@@ -190,7 +199,7 @@ export function AuthForm({ flow }: AuthFormProps) {
       {/* Divider */}
       <div className="relative flex items-center gap-4">
         <div className="h-px flex-1 bg-white/5" />
-        <span className="text-[9px] font-bold tracking-widest text-gray-700 uppercase">
+        <span className="text-[9px] font-bold tracking-widest text-gray-400 uppercase">
           Or continue with
         </span>
         <div className="h-px flex-1 bg-white/5" />
@@ -202,8 +211,8 @@ export function AuthForm({ flow }: AuthFormProps) {
       {/* Toggle Mode */}
       <div className="pt-2 text-center">
         <button
-          onClick={() => setMode(mode === "login" ? "signup" : "login")}
-          className="text-xs font-light text-gray-600 transition-colors hover:text-emerald-400"
+          onClick={switchMode}
+          className="text-xs font-light text-gray-300 transition-colors hover:text-emerald-400"
         >
           {mode === "login"
             ? "Don't have an account? Sign up"

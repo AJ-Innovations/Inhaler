@@ -18,7 +18,7 @@ export function ForgotPasswordSuccess({ flow }: ForgotPasswordSuccessProps) {
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="mx-auto flex h-20 w-20 items-center justify-center rounded-[32px] bg-gradient-to-br from-emerald-400 to-green-600 shadow-2xl shadow-emerald-500/30"
+          className="mx-auto flex h-20 w-20 items-center justify-center rounded-[32px] border border-white/10 bg-transparent"
         >
           <CheckCircle size={36} className="text-white" />
         </motion.div>
