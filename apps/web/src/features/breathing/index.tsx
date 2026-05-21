@@ -1,6 +1,7 @@
 "use client";
 
 import { AuthView } from "@features/auth/AuthView";
+import { useAuthStore } from "@features/auth/store/useAuthStore";
 import { AchievementsView } from "@features/dashboard/AchievementsView";
 import { JournalView } from "@features/journal/JournalView";
 import { OnboardingView } from "@features/onboarding/OnboardingView";
@@ -44,6 +45,7 @@ export function BreathingExercise() {
 
   // Extracted hooks
   const { view, setView, activeTab, setActiveTab } = useHashNavigation();
+  const { isAuthenticated } = useAuthStore();
   const { isInstallable, isInstalled, isIOS, handleInstallPWA } = usePWA();
   const {
     dailyReminderEnabled,
@@ -51,6 +53,13 @@ export function BreathingExercise() {
     handleToggleReminder,
     handleUpdateTime,
   } = useNotifications();
+
+  // Global Auth Guard: if not authenticated, force view to auth
+  useEffect(() => {
+    if (!isAuthenticated && view !== "auth" && !showOnboarding) {
+      setView("auth");
+    }
+  }, [isAuthenticated, view, setView, showOnboarding]);
 
   const {
     customExercises,
@@ -288,11 +297,7 @@ export function BreathingExercise() {
             )}
             {view === "auth" && (
               <div className="h-full w-full overflow-y-auto">
-                <AuthView
-                  key="auth"
-                  onBack={() => setView("home")}
-                  onSuccess={() => setView("home")}
-                />
+                <AuthView key="auth" onSuccess={() => setView("home")} />
               </div>
             )}
             {view === "builder" && (
