@@ -1,6 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  downloadAndCacheMedia,
+  getDecryptedBlobUrl,
+} from "@libs/secureMediaCache";
 
 export type SoundscapeType =
   | "leaf"
@@ -227,14 +231,36 @@ export function useSoundscape(isPlaying: boolean = false) {
       const sound = soundscapes.find((s) => s.id === activeSoundscape);
       if (sound && sound.url) {
         const absoluteUrl = new URL(sound.url, window.location.href).href;
-        if (audio.src !== absoluteUrl) {
-          safePause();
-          audio.src = sound.url;
-        }
-        audio.volume = volume;
-        if (audio.paused) {
-          safePlay();
-        }
+
+        (async () => {
+          try {
+            let blobUrl = await getDecryptedBlobUrl(absoluteUrl);
+            if (!blobUrl) {
+              await downloadAndCacheMedia(absoluteUrl);
+              blobUrl = await getDecryptedBlobUrl(absoluteUrl);
+            }
+            if (blobUrl) {
+              // Only update source if it's different to prevent stuttering
+              if (audio.src !== blobUrl) {
+                safePause();
+                audio.src = blobUrl;
+              }
+              audio.volume = volume;
+              if (audio.paused) {
+                safePlay();
+              }
+            }
+          } catch (err) {
+            console.error("Failed to load encrypted soundscape:", err);
+            // Graceful fallback to streaming if cache fails
+            if (audio.src !== absoluteUrl) {
+              safePause();
+              audio.src = sound.url;
+              audio.volume = volume;
+              safePlay();
+            }
+          }
+        })();
       }
     }
 
@@ -284,14 +310,34 @@ export function useSoundscape(isPlaying: boolean = false) {
         const sound = soundscapes.find((s) => s.id === id);
         if (sound && sound.url) {
           const absoluteUrl = new URL(sound.url, window.location.href).href;
-          if (audio.src !== absoluteUrl) {
-            safePause();
-            audio.src = sound.url;
-          }
-          audio.volume = volume;
-          if (audio.paused) {
-            safePlay();
-          }
+
+          (async () => {
+            try {
+              let blobUrl = await getDecryptedBlobUrl(absoluteUrl);
+              if (!blobUrl) {
+                await downloadAndCacheMedia(absoluteUrl);
+                blobUrl = await getDecryptedBlobUrl(absoluteUrl);
+              }
+              if (blobUrl) {
+                if (audio.src !== blobUrl) {
+                  safePause();
+                  audio.src = blobUrl;
+                }
+                audio.volume = volume;
+                if (audio.paused) {
+                  safePlay();
+                }
+              }
+            } catch (err) {
+              console.error("Failed to load encrypted soundscape:", err);
+              if (audio.src !== absoluteUrl) {
+                safePause();
+                audio.src = sound.url;
+                audio.volume = volume;
+                safePlay();
+              }
+            }
+          })();
         }
       }
     },
