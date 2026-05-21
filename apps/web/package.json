@@ -16,7 +16,8 @@
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "zod": "^4.4.3"
+    "zod": "^4.4.3",
+    "zustand": "^5.0.13"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.2.6",
