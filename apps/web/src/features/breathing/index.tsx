@@ -49,7 +49,8 @@ export function BreathingExercise() {
 
   // Extracted hooks
   const { view, setView, activeTab, setActiveTab } = useHashNavigation();
-  const { isAuthenticated, login, logout, setPremiumPlan } = useAuthStore();
+  const { isAuthenticated, user, login, logout, setPremiumPlan } =
+    useAuthStore();
   const { isInstallable, isInstalled, isIOS, handleInstallPWA } = usePWA();
   const {
     dailyReminderEnabled,
@@ -60,14 +61,14 @@ export function BreathingExercise() {
 
   // Sync Supabase Auth with Zustand Store
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      // If we are offline and already authenticated locally, trust the local state
-      // This prevents logging users out when their 1h token expires while offline
-      if (!navigator.onLine && isAuthenticated) {
-        setIsAuthLoading(false);
-        return;
-      }
+    // If we are offline and already authenticated locally, strictly trust the local state.
+    // Do NOT call Supabase because expired tokens will trigger a network refresh that crashes.
+    if (!navigator.onLine && isAuthenticated && user) {
+      setIsAuthLoading(false);
+      return;
+    }
 
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (session?.user) {
         if (navigator.onLine) {
           // STRICT CHECK: Ask the backend if the user still exists
