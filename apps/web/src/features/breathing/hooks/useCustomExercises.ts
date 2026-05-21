@@ -1,6 +1,7 @@
 "use client";
 
 import { supabase } from "@libs/supabaseClient";
+import { SecureStorage } from "@libs/secureStorage";
 import { useEffect, useMemo, useState } from "react";
 
 import { Exercise } from "../data";
@@ -61,15 +62,16 @@ export function useLibrary() {
       if (session?.user) {
         fetchUserProfile(session.user.id);
       } else {
-        // Fallback to local storage if logged out
-        const savedName =
-          localStorage.getItem("spirox_user_name") || "Zen Practitioner";
-        const savedAvatar = localStorage.getItem("spirox_user_avatar");
-        const savedCountry =
-          localStorage.getItem("spirox_user_country") || "US";
-        setUserName(savedName);
-        setUserAvatar(savedAvatar);
-        setUserCountry(savedCountry);
+        // Fallback to encrypted local storage if logged out
+        SecureStorage.getItem("spirox_user_name").then((savedName) => {
+          setUserName(savedName || "Zen Practitioner");
+        });
+        SecureStorage.getItem("spirox_user_avatar").then((savedAvatar) => {
+          setUserAvatar(savedAvatar);
+        });
+        SecureStorage.getItem("spirox_user_country").then((savedCountry) => {
+          setUserCountry(savedCountry || "US");
+        });
       }
     });
 
@@ -80,7 +82,7 @@ export function useLibrary() {
     try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("username, avatar_url, country_code")
+        .select("username, avatar_url")
         .eq("id", userId)
         .single();
 
@@ -106,80 +108,82 @@ export function useLibrary() {
       if (data) {
         if (data.username) setUserName(data.username);
         if (data.avatar_url) setUserAvatar(data.avatar_url);
-        if (data.country_code) {
-          setUserCountry(data.country_code);
-          localStorage.setItem("spirox_user_country", data.country_code);
-        }
       }
     } catch (err) {
       console.error("Error fetching user profile from database:", err);
     }
   };
 
+  // Load persisted data from encrypted storage
   useEffect(() => {
-    const savedCustom = localStorage.getItem(STORAGE_KEY);
-    if (savedCustom) {
-      try {
-        setCustomExercises(JSON.parse(savedCustom));
-      } catch {
-        /* ignore */
+    const loadEncryptedData = async () => {
+      const savedCustom = await SecureStorage.getItem(STORAGE_KEY);
+      if (savedCustom) {
+        try {
+          setCustomExercises(JSON.parse(savedCustom));
+        } catch {
+          /* ignore */
+        }
       }
-    }
 
-    const savedFavs = localStorage.getItem("spirox_favorites");
-    if (savedFavs) {
-      try {
-        setFavorites(JSON.parse(savedFavs));
-      } catch {
-        /* ignore */
+      const savedFavs = await SecureStorage.getItem("spirox_favorites");
+      if (savedFavs) {
+        try {
+          setFavorites(JSON.parse(savedFavs));
+        } catch {
+          /* ignore */
+        }
       }
-    }
 
-    const savedSessions = localStorage.getItem("spirox_sessions");
-    if (savedSessions) {
-      try {
-        setSessions(JSON.parse(savedSessions));
-      } catch {
-        /* ignore */
+      const savedSessions = await SecureStorage.getItem("spirox_sessions");
+      if (savedSessions) {
+        try {
+          setSessions(JSON.parse(savedSessions));
+        } catch {
+          /* ignore */
+        }
       }
-    }
 
-    const savedGoals = localStorage.getItem("spirox_custom_goals");
-    if (savedGoals) {
-      try {
-        setCustomGoals(JSON.parse(savedGoals));
-      } catch {
-        /* ignore */
+      const savedGoals = await SecureStorage.getItem("spirox_custom_goals");
+      if (savedGoals) {
+        try {
+          setCustomGoals(JSON.parse(savedGoals));
+        } catch {
+          /* ignore */
+        }
       }
-    }
 
-    const savedName = localStorage.getItem("spirox_user_name");
-    if (savedName) {
-      if (savedName === "Mindful Breather") {
-        setUserName("Spirox User");
-        localStorage.setItem("spirox_user_name", "Spirox User");
-      } else {
-        setUserName(savedName);
+      const savedName = await SecureStorage.getItem("spirox_user_name");
+      if (savedName) {
+        if (savedName === "Mindful Breather") {
+          setUserName("Spirox User");
+          SecureStorage.setItem("spirox_user_name", "Spirox User");
+        } else {
+          setUserName(savedName);
+        }
       }
-    }
 
-    const savedAvatar = localStorage.getItem("spirox_user_avatar");
-    if (savedAvatar) setUserAvatar(savedAvatar);
+      const savedAvatar = await SecureStorage.getItem("spirox_user_avatar");
+      if (savedAvatar) setUserAvatar(savedAvatar);
 
-    const savedCountry = localStorage.getItem("spirox_user_country") || "US";
-    if (savedCountry) setUserCountry(savedCountry);
+      const savedCountry =
+        (await SecureStorage.getItem("spirox_user_country")) || "US";
+      if (savedCountry) setUserCountry(savedCountry);
+    };
+
+    loadEncryptedData();
   }, []);
 
   const addExercise = (exercise: Exercise) => {
     const updated = [...customExercises, exercise];
     setCustomExercises(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    SecureStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
   };
 
   const deleteExercise = (id: string) => {
     const updated = customExercises.filter((ex) => ex.id !== id);
     setCustomExercises(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    SecureStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
   };
 
   const toggleFavorite = (id: string) => {
@@ -187,50 +191,57 @@ export function useLibrary() {
       ? favorites.filter((favId) => favId !== id)
       : [...favorites, id];
     setFavorites(updated);
-    localStorage.setItem("spirox_favorites", JSON.stringify(updated));
+    SecureStorage.setItem("spirox_favorites", JSON.stringify(updated));
   };
 
   const recordSession = (exerciseId: string, duration: number) => {
     const newSession = { exerciseId, date: new Date().toISOString(), duration };
     const updated = [...sessions, newSession];
     setSessions(updated);
-    localStorage.setItem("spirox_sessions", JSON.stringify(updated));
+    SecureStorage.setItem("spirox_sessions", JSON.stringify(updated));
   };
 
   const addCustomGoal = (goal: Omit<CustomGoal, "currentMinutes">) => {
     const newGoal = { ...goal, currentMinutes: 0 };
     const updated = [...customGoals, newGoal];
     setCustomGoals(updated);
-    localStorage.setItem("spirox_custom_goals", JSON.stringify(updated));
+    SecureStorage.setItem("spirox_custom_goals", JSON.stringify(updated));
   };
 
   const deleteCustomGoal = (id: string) => {
     const updated = customGoals.filter((g) => g.id !== id);
     setCustomGoals(updated);
-    localStorage.setItem("spirox_custom_goals", JSON.stringify(updated));
+    SecureStorage.setItem("spirox_custom_goals", JSON.stringify(updated));
   };
 
   const updateUserName = async (name: string) => {
     setUserName(name);
-    localStorage.setItem("spirox_user_name", name);
+    SecureStorage.setItem("spirox_user_name", name);
 
     if (user) {
       try {
-        const { error } = await supabase
+        // 1. Update the public profiles table
+        const { error: profileError } = await supabase
           .from("profiles")
           .update({ username: name })
           .eq("id", user.id);
-        if (error) throw error;
+        if (profileError) throw profileError;
+
+        // 2. Update the Auth users metadata (full_name)
+        const { error: authError } = await supabase.auth.updateUser({
+          data: { full_name: name },
+        });
+        if (authError) throw authError;
       } catch (err) {
-        console.error("Error updating username in database:", err);
+        console.error("Error updating username in database/auth:", err);
       }
     }
   };
 
   const updateAvatar = async (avatar: string | null) => {
     setUserAvatar(avatar);
-    if (avatar) localStorage.setItem("spirox_user_avatar", avatar);
-    else localStorage.removeItem("spirox_user_avatar");
+    if (avatar) SecureStorage.setItem("spirox_user_avatar", avatar);
+    else SecureStorage.removeItem("spirox_user_avatar");
 
     if (user) {
       try {
@@ -248,7 +259,7 @@ export function useLibrary() {
   const updateUserCountry = async (code: string) => {
     const cc = code.toUpperCase();
     setUserCountry(cc);
-    localStorage.setItem("spirox_user_country", cc);
+    SecureStorage.setItem("spirox_user_country", cc);
 
     if (user) {
       try {

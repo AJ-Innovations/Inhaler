@@ -25,7 +25,7 @@ import {
   X,
   Zap as ZapIcon,
 } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuthStore } from "../auth/store/useAuthStore";
 import { ProfileDangerZone } from "./components/ProfileDangerZone";
 import { ProfileHeader } from "./components/ProfileHeader";
@@ -76,7 +76,6 @@ export function ProfileView({
 }: ProfileViewProps) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [isSelectingAvatar, setIsSelectingAvatar] = useState(false);
-  const [tempName, setTempName] = useState(userName);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [activeSettings, setActiveSettings] = useState<SettingsType>("none");
   const [dailyGoal, setDailyGoal] = useState(15);
@@ -86,6 +85,18 @@ export function ProfileView({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { isAuthenticated, user, logout } = useAuthStore();
+  
+  const currentDisplayName = isAuthenticated 
+    ? (user?.name || user?.email || "Active Account")
+    : userName;
+
+  const [tempName, setTempName] = useState(currentDisplayName);
+
+  useEffect(() => {
+    if (!isEditingName) {
+      setTempName(currentDisplayName);
+    }
+  }, [currentDisplayName, isEditingName]);
 
   const handleInstallClick = () => {
     if (isIOS) {
@@ -246,7 +257,7 @@ export function ProfileView({
           handleSaveName={handleSaveName}
           setIsSelectingAvatar={setIsSelectingAvatar}
           isAuthenticated={isAuthenticated}
-          authUserName={user?.name || user?.email}
+          authUserName={user?.name || user?.email || "Active Account"}
           isPremium={user?.isPremium}
         />
       )}
