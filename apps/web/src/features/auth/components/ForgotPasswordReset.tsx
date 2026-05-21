@@ -36,13 +36,6 @@ export function ForgotPasswordReset({ flow }: ForgotPasswordResetProps) {
     <div className="space-y-8">
       {/* Header */}
       <div className="space-y-3 text-center">
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="mx-auto flex h-16 w-16 items-center justify-center rounded-[24px] border border-white/10 bg-transparent"
-        >
-          <Lock size={28} className="text-white" />
-        </motion.div>
         <div className="space-y-1">
           <h1 className="text-3xl font-light tracking-tight text-white">
             Reset Password

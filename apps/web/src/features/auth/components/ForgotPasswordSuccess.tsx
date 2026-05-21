@@ -15,13 +15,6 @@ export function ForgotPasswordSuccess({ flow }: ForgotPasswordSuccessProps) {
     <div className="space-y-8">
       {/* Header */}
       <div className="space-y-4 text-center">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="mx-auto flex h-20 w-20 items-center justify-center rounded-[32px] border border-white/10 bg-transparent"
-        >
-          <CheckCircle size={36} className="text-white" />
-        </motion.div>
         <div className="space-y-1">
           <h1 className="text-3xl font-light tracking-tight text-white">
             Password Reset
