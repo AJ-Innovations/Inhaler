@@ -20,9 +20,22 @@ export function AuthForm({ flow }: AuthFormProps) {
     setName,
     loading,
     errorMessage,
+    formErrors,
+    setFormErrors,
     setAuthFlow,
     handleAuth,
   } = flow;
+
+  // Helper to clear specific field error on change
+  const clearError = (field: string) => {
+    if (formErrors[field]) {
+      setFormErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -58,44 +71,88 @@ export function AuthForm({ flow }: AuthFormProps) {
                 exit={{ opacity: 0, y: -10 }}
                 className="group relative"
               >
-                <div className="absolute top-1/2 left-6 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-emerald-500">
-                  <User size={16} />
+                <div className="space-y-1">
+                  <div className="group relative">
+                    <div className="absolute top-1/2 left-6 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-emerald-500">
+                      <User size={16} />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Full Name"
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                        clearError("name");
+                      }}
+                      className={`h-14 w-full rounded-full border bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-600 focus:bg-white/[0.05] focus:outline-none ${
+                        formErrors.name
+                          ? "border-red-500/50 focus:border-red-500/80"
+                          : "border-white/10 focus:border-emerald-500/50"
+                      }`}
+                    />
+                  </div>
+                  {formErrors.name && (
+                    <p className="pl-6 text-[10px] text-red-400">
+                      {formErrors.name}
+                    </p>
+                  )}
                 </div>
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="h-14 w-full rounded-full border border-white/10 bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-600 focus:border-emerald-500/50 focus:bg-white/[0.05] focus:outline-none"
-                />
               </motion.div>
             )}
           </AnimatePresence>
 
-          <div className="group relative">
-            <div className="absolute top-1/2 left-6 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-emerald-500">
-              <Mail size={16} />
+          <div className="space-y-1">
+            <div className="group relative">
+              <div className="absolute top-1/2 left-6 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-emerald-500">
+                <Mail size={16} />
+              </div>
+              <input
+                type="email"
+                placeholder="Email Address"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  clearError("email");
+                }}
+                className={`h-14 w-full rounded-full border bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-600 focus:bg-white/[0.05] focus:outline-none ${
+                  formErrors.email
+                    ? "border-red-500/50 focus:border-red-500/80"
+                    : "border-white/10 focus:border-emerald-500/50"
+                }`}
+              />
             </div>
-            <input
-              type="email"
-              placeholder="Email Address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="h-14 w-full rounded-full border border-white/10 bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-600 focus:border-emerald-500/50 focus:bg-white/[0.05] focus:outline-none"
-            />
+            {formErrors.email && (
+              <p className="pl-6 text-[10px] text-red-400">
+                {formErrors.email}
+              </p>
+            )}
           </div>
 
-          <div className="group relative">
-            <div className="absolute top-1/2 left-6 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-emerald-500">
-              <Lock size={16} />
+          <div className="space-y-1">
+            <div className="group relative">
+              <div className="absolute top-1/2 left-6 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-emerald-500">
+                <Lock size={16} />
+              </div>
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  clearError("password");
+                }}
+                className={`h-14 w-full rounded-full border bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-600 focus:bg-white/[0.05] focus:outline-none ${
+                  formErrors.password
+                    ? "border-red-500/50 focus:border-red-500/80"
+                    : "border-white/10 focus:border-emerald-500/50"
+                }`}
+              />
             </div>
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="h-14 w-full rounded-full border border-white/10 bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-600 focus:border-emerald-500/50 focus:bg-white/[0.05] focus:outline-none"
-            />
+            {formErrors.password && (
+              <p className="pl-6 text-[10px] text-red-400">
+                {formErrors.password}
+              </p>
+            )}
           </div>
 
           {mode === "login" && (

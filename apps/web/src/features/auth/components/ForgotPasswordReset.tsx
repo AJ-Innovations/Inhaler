@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Lock } from "lucide-react";
 import React from "react";
 import { useAuthFlow } from "../hooks/useAuthFlow";
+import { passwordSchema } from "../utils/validation";
 
 interface ForgotPasswordResetProps {
   flow: ReturnType<typeof useAuthFlow>;
@@ -13,8 +14,20 @@ export function ForgotPasswordReset({ flow }: ForgotPasswordResetProps) {
     setNewPassword,
     confirmPassword,
     setConfirmPassword,
+    formErrors,
+    setFormErrors,
     setAuthFlow,
   } = flow;
+
+  const clearError = (field: string) => {
+    if (formErrors[field]) {
+      setFormErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -40,41 +53,71 @@ export function ForgotPasswordReset({ flow }: ForgotPasswordResetProps) {
       {/* Passwords Form */}
       <div className="space-y-4">
         <div className="space-y-3">
-          <div className="group relative">
-            <div className="absolute top-1/2 left-6 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-blue-500">
-              <Lock size={16} />
+          <div className="space-y-1">
+            <div className="group relative">
+              <div className="absolute top-1/2 left-6 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-blue-500">
+                <Lock size={16} />
+              </div>
+              <input
+                type="password"
+                placeholder="New Password"
+                value={newPassword}
+                onChange={(e) => {
+                  setNewPassword(e.target.value);
+                  clearError("newPassword");
+                }}
+                className={`h-14 w-full rounded-full border bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-600 focus:bg-white/[0.05] focus:outline-none ${
+                  formErrors.newPassword
+                    ? "border-red-500/50 focus:border-red-500/80"
+                    : "border-white/10 focus:border-blue-500/50"
+                }`}
+              />
             </div>
-            <input
-              type="password"
-              placeholder="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className="h-14 w-full rounded-full border border-white/10 bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-600 focus:border-blue-500/50 focus:bg-white/[0.05] focus:outline-none"
-            />
+            {formErrors.newPassword && (
+              <p className="pl-6 text-[10px] text-red-400">
+                {formErrors.newPassword}
+              </p>
+            )}
           </div>
 
-          <div className="group relative">
-            <div className="absolute top-1/2 left-6 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-blue-500">
-              <Lock size={16} />
+          <div className="space-y-1">
+            <div className="group relative">
+              <div className="absolute top-1/2 left-6 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-blue-500">
+                <Lock size={16} />
+              </div>
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  clearError("confirmPassword");
+                }}
+                className={`h-14 w-full rounded-full border bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-600 focus:bg-white/[0.05] focus:outline-none ${
+                  formErrors.confirmPassword
+                    ? "border-red-500/50 focus:border-red-500/80"
+                    : "border-white/10 focus:border-blue-500/50"
+                }`}
+              />
             </div>
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="h-14 w-full rounded-full border border-white/10 bg-white/[0.03] pr-6 pl-16 text-sm font-light text-white transition-all placeholder:text-gray-600 focus:border-blue-500/50 focus:bg-white/[0.05] focus:outline-none"
-            />
+            {formErrors.confirmPassword && (
+              <p className="pl-6 text-[10px] text-red-400">
+                {formErrors.confirmPassword}
+              </p>
+            )}
           </div>
         </div>
 
         <button
           onClick={() => {
-            if (!newPassword.trim() || !confirmPassword.trim()) {
-              alert("Please fill out both password fields.");
+            setFormErrors({});
+            const result = passwordSchema.safeParse(newPassword);
+            if (!result.success) {
+              setFormErrors({ newPassword: result.error.issues[0].message });
               return;
             }
             if (newPassword !== confirmPassword) {
-              alert("Passwords do not match. Please verify your typing.");
+              setFormErrors({ confirmPassword: "Passwords do not match." });
               return;
             }
             setAuthFlow("forgot_success");
