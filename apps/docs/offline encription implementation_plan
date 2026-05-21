@@ -1,0 +1,85 @@
+# Secure Offline Premium & Encrypted Storage Implementation
+
+Implement the offline auth algorithm from `offline_auth_algorithm.md` with AES-256-GCM encrypted localStorage and tamper-proof monotonic time tracking.
+
+## User Review Required
+
+> [!IMPORTANT]
+> **No external dependencies are needed.** All cryptography (AES-GCM, RSA-OAEP, SHA-256) uses the browser's native `Web Crypto API` (`window.crypto.subtle`), which is hardware-accelerated, FIPS-compliant, and available in all modern browsers. Zero npm packages to install.
+
+> [!WARNING]
+> **RS256 Public/Private Key Pair:** Since we don't have a backend server yet (Supabase Edge Functions aren't set up), we will implement the full signature verification infrastructure but use a **simulated offline token** for now. When you deploy Supabase Edge Functions later, you simply plug in the real endpoint and it works. The frontend verification code is production-ready from day one.
+
+> [!IMPORTANT]
+> **AES Encryption Scope:** All sensitive data stored in `localStorage` will be encrypted with AES-256-GCM before writing. This includes:
+> - The Supabase auth token (`sb-*-auth-token`)
+> - The Zustand auth store (`spirox-auth-storage`)
+> - The offline premium token (`spirox_offline_token`)
+> - The monotonic time tracker (`spirox_last_verified_time`)
+> - User profile data (`spirox_user_name`, `spirox_user_avatar`, etc.)
+> - Session/exercise data (`spirox_sessions`, `spirox_custom_exercises`, etc.)
+
+## Proposed Changes
+
+### Infrastructure Layer (`src/lib/`)
+
+#### [NEW] [crypto.ts](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/lib/crypto.ts)
+AES-256-GCM encryption/decryption utility using the native Web Crypto API.
+- `deriveKey(passphrase)`: Derives a 256-bit AES key from a device-bound passphrase using PBKDF2.
+- `encrypt(plaintext)`: Encrypts any string with AES-256-GCM, returns base64 ciphertext + IV.
+- `decrypt(ciphertext)`: Decrypts AES-256-GCM ciphertext back to plaintext.
+- The encryption key is derived from a combination of the Supabase project URL + a hardcoded app salt. This means the key is unique per deployment but consistent across page reloads.
+
+#### [NEW] [secureStorage.ts](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/lib/secureStorage.ts)
+Drop-in replacement for `localStorage.getItem`/`setItem` that transparently encrypts and decrypts.
+- `SecureStorage.setItem(key, value)`: Encrypts `value` with AES-256-GCM, then stores it.
+- `SecureStorage.getItem(key)`: Reads ciphertext, decrypts it, returns plaintext.
+- `SecureStorage.removeItem(key)`: Standard removal.
+- Graceful fallback: if decryption fails (corrupted/tampered data), returns `null` and removes the key.
+
+#### [NEW] [offlineAuth.ts](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/lib/offlineAuth.ts)
+Core offline premium verification engine implementing the algorithm from `offline_auth_algorithm.md`.
+- `verifyOfflinePremium()`: The main verification function that runs the full flowchart:
+  1. Check if offline token exists → if not, return `FREE`.
+  2. Verify RSA signature on the token → if invalid, return `FREE`.
+  3. Check monotonic time (current time >= last_verified_time) → if failed, return `FREE`.
+  4. Check if current time < expiry_date → if expired, return `FREE`.
+  5. Update `last_verified_time` → return `PREMIUM`.
+- `storeOfflineToken(signedToken)`: Saves the server-signed offline token to encrypted storage.
+- `clearOfflineToken()`: Removes the offline token (on logout/delete).
+- Embeds the RSA **Public Key** for signature verification.
+
+---
+
+### Auth Feature Layer (`src/features/auth/`)
+
+#### [MODIFY] [useAuthStore.ts](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/features/auth/store/useAuthStore.ts)
+- Add `isPremium: boolean` field to `AuthState` (not just `User`).
+- Add `setPremium(status: boolean)` action.
+- Switch from the default Zustand `persist` storage to the new `SecureStorage` adapter so the auth state is AES-encrypted on disk.
+
+#### [MODIFY] [index.tsx](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/features/breathing/index.tsx)
+- After the Supabase session sync, call `verifyOfflinePremium()` to determine premium status.
+- When online and session is valid, fetch the latest offline token from the server and cache it via `storeOfflineToken()`.
+- Pass `isPremium` to downstream components.
+
+---
+
+### Breathing Feature Layer (`src/features/breathing/hooks/`)
+
+#### [MODIFY] [useCustomExercises.ts](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/features/breathing/hooks/useCustomExercises.ts)
+- Replace all `localStorage.getItem`/`setItem` calls with `SecureStorage.getItem`/`setItem`.
+- This is a mechanical find-and-replace across ~20 call sites.
+
+---
+
+## Verification Plan
+
+### Automated Tests
+1. Open the app while online → confirm premium status is correctly synced.
+2. Go to DevTools → Application → Local Storage → confirm all values are encrypted (unreadable base64 ciphertext instead of plain JSON).
+3. Manually edit any encrypted value → refresh → confirm the app treats it as tampered (graceful fallback to defaults/logout).
+4. Change the device clock backwards → refresh → confirm premium is revoked (monotonic time check).
+
+### Manual Verification
+- Test the full flow: Login → verify tokens encrypted → go offline → confirm premium still works → change clock back → confirm premium revoked.

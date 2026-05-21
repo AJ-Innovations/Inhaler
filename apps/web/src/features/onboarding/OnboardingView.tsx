@@ -430,9 +430,13 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
                   {!isDropdownOpen ? (
                     <button
                       onClick={() => {
-                        localStorage.setItem(
-                          "spirox_user_country",
-                          selectedCountry,
+                        import("@libs/secureStorage").then(
+                          ({ SecureStorage }) => {
+                            SecureStorage.setItem(
+                              "spirox_user_country",
+                              selectedCountry,
+                            );
+                          },
                         );
                         setStep("calibrating");
                       }}

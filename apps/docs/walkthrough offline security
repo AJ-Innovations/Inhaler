@@ -1,0 +1,125 @@
+# Walkthrough: Secure Offline Premium & Encrypted Storage
+
+## Overview
+
+This implementation adds three major security layers to Spirox:
+
+1. **AES-256-GCM Encrypted Storage** — All sensitive data in localStorage is now encrypted before writing, making it unreadable and tamper-proof in DevTools.
+2. **RSA-PSS Offline Premium Verification** — A cryptographically signed offline token that prevents users from manipulating their premium status while offline.
+3. **Monotonic Time Tracking** — An anti-time-travel mechanism that detects and blocks users who change their device clock backwards to extend their subscription.
+
+**Zero new npm dependencies.** Everything uses the browser's native `Web Crypto API`.
+
+---
+
+## Files Created
+
+### 1. [crypto.ts](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/lib/crypto.ts) (NEW)
+
+The core encryption engine.
+
+| Feature | Detail |
+|---|---|
+| Algorithm | AES-256-GCM (Authenticated Encryption) |
+| Key Derivation | PBKDF2 with 100,000 iterations + SHA-256 |
+| Key Source | Derived from `NEXT_PUBLIC_SUPABASE_URL` + app salt |
+| IV | Random 12-byte IV per encryption (stored alongside ciphertext) |
+| Output | Base64-encoded `IV || ciphertext || auth_tag` |
+
+Key design decisions:
+- The encryption key is **deterministic per deployment** (same key on every page load) but **unique per Supabase project** (different deployments can't decrypt each other's data).
+- The key is cached in memory after first derivation to avoid re-running PBKDF2 on every read/write.
+
+---
+
+### 2. [secureStorage.ts](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/lib/secureStorage.ts) (NEW)
+
+A drop-in encrypted wrapper for `localStorage`.
+
+| Method | Behavior |
+|---|---|
+| `setItem(key, value)` | Encrypts value → writes `enc::` + base64 ciphertext |
+| `getItem(key)` | Reads → detects `enc::` prefix → decrypts → returns plaintext |
+| `migrateKey(key)` | Reads plain-text value → re-encrypts in place |
+| `migrateAll(keys)` | Batch-migrates multiple keys (idempotent) |
+
+Key design decisions:
+- **Legacy compatibility**: Values without the `enc::` prefix are returned as-is (supports gradual migration from existing plain-text data).
+- **Tamper detection**: If decryption fails (data was edited in DevTools), the corrupted key is removed and `null` is returned.
+- **SSR safety**: Falls back gracefully when `crypto.subtle` is unavailable (server-side rendering).
+
+---
+
+### 3. [offlineAuth.ts](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/lib/offlineAuth.ts) (NEW)
+
+The offline premium verification engine implementing the algorithm from [offline_auth_algorithm.md](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/offline_auth_algorithm.md).
+
+**Verification flowchart:**
+```
+App Opens → Token exists? → RSA signature valid? → Time moved forward? → Not expired? → PREMIUM ✅
+     ↓ No          ↓ No              ↓ No                ↓ No
+   FREE          FREE        TIME TAMPERING → FREE    EXPIRED → FREE
+```
+
+The RSA Public Key is hardcoded in the frontend. The corresponding Private Key will live on the Supabase Edge Function backend. A `createDevOfflineToken()` helper is included for testing.
+
+---
+
+## Files Modified
+
+### 4. [useAuthStore.ts](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/features/auth/store/useAuthStore.ts) (MODIFIED)
+
+Changes:
+- Added `premiumPlan: "free" | "pro" | "premium"` to the auth state.
+- Added `setPremiumPlan()` action.
+- Replaced default Zustand `persist` storage with custom `encryptedStorage` adapter.
+- Added `spirox_offline_token` and `spirox_last_verified_time` to logout cleanup.
+
+### 5. [index.tsx](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/features/breathing/index.tsx) (MODIFIED)
+
+Changes:
+- Added `verifyOfflinePremium()` call after Supabase session sync.
+- Added `SecureStorage.migrateAll()` one-time migration for existing plain-text data.
+- The migration is gated by a `spirox_storage_migrated_v1` flag to ensure it only runs once.
+
+### 6. [useCustomExercises.ts](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/features/breathing/hooks/useCustomExercises.ts) (MODIFIED)
+
+Changes:
+- Replaced all ~20 `localStorage.getItem()` / `localStorage.setItem()` calls with `SecureStorage.getItem()` / `SecureStorage.setItem()`.
+- The initial data load effect is now `async` to properly `await` decryption.
+- Write operations (saving exercises, sessions, goals) fire-and-forget the encryption promise for non-blocking UI.
+
+---
+
+## What's Encrypted Now
+
+| localStorage Key | Before | After |
+|---|---|---|
+| `spirox-auth-storage` | Plain JSON with user data | `enc::` + AES-256-GCM ciphertext |
+| `spirox_custom_exercises` | Plain JSON array | `enc::` + AES-256-GCM ciphertext |
+| `spirox_favorites` | Plain JSON array | `enc::` + AES-256-GCM ciphertext |
+| `spirox_sessions` | Plain JSON array | `enc::` + AES-256-GCM ciphertext |
+| `spirox_custom_goals` | Plain JSON array | `enc::` + AES-256-GCM ciphertext |
+| `spirox_user_name` | Plain string | `enc::` + AES-256-GCM ciphertext |
+| `spirox_user_avatar` | Plain base64 image | `enc::` + AES-256-GCM ciphertext |
+| `spirox_user_country` | Plain string | `enc::` + AES-256-GCM ciphertext |
+| `spirox_offline_token` | N/A (new) | `enc::` + AES-256-GCM ciphertext |
+| `spirox_last_verified_time` | N/A (new) | `enc::` + AES-256-GCM ciphertext |
+
+---
+
+## Verification
+
+- ✅ TypeScript compiles with zero code errors
+- ⏳ Manual: Inspect DevTools → Application → Local Storage to confirm values are encrypted
+- ⏳ Manual: Edit an encrypted value → refresh → confirm graceful fallback
+- ⏳ Manual: Change device clock backwards → refresh → confirm premium revoked
+
+---
+
+## What's Next (When Backend is Ready)
+
+When you deploy Supabase Edge Functions:
+1. Create an Edge Function that signs offline tokens with the RS256 Private Key.
+2. Replace the placeholder `RSA_PUBLIC_KEY_B64` in `offlineAuth.ts` with your real public key.
+3. Call `storeOfflineToken()` in `index.tsx` after receiving the signed token from the server.

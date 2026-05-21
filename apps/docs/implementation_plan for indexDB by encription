@@ -1,0 +1,49 @@
+# Secure Media Cache Implementation Plan
+
+This plan outlines the architecture for the **Encrypted IndexedDB Media Cache**. It allows Spirox to securely download premium media (ambient sounds, voiceovers, background images), encrypt them instantly, and store them offline. When played, the media is decrypted directly into RAM.
+
+## User Review Required
+
+> [!IMPORTANT]  
+> **Security Model**: The encrypted media is completely unplayable if ripped from the device's hard drive. However, because the browser must eventually decode it to play it, a highly sophisticated attacker who modifies the app's source code at runtime could theoretically capture the decrypted buffer from memory. This provides a very strong layer of protection against 99% of users (who might just look in DevTools), but is not DRM (Digital Rights Management). Is this level of security sufficient for your needs?
+
+> [!WARNING]  
+> **Storage Limits**: IndexedDB can store hundreds of megabytes safely. However, we should be careful not to download gigabytes of audio all at once to respect the user's device storage. The initial plan downloads media on-demand when first played.
+
+## Proposed Changes
+
+We will build the media cache natively without adding any new npm dependencies.
+
+### Infrastructure Layer
+
+#### [MODIFY] [crypto.ts](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/lib/crypto.ts)
+Extend the existing AES-256-GCM engine to support raw binary buffers.
+- Add `encryptBuffer(data: ArrayBuffer): Promise<ArrayBuffer>`
+- Add `decryptBuffer(encrypted: ArrayBuffer): Promise<ArrayBuffer>`
+
+#### [NEW] [secureMediaCache.ts](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/lib/secureMediaCache.ts)
+A standalone utility that manages the IndexedDB connection and binary caching.
+- Initialize `SpiroxMediaDB` IndexedDB database.
+- Create `downloadAndCache(url: string)`: Fetches a media file, encrypts it via `crypto.ts`, and stores it in IndexedDB.
+- Create `getDecryptedBlobUrl(url: string)`: Reads from IndexedDB, decrypts into RAM, and returns a temporary `blob:` URL for the `<audio>` or `<img>` tag.
+- Create `clearCache()`: Purges downloaded media.
+
+### React Integration Layer
+
+#### [NEW] [useSecureMedia.ts](file:///c:/Users/ajmal_inv2bct/OneDrive/Desktop/web%20projects/spirox/apps/web/src/features/breathing/hooks/useSecureMedia.ts)
+A React hook to easily consume secure media in components.
+- Manages the loading state and error handling.
+- Automatically calls `URL.revokeObjectURL()` on component unmount to prevent RAM leaks.
+- Example usage: 
+  ```tsx
+  const { blobUrl, isLoading } = useSecureMedia('/premium-sounds/rain.mp3');
+  return <audio src={blobUrl} autoPlay />
+  ```
+
+## Verification Plan
+
+### Automated/Manual Verification
+1. Open DevTools -> Application -> IndexedDB -> `SpiroxMediaDB`.
+2. Inspect the stored blob for an audio file. Ensure it is scrambled binary data (not a valid MP3/WAV).
+3. Attempt to download the Blob from IndexedDB and play it in VLC or iTunes. It must fail.
+4. Load the app offline (Network -> Offline) and play the audio to verify the on-the-fly decryption is instant and smooth.
