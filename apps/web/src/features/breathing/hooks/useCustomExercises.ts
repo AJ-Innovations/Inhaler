@@ -154,7 +154,14 @@ export function useLibrary() {
     }
 
     const savedName = localStorage.getItem("spirox_user_name");
-    if (savedName) setUserName(savedName);
+    if (savedName) {
+      if (savedName === "Mindful Breather") {
+        setUserName("Spirox User");
+        localStorage.setItem("spirox_user_name", "Spirox User");
+      } else {
+        setUserName(savedName);
+      }
+    }
 
     const savedAvatar = localStorage.getItem("spirox_user_avatar");
     if (savedAvatar) setUserAvatar(savedAvatar);

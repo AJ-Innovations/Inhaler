@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface User {
+export interface User {
   id: string;
   email: string;
   name?: string;
@@ -23,7 +23,19 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       user: null,
       login: (user) => set({ isAuthenticated: true, user }),
-      logout: () => set({ isAuthenticated: false, user: null }),
+      logout: () => {
+        const keysToRemove = [
+          "spirox_custom_exercises",
+          "spirox_favorites",
+          "spirox_sessions",
+          "spirox_custom_goals",
+          "spirox_user_name",
+          "spirox_user_avatar",
+          "spirox_user_country",
+        ];
+        keysToRemove.forEach((k) => localStorage.removeItem(k));
+        set({ isAuthenticated: false, user: null });
+      },
       updateProfile: (data) =>
         set((state) => ({
           user: state.user ? { ...state.user, ...data } : null,

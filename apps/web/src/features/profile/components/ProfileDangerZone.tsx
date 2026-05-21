@@ -1,6 +1,6 @@
 import { ChevronRight, Trash2, UserRound } from "lucide-react";
 import React from "react";
-import { User } from "../../auth/types";
+import { User } from "../../auth/store/useAuthStore";
 
 interface ProfileDangerZoneProps {
   isAuthenticated: boolean;

@@ -264,7 +264,7 @@ export function useOnboardingFlow(
 
   // Success flow redirect
   const handleFinalRedirect = () => {
-    onComplete(chosenPlan, cardName || "Mindful Breather");
+    onComplete(chosenPlan, cardName || "Spirox User");
   };
 
   return {

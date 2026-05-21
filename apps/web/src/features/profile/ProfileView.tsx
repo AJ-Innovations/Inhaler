@@ -235,19 +235,21 @@ export function ProfileView({
       />
 
       {/* Profile Header */}
-      <ProfileHeader
-        userName={userName}
-        userAvatar={userAvatar}
-        tempName={tempName}
-        isEditingName={isEditingName}
-        setTempName={setTempName}
-        setIsEditingName={setIsEditingName}
-        handleSaveName={handleSaveName}
-        setIsSelectingAvatar={setIsSelectingAvatar}
-        isAuthenticated={isAuthenticated}
-        authUserName={user?.name || user?.email}
-        isPremium={user?.isPremium}
-      />
+      {isAuthenticated && (
+        <ProfileHeader
+          userName={userName}
+          userAvatar={userAvatar}
+          tempName={tempName}
+          isEditingName={isEditingName}
+          setTempName={setTempName}
+          setIsEditingName={setIsEditingName}
+          handleSaveName={handleSaveName}
+          setIsSelectingAvatar={setIsSelectingAvatar}
+          isAuthenticated={isAuthenticated}
+          authUserName={user?.name || user?.email}
+          isPremium={user?.isPremium}
+        />
+      )}
 
       {/* Avatar Selection Modal */}
       <AnimatePresence>
@@ -575,7 +577,10 @@ export function ProfileView({
               isAuthenticated={isAuthenticated}
               user={user}
               onResetDataClick={() => setShowResetConfirm(true)}
-              onLogoutClick={logout}
+              onLogoutClick={() => {
+                logout();
+                window.location.reload();
+              }}
             />
           </div>
         </div>
