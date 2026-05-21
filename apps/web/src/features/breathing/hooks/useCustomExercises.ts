@@ -47,12 +47,17 @@ export function useLibrary() {
   // Sync user profile from Supabase
   useEffect(() => {
     // 1. Fetch current active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchUserProfile(session.user.id);
-      }
-    });
+    if (navigator.onLine) {
+      supabase.auth
+        .getSession()
+        .then(({ data: { session } }) => {
+          setUser(session?.user ?? null);
+          if (session?.user) {
+            fetchUserProfile(session.user.id);
+          }
+        })
+        .catch((err) => console.warn("Failed to fetch session silently:", err));
+    }
 
     // 2. Listen to auth changes in real-time
     const {

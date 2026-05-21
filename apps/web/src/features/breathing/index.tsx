@@ -42,6 +42,7 @@ export function BreathingExercise() {
   } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [isOfflineLocked, setIsOfflineLocked] = useState(false);
 
   // Global Soundscape Controller
   const [isAmbientSoundOn, setIsAmbientSoundOn] = useState(false);
@@ -61,84 +62,105 @@ export function BreathingExercise() {
 
   // Sync Supabase Auth with Zustand Store
   useEffect(() => {
-    // If we are offline and already authenticated locally, strictly trust the local state.
-    // Do NOT call Supabase because expired tokens will trigger a network refresh that crashes.
-    if (!navigator.onLine && isAuthenticated && user) {
+    // If we are offline, do NOT call Supabase because it will trigger a network fetch and crash.
+    // Trust local state (whether they are logged in or out).
+    if (!navigator.onLine) {
+      if (isAuthenticated && user) {
+        // They have local data, trust it
+      } else {
+        // They are offline and have no local data, treat as logged out
+        logout();
+        setIsOfflineLocked(true);
+      }
       setIsAuthLoading(false);
       return;
     }
 
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (session?.user) {
-        if (navigator.onLine) {
-          // STRICT CHECK: Ask the backend if the user still exists
-          supabase.auth
-            .getUser()
-            .then(({ data: { user }, error: userError }) => {
-              if (userError) {
-                // Only log out if it's explicitly an auth rejection (banned, deleted, invalid)
-                if (
-                  userError.status === 401 ||
-                  userError.status === 403 ||
-                  userError.status === 404 ||
-                  userError.status === 400
-                ) {
-                  console.warn(
-                    "User strictly rejected by backend:",
-                    userError.message,
-                  );
+    supabase.auth
+      .getSession()
+      .then(({ data: { session }, error }) => {
+        if (session?.user) {
+          if (navigator.onLine) {
+            // STRICT CHECK: Ask the backend if the user still exists
+            supabase.auth
+              .getUser()
+              .then(({ data: { user }, error: userError }) => {
+                if (userError) {
+                  // Only log out if it's explicitly an auth rejection (banned, deleted, invalid)
+                  if (
+                    userError.status === 401 ||
+                    userError.status === 403 ||
+                    userError.status === 404 ||
+                    userError.status === 400
+                  ) {
+                    console.warn(
+                      "User strictly rejected by backend:",
+                      userError.message,
+                    );
+                    logout();
+                  } else {
+                    // Network error or timeout: trust the local session
+                    console.warn(
+                      "Network error during strict check, trusting local session:",
+                      userError.message,
+                    );
+                    login({
+                      id: session.user.id,
+                      email: session.user.email || "",
+                      name: session.user.user_metadata?.full_name,
+                    });
+                  }
+                } else if (!user) {
                   logout();
                 } else {
-                  // Network error or timeout: trust the local session
-                  console.warn(
-                    "Network error during strict check, trusting local session:",
-                    userError.message,
-                  );
                   login({
-                    id: session.user.id,
-                    email: session.user.email || "",
-                    name: session.user.user_metadata?.full_name,
+                    id: user.id,
+                    email: user.email || "",
+                    name: user.user_metadata?.full_name,
                   });
                 }
-              } else if (!user) {
-                logout();
-              } else {
+                setIsAuthLoading(false);
+              })
+              .catch((err) => {
+                console.warn(
+                  "Unhandled exception in strict auth check, trusting local session:",
+                  err,
+                );
                 login({
-                  id: user.id,
-                  email: user.email || "",
-                  name: user.user_metadata?.full_name,
+                  id: session.user.id,
+                  email: session.user.email || "",
+                  name: session.user.user_metadata?.full_name,
                 });
-              }
-              setIsAuthLoading(false);
-            })
-            .catch((err) => {
-              console.warn(
-                "Unhandled exception in strict auth check, trusting local session:",
-                err,
-              );
-              login({
-                id: session.user.id,
-                email: session.user.email || "",
-                name: session.user.user_metadata?.full_name,
+                setIsAuthLoading(false);
               });
-              setIsAuthLoading(false);
+          } else {
+            // OFFLINE: Trust the local session
+            login({
+              id: session.user.id,
+              email: session.user.email || "",
+              name: session.user.user_metadata?.full_name,
             });
+            setIsAuthLoading(false);
+          }
+        } else if (!error) {
+          logout();
+          setIsAuthLoading(false);
         } else {
-          // OFFLINE: Trust the local session
-          login({
-            id: session.user.id,
-            email: session.user.email || "",
-            name: session.user.user_metadata?.full_name,
-          });
           setIsAuthLoading(false);
         }
-      } else if (!error) {
-        logout();
-        setIsAuthLoading(false);
-      } else {
-        setIsAuthLoading(false);
-      }
-    });
+      })
+      .catch((err) => {
+        console.warn(
+          "getSession fetch failed, trusting offline state if available:",
+          err,
+        );
+        if (isAuthenticated && user) {
+          setIsAuthLoading(false);
+        } else {
+          logout();
+          setIsAuthLoading(false);
+        }
+      });
 
     const {
       data: { subscription },
@@ -453,9 +475,49 @@ export function BreathingExercise() {
                 onBack={() => setView("home")}
               />
             )}
-            {view === "auth" && (
-              <div className="h-full w-full overflow-y-auto">
-                <AuthView key="auth" onSuccess={() => setView("home")} />
+            {view === "home" && !isAuthenticated && (
+              <div className="h-[100dvh] w-full overflow-y-auto">
+                {isOfflineLocked ? (
+                  <div className="flex h-full flex-col items-center justify-center p-8 text-center text-white">
+                    <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red-500/20 text-red-400">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                        <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+                        <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+                        <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+                        <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                      </svg>
+                    </div>
+                    <h2 className="mb-2 text-2xl font-bold">
+                      No Internet Connection
+                    </h2>
+                    <p className="mb-8 text-gray-400">
+                      You are currently offline and don't have an active session
+                      saved on this device. Please connect to the internet to
+                      log in and sync your profile.
+                    </p>
+                    <button
+                      onClick={() => window.location.reload()}
+                      className="rounded-xl bg-white px-8 py-3 font-semibold text-black transition-transform hover:scale-105 active:scale-95"
+                    >
+                      Retry Connection
+                    </button>
+                  </div>
+                ) : (
+                  <AuthView key="auth" onSuccess={() => setView("home")} />
+                )}
               </div>
             )}
             {view === "builder" && (
