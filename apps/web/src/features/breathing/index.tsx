@@ -146,6 +146,11 @@ export function BreathingExercise() {
           logout();
           setIsAuthLoading(false);
         } else {
+          // Promise resolved but returned a network error
+          if (!isAuthenticated) {
+            logout();
+            setIsOfflineLocked(true);
+          }
           setIsAuthLoading(false);
         }
       })
@@ -158,6 +163,7 @@ export function BreathingExercise() {
           setIsAuthLoading(false);
         } else {
           logout();
+          setIsOfflineLocked(true);
           setIsAuthLoading(false);
         }
       });
