@@ -1,14 +1,11 @@
 "use client";
 
-import { supabase } from "@libs/supabaseClient";
 import React, { useState } from "react";
-
-export type AuthFlowState =
-  | "form"
-  | "forgot_email"
-  | "forgot_otp"
-  | "forgot_reset"
-  | "forgot_success";
+import { z } from "zod";
+import { signInWithEmail, signUpWithEmail } from "../api/auth";
+import { AuthFlowState, AuthMode, FormErrors } from "../types";
+import { formatZodError, loginSchema, signupSchema } from "../utils/validation";
+import { useAuthStore } from "../store/useAuthStore";
 
 /**
  * Manages all authentication state: login/signup, forgot password flow,
@@ -16,12 +13,13 @@ export type AuthFlowState =
  * Extracted from AuthView.tsx for separation of concerns.
  */
 export function useAuthFlow(onSuccess: () => void) {
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
 
   // Forgot Password Flow States
   const [authFlow, setAuthFlow] = useState<AuthFlowState>("form");
@@ -78,41 +76,43 @@ export function useAuthFlow(onSuccess: () => void) {
   };
 
   const handleAuth = async () => {
-    if (!email.trim() || !password.trim()) {
-      setErrorMessage("Please enter both email and password.");
-      return;
-    }
-    if (mode === "signup" && !name.trim()) {
-      setErrorMessage("Please enter your full name.");
+    setFormErrors({});
+    setErrorMessage(null);
+
+    // 1. Validate Inputs with Zod
+    try {
+      if (mode === "signup") {
+        signupSchema.parse({ email, password, name });
+      } else {
+        loginSchema.parse({ email, password });
+      }
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setFormErrors(formatZodError(err));
+      }
       return;
     }
 
+    // 2. Execute API Calls
     setLoading(true);
-    setErrorMessage(null);
 
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email: email.trim(),
-          password: password.trim(),
-          options: {
-            data: {
-              full_name: name.trim(),
-            },
-          },
-        });
-        if (error) throw error;
+        await signUpWithEmail(email.trim(), password.trim(), name.trim());
         alert(
           "Verification email sent! Please check your inbox (or spam folder) to verify your account, then log in.",
         );
         setMode("login");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password: password.trim(),
-        });
-        if (error) throw error;
-
+        const result = await signInWithEmail(email.trim(), password.trim());
+        if (result.user) {
+          useAuthStore.getState().login({
+            id: result.user.id,
+            email: result.user.email || "",
+            name: result.user.user_metadata?.full_name || "User",
+            avatar: result.user.user_metadata?.avatar_url || null,
+          });
+        }
         // Successfully logged in!
         onSuccess();
       }
@@ -136,6 +136,8 @@ export function useAuthFlow(onSuccess: () => void) {
     setName,
     loading,
     errorMessage,
+    formErrors,
+    setFormErrors,
     authFlow,
     setAuthFlow,
     otp,
