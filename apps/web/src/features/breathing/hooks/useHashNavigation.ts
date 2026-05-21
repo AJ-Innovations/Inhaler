@@ -22,91 +22,77 @@ interface UseHashNavigationReturn {
 }
 
 /**
- * Synchronizes browser URL hash with React state for seamless
- * hardware back gestures and deep linking.
- * Extracted from breathing/index.tsx for separation of concerns.
+ * Synchronizes browser History API with React state for seamless
+ * hardware back gestures without changing the visible URL.
  */
 export function useHashNavigation(): UseHashNavigationReturn {
   const [view, setView] = useState<ViewType>("home");
   const [activeTab, setActiveTab] = useState<TabType>("explore");
   const isPopStateRef = useRef(false);
-  const wasExploreRef = useRef(true);
 
-  // Synchronize browser URL hash with React state for seamless hardware back gestures
+  // Synchronize browser history popstate with React state
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace("#", "");
+    const handlePopState = (event: PopStateEvent) => {
+      isPopStateRef.current = true;
+      const state = event.state;
 
-      if (!hash || hash === "explore") {
-        isPopStateRef.current = true;
+      if (!state || !state.view) {
         setView("home");
         setActiveTab("explore");
-      } else if (
-        hash === "library" ||
-        hash === "journal" ||
-        hash === "profile"
+        return;
+      }
+
+      const viewState = state.view;
+      if (
+        viewState === "explore" ||
+        viewState === "library" ||
+        viewState === "journal" ||
+        viewState === "profile"
       ) {
-        isPopStateRef.current = true;
         setView("home");
-        setActiveTab(hash as TabType);
-      } else if (
-        hash === "exercise" ||
-        hash === "details" ||
-        hash === "setup" ||
-        hash === "complete" ||
-        hash === "builder" ||
-        hash === "subscription" ||
-        hash === "auth"
-      ) {
-        isPopStateRef.current = true;
-        setView(hash as ViewType);
+        setActiveTab(viewState as TabType);
+      } else {
+        setView(viewState as ViewType);
       }
     };
 
-    // Set initial explore hash on load if not present
-    if (!window.location.hash) {
-      window.location.replace("#explore");
-      wasExploreRef.current = true;
+    // Set initial state on load without changing URL
+    if (!window.history.state || !window.history.state.view) {
+      window.history.replaceState(
+        { view: "explore" },
+        "",
+        window.location.pathname,
+      );
     } else {
-      handleHashChange();
+      // If there's existing state (e.g. from refresh), load it
+      handlePopState({ state: window.history.state } as PopStateEvent);
     }
 
-    window.addEventListener("hashchange", handleHashChange);
-    return () => {
-      window.removeEventListener("hashchange", handleHashChange);
-    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
-  // Synchronize React state changes back to browser URL hash
+  // Synchronize React state changes back to browser history
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const currentHash = window.location.hash.replace("#", "");
-    const expectedHash = view === "home" ? activeTab : view;
-
-    const isAtExplore = expectedHash === "explore";
+    const expectedState = view === "home" ? activeTab : view;
 
     if (isPopStateRef.current) {
       isPopStateRef.current = false;
-      wasExploreRef.current = isAtExplore;
       return;
     }
 
-    if (currentHash !== expectedHash) {
-      if (isAtExplore) {
-        window.location.replace("#explore");
-      } else {
-        if (wasExploreRef.current) {
-          window.location.hash = "#" + expectedHash;
-        } else {
-          window.location.replace("#" + expectedHash);
-        }
-      }
+    const currentState = window.history.state?.view;
+    if (currentState !== expectedState) {
+      window.history.pushState(
+        { view: expectedState },
+        "",
+        window.location.pathname,
+      );
     }
-
-    wasExploreRef.current = isAtExplore;
   }, [view, activeTab]);
 
   return { view, setView, activeTab, setActiveTab };
