@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { SecureStorage } from "@libs/secureStorage";
 
 interface UseNotificationsReturn {
   dailyReminderEnabled: boolean;
@@ -22,12 +23,12 @@ export function useNotifications(): UseNotificationsReturn {
   // Load reminder settings from LocalStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const enabled =
-        localStorage.getItem("spirox_daily_reminder_enabled") === "true";
-      const time =
-        localStorage.getItem("spirox_daily_reminder_time") || "08:30";
-      setDailyReminderEnabled(enabled);
-      setDailyReminderTime(time);
+      SecureStorage.getItem("spirox_daily_reminder_enabled").then((enabled) => {
+        setDailyReminderEnabled(enabled === "true");
+      });
+      SecureStorage.getItem("spirox_daily_reminder_time").then((time) => {
+        setDailyReminderTime(time || "08:30");
+      });
     }
   }, []);
 
@@ -54,7 +55,7 @@ export function useNotifications(): UseNotificationsReturn {
         const permission = await Notification.requestPermission();
         if (permission === "granted") {
           setDailyReminderEnabled(true);
-          localStorage.setItem("spirox_daily_reminder_enabled", "true");
+          SecureStorage.setItem("spirox_daily_reminder_enabled", "true");
           triggerNotification(
             "Reminders Enabled! 🧘",
             "You will be notified daily at your scheduled breathing time.",
@@ -64,20 +65,20 @@ export function useNotifications(): UseNotificationsReturn {
             "Notification permission is required to enable daily reminders.",
           );
           setDailyReminderEnabled(false);
-          localStorage.setItem("spirox_daily_reminder_enabled", "false");
+          SecureStorage.setItem("spirox_daily_reminder_enabled", "false");
         }
       } else {
         alert("Notifications are not supported in this browser.");
       }
     } else {
       setDailyReminderEnabled(false);
-      localStorage.setItem("spirox_daily_reminder_enabled", "false");
+      SecureStorage.setItem("spirox_daily_reminder_enabled", "false");
     }
   };
 
   const handleUpdateTime = (time: string) => {
     setDailyReminderTime(time);
-    localStorage.setItem("spirox_daily_reminder_time", time);
+    SecureStorage.setItem("spirox_daily_reminder_time", time);
   };
 
   // Scheduled Reminder Background Checker (Runs every 30s)

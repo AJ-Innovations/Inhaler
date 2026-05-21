@@ -1,5 +1,8 @@
 "use client";
 
+import { supabase } from "@libs/supabaseClient";
+import { verifyOfflinePremium } from "@libs/offlineAuth";
+import { SecureStorage } from "@libs/secureStorage";
 import { AuthView } from "@features/auth/AuthView";
 import { useAuthStore } from "@features/auth/store/useAuthStore";
 import { AchievementsView } from "@features/dashboard/AchievementsView";
@@ -38,6 +41,7 @@ export function BreathingExercise() {
     cycles: number;
   } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   // Global Soundscape Controller
   const [isAmbientSoundOn, setIsAmbientSoundOn] = useState(false);
@@ -45,7 +49,7 @@ export function BreathingExercise() {
 
   // Extracted hooks
   const { view, setView, activeTab, setActiveTab } = useHashNavigation();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, login, logout, setPremiumPlan } = useAuthStore();
   const { isInstallable, isInstalled, isIOS, handleInstallPWA } = usePWA();
   const {
     dailyReminderEnabled,
@@ -54,12 +58,155 @@ export function BreathingExercise() {
     handleUpdateTime,
   } = useNotifications();
 
+  // Sync Supabase Auth with Zustand Store
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      // If we are offline and already authenticated locally, trust the local state
+      // This prevents logging users out when their 1h token expires while offline
+      if (!navigator.onLine && isAuthenticated) {
+        setIsAuthLoading(false);
+        return;
+      }
+
+      if (session?.user) {
+        if (navigator.onLine) {
+          // STRICT CHECK: Ask the backend if the user still exists
+          supabase.auth
+            .getUser()
+            .then(({ data: { user }, error: userError }) => {
+              if (userError) {
+                // Only log out if it's explicitly an auth rejection (banned, deleted, invalid)
+                if (
+                  userError.status === 401 ||
+                  userError.status === 403 ||
+                  userError.status === 404 ||
+                  userError.status === 400
+                ) {
+                  console.warn(
+                    "User strictly rejected by backend:",
+                    userError.message,
+                  );
+                  logout();
+                } else {
+                  // Network error or timeout: trust the local session
+                  console.warn(
+                    "Network error during strict check, trusting local session:",
+                    userError.message,
+                  );
+                  login({
+                    id: session.user.id,
+                    email: session.user.email || "",
+                    name: session.user.user_metadata?.full_name,
+                  });
+                }
+              } else if (!user) {
+                logout();
+              } else {
+                login({
+                  id: user.id,
+                  email: user.email || "",
+                  name: user.user_metadata?.full_name,
+                });
+              }
+              setIsAuthLoading(false);
+            })
+            .catch((err) => {
+              console.warn(
+                "Unhandled exception in strict auth check, trusting local session:",
+                err,
+              );
+              login({
+                id: session.user.id,
+                email: session.user.email || "",
+                name: session.user.user_metadata?.full_name,
+              });
+              setIsAuthLoading(false);
+            });
+        } else {
+          // OFFLINE: Trust the local session
+          login({
+            id: session.user.id,
+            email: session.user.email || "",
+            name: session.user.user_metadata?.full_name,
+          });
+          setIsAuthLoading(false);
+        }
+      } else if (!error) {
+        logout();
+        setIsAuthLoading(false);
+      } else {
+        setIsAuthLoading(false);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      // Ignore auth state changes if we are offline (prevents forced logouts on failed refresh)
+      if (!navigator.onLine) return;
+
+      if (session?.user) {
+        login({
+          id: session.user.id,
+          email: session.user.email || "",
+          name: session.user.user_metadata?.full_name,
+        });
+      } else if (event === "SIGNED_OUT") {
+        logout();
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [login, logout]);
+
+  // Offline Premium Verification — runs after auth sync
+  useEffect(() => {
+    if (isAuthLoading) return;
+    if (!isAuthenticated) {
+      setPremiumPlan("free");
+      return;
+    }
+
+    verifyOfflinePremium().then((plan) => {
+      setPremiumPlan(plan);
+    });
+  }, [isAuthenticated, isAuthLoading, setPremiumPlan]);
+
+  // Migrate existing plain-text localStorage to encrypted storage
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const MIGRATION_FLAG = "spirox_storage_migrated_v1";
+    if (localStorage.getItem(MIGRATION_FLAG)) return;
+
+    const keysToMigrate = [
+      "spirox_custom_exercises",
+      "spirox_favorites",
+      "spirox_sessions",
+      "spirox_custom_goals",
+      "spirox_user_name",
+      "spirox_user_avatar",
+      "spirox_user_country",
+    ];
+
+    SecureStorage.migrateAll(keysToMigrate).then(() => {
+      localStorage.setItem(MIGRATION_FLAG, "true");
+    });
+  }, []);
+
   // Global Auth Guard: if not authenticated, force view to auth
   useEffect(() => {
-    if (!isAuthenticated && view !== "auth" && !showOnboarding) {
+    if (
+      !isAuthLoading &&
+      !isAuthenticated &&
+      view !== "auth" &&
+      !showOnboarding
+    ) {
       setView("auth");
     }
-  }, [isAuthenticated, view, setView, showOnboarding]);
+  }, [isAuthenticated, view, showOnboarding, setView, isAuthLoading]);
 
   const {
     customExercises,
@@ -84,16 +231,17 @@ export function BreathingExercise() {
   // Persistence of selected ambient
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const savedAmbient = localStorage.getItem("spirox_active_ambient");
-      if (savedAmbient && savedAmbient !== "leaf") {
-        soundscape.setActiveSoundscape(savedAmbient as any);
-      }
+      SecureStorage.getItem("spirox_active_ambient").then((savedAmbient) => {
+        if (savedAmbient && savedAmbient !== "leaf") {
+          soundscape.setActiveSoundscape(savedAmbient as any);
+        }
+      });
     }
   }, []);
 
   useEffect(() => {
     if (soundscape.activeSoundscape) {
-      localStorage.setItem(
+      SecureStorage.setItem(
         "spirox_active_ambient",
         soundscape.activeSoundscape,
       );
@@ -103,9 +251,9 @@ export function BreathingExercise() {
   // Load onboarding state from LocalStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const completed =
-        localStorage.getItem("spirox_onboarding_completed") === "true";
-      setShowOnboarding(!completed);
+      SecureStorage.getItem("spirox_onboarding_completed").then((completed) => {
+        setShowOnboarding(completed !== "true");
+      });
     } else {
       setShowOnboarding(false);
     }
@@ -120,17 +268,26 @@ export function BreathingExercise() {
     }
   }, []);
 
+  if (isAuthLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-black">
+        <div className="h-8 w-8 animate-spin rounded-full border-t-2 border-white" />
+      </div>
+    );
+  }
+
   const handleCompleteOnboarding = (planId: string, name?: string) => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("spirox_onboarding_completed", "true");
-      localStorage.setItem("spirox_active_plan", planId);
+      SecureStorage.setItem("spirox_onboarding_completed", "true");
+      SecureStorage.setItem("spirox_active_plan", planId);
       if (name) {
         updateUserName(name);
       }
-      const savedCountry = localStorage.getItem("spirox_user_country");
-      if (savedCountry) {
-        updateUserCountry(savedCountry);
-      }
+      SecureStorage.getItem("spirox_user_country").then((savedCountry) => {
+        if (savedCountry) {
+          updateUserCountry(savedCountry);
+        }
+      });
     }
     setShowOnboarding(false);
     setView("home");
