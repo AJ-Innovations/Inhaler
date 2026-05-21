@@ -12,7 +12,7 @@ import { ForgotPasswordReset } from "./components/ForgotPasswordReset";
 import { ForgotPasswordSuccess } from "./components/ForgotPasswordSuccess";
 
 interface AuthViewProps {
-  onBack: () => void;
+  onBack?: () => void;
   onSuccess: () => void;
 }
 
@@ -43,22 +43,24 @@ export function AuthView({ onBack, onSuccess }: AuthViewProps) {
     >
       <div className="mx-auto flex h-full w-full max-w-[480px] flex-col px-8 py-6">
         {/* Back Button */}
-        <button
-          onClick={onBack}
-          className="mb-6 flex h-10 w-10 items-center justify-center self-start rounded-xl bg-white/5 transition-colors hover:bg-white/10"
-        >
-          <ChevronLeft size={18} className="text-gray-400" />
-        </button>
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="mb-6 flex h-10 w-10 items-center justify-center self-start rounded-xl bg-white/5 transition-colors hover:bg-white/10"
+          >
+            <ChevronLeft size={18} className="text-gray-400" />
+          </button>
+        )}
 
         <div className="flex flex-1 flex-col justify-center space-y-8">
           {renderFlowContent()}
         </div>
 
         {/* Footer */}
-        <p className="mt-auto pt-8 text-center text-[9px] font-medium tracking-tighter text-gray-800">
+        <p className="mt-auto pt-8 text-center text-[10px] font-medium tracking-tighter text-gray-500">
           By continuing, you agree to our{" "}
-          <span className="text-gray-700">Terms</span> and{" "}
-          <span className="text-gray-700">Privacy</span>.
+          <span className="text-gray-400">Terms</span> and{" "}
+          <span className="text-gray-400">Privacy</span>.
         </p>
       </div>
 

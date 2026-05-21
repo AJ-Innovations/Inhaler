@@ -117,16 +117,32 @@ export function useAuthFlow(onSuccess: () => void) {
         onSuccess();
       }
     } catch (err: any) {
-      setErrorMessage(
-        err.message || "An error occurred during authentication.",
-      );
+      let errorMsg = err.message || "An error occurred during authentication.";
+
+      // Supabase uses generic messages for security; translate to a more standard/user-friendly message
+      if (
+        mode === "login" &&
+        errorMsg.toLowerCase().includes("invalid login credentials")
+      ) {
+        errorMsg =
+          "User not found or incorrect password. Please check your details.";
+      }
+
+      setErrorMessage(errorMsg);
     } finally {
       setLoading(false);
     }
   };
 
+  const switchMode = () => {
+    setMode(mode === "login" ? "signup" : "login");
+    setErrorMessage(null);
+    setFormErrors({});
+  };
+
   return {
     mode,
+    switchMode,
     setMode,
     email,
     setEmail,
