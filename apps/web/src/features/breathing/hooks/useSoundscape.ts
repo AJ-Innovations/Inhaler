@@ -255,7 +255,7 @@ export function useSoundscape(isPlaying: boolean = false) {
             // Graceful fallback to streaming if cache fails
             if (audio.src !== absoluteUrl) {
               safePause();
-              audio.src = sound.url;
+              audio.src = absoluteUrl;
               audio.volume = volume;
               safePlay();
             }
@@ -332,7 +332,7 @@ export function useSoundscape(isPlaying: boolean = false) {
               console.error("Failed to load encrypted soundscape:", err);
               if (audio.src !== absoluteUrl) {
                 safePause();
-                audio.src = sound.url;
+                audio.src = absoluteUrl;
                 audio.volume = volume;
                 safePlay();
               }
