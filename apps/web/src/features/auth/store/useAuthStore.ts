@@ -52,6 +52,8 @@ export const useAuthStore = create<AuthState>()(
           "spirox_user_country",
           "spirox_offline_token",
           "spirox_last_verified_time",
+          "spirox_paywall_seen",
+          "spirox_starter_completed",
         ];
         keysToRemove.forEach((k) => SecureStorage.removeItem(k));
         set({ isAuthenticated: false, user: null, premiumPlan: "free" });
