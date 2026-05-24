@@ -1,6 +1,6 @@
 "use client";
 
-import { SubscriptionView } from "@features/subscription/components/SubscriptionView";
+import { SubscriptionView } from "@features/subscription";
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
 import { useOnboardingFlow } from "../hooks/useOnboardingFlow";
