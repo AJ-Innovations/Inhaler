@@ -192,6 +192,15 @@ export function useSoundscape(isPlaying: boolean = false) {
     promise.catch((err) => {
       if (err.name !== "AbortError" && err.name !== "NotSupportedError") {
         console.warn("Audio play failed:", err);
+        if (err.name === "NotAllowedError") {
+          const resumeAudio = () => {
+            audio.play().catch((e) => console.warn(e));
+            document.removeEventListener("click", resumeAudio);
+            document.removeEventListener("touchstart", resumeAudio);
+          };
+          document.addEventListener("click", resumeAudio);
+          document.addEventListener("touchstart", resumeAudio);
+        }
       }
     });
   }, []);
@@ -358,6 +367,7 @@ export function useSoundscape(isPlaying: boolean = false) {
     setActiveSoundscape: selectSoundscape,
     pauseSoundscape,
     toggleSoundscape,
+    play: safePlay,
     volume,
     setVolume,
     soundscapes,
