@@ -1,0 +1,64 @@
+import { motion } from "framer-motion";
+import React from "react";
+import { goals } from "../data/onboardingSteps";
+
+export function GoalStep({
+  selectedGoal,
+  setSelectedGoal,
+  onNext,
+}: {
+  selectedGoal: string | null;
+  setSelectedGoal: (id: string) => void;
+  onNext: () => void;
+}) {
+  return (
+    <motion.div
+      key="q_goal"
+      initial={{ opacity: 0, x: 50 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -50 }}
+      className="mx-auto flex w-full max-w-[480px] flex-col justify-center space-y-8 text-center"
+    >
+      <div className="space-y-2">
+        <span className="text-[9px] font-black tracking-[0.3em] text-white/50 uppercase">
+          Step 1 of 4
+        </span>
+        <h2 className="text-3xl leading-tight font-light tracking-tight text-white">
+          What is your primary goal?
+        </h2>
+        <p className="text-sm font-light text-gray-400">
+          We will tailor your initial sessions based on this choice.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        {goals.map((g) => (
+          <button
+            key={g.id}
+            onClick={() => {
+              setSelectedGoal(g.id);
+              setTimeout(onNext, 300);
+            }}
+            className={`flex w-full items-center gap-4 rounded-full border p-5 text-left transition-all duration-300 ${
+              selectedGoal === g.id
+                ? "scale-[1.02] border-emerald-500/50 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.06)]"
+                : "border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]"
+            }`}
+          >
+            <div className={`shrink-0 rounded-full bg-white/5 p-3 ${g.color}`}>
+              <g.icon size={20} />
+            </div>
+            <div className="space-y-1">
+              <h4 className="text-md leading-none font-semibold text-white">
+                {g.title}
+              </h4>
+              <p className="mt-1 text-[12px] font-light text-gray-400">
+                {g.desc}
+              </p>
+            </div>
+          </button>
+        ))}
+      </div>
+    </motion.div>
+  );
+}

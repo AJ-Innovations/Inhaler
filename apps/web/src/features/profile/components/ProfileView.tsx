@@ -3,25 +3,25 @@
 import { motion } from "framer-motion";
 import React from "react";
 
-import { ProfileDangerZone } from "./components/ProfileDangerZone";
-import { ProfileHeader } from "./components/ProfileHeader";
-import { ProfileStats } from "./components/ProfileStats";
+import { ProfileDangerZone } from "./ProfileDangerZone";
+import { ProfileHeader } from "./ProfileHeader";
+import { ProfileStats } from "./ProfileStats";
 
-import { AccountSignInCard } from "./components/AccountSignInCard";
-import { AvatarSelectionModal } from "./components/AvatarSelectionModal";
+import { AccountSignInCard } from "./AccountSignInCard";
+import { AvatarSelectionModal } from "./AvatarSelectionModal";
 import {
   DesktopInstallPromptModal,
   IOSInstallPromptModal,
-} from "./components/InstallPromptModals";
-import { PreferencesMenu } from "./components/PreferencesMenu";
-import { PremiumUpgradeCard } from "./components/PremiumUpgradeCard";
-import { PWAInstallCard } from "./components/PWAInstallCard";
-import { ResetConfirmationModal } from "./components/ResetConfirmationModal";
-import { SettingsModal } from "./components/SettingsModal";
+} from "./InstallPromptModals";
+import { PreferencesMenu } from "./PreferencesMenu";
+import { PremiumUpgradeCard } from "./PremiumUpgradeCard";
+import { PWAInstallCard } from "./PWAInstallCard";
+import { ResetConfirmationModal } from "./ResetConfirmationModal";
+import { SettingsModal } from "./SettingsModal";
 
-import { getMenuGroups } from "./data/constants";
-import { useProfileState } from "./hooks/useProfileState";
-import { ProfileViewProps } from "./types";
+import { getMenuGroups } from "../data/constants";
+import { useProfileState } from "../hooks/useProfileState";
+import { ProfileViewProps } from "../types";
 
 export function ProfileView({
   stats,
@@ -154,7 +154,10 @@ export function ProfileView({
             isAuthenticated={isAuthenticated}
             user={user}
             onResetDataClick={() => setShowResetConfirm(true)}
-            onLogoutClick={() => {
+            onLogoutClick={async () => {
+              await import("@libs/supabaseClient").then(({ supabase }) =>
+                supabase.auth.signOut(),
+              );
               logout();
               window.location.reload();
             }}

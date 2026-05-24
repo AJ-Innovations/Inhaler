@@ -4,12 +4,12 @@ import { motion } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
 import React from "react";
 
-import { useAuthFlow } from "./hooks/useAuthFlow";
-import { AuthForm } from "./components/AuthForm";
-import { ForgotPasswordEmail } from "./components/ForgotPasswordEmail";
-import { ForgotPasswordOtp } from "./components/ForgotPasswordOtp";
-import { ForgotPasswordReset } from "./components/ForgotPasswordReset";
-import { ForgotPasswordSuccess } from "./components/ForgotPasswordSuccess";
+import { useAuthFlow } from "../hooks/useAuthFlow";
+import { AuthForm } from "./AuthForm";
+import { ForgotPasswordEmail } from "./ForgotPasswordEmail";
+import { ForgotPasswordOtp } from "./ForgotPasswordOtp";
+import { ForgotPasswordReset } from "./ForgotPasswordReset";
+import { ForgotPasswordSuccess } from "./ForgotPasswordSuccess";
 
 interface AuthViewProps {
   onBack?: () => void;

@@ -3,17 +3,17 @@
 import { motion } from "framer-motion";
 import React from "react";
 
-import { useGeoDetection } from "./data/useGeoDetection";
-import { useSubscriptionState } from "./hooks/useSubscriptionState";
-import { useSubscriptionPlans } from "./hooks/useSubscriptionPlans";
+import { useGeoDetection } from "../data/useGeoDetection";
+import { useSubscriptionState } from "../hooks/useSubscriptionState";
+import { useSubscriptionPlans } from "../hooks/useSubscriptionPlans";
 
-import { SubscriptionHeader } from "./components/SubscriptionHeader";
-import { PlanPillTabs } from "./components/PlanPillTabs";
-import { PlanCard } from "./components/PlanCard";
-import { BillingToggle } from "./components/BillingToggle";
-import { CountryPreviewSelector } from "./components/CountryPreviewSelector";
+import { SubscriptionHeader } from "./SubscriptionHeader";
+import { PlanPillTabs } from "./PlanPillTabs";
+import { PlanCard } from "./PlanCard";
+import { BillingToggle } from "./BillingToggle";
+import { CountryPreviewSelector } from "./CountryPreviewSelector";
 
-import { SubscriptionViewProps } from "./types";
+import { SubscriptionViewProps } from "../types";
 
 export function SubscriptionView({
   onBack,
@@ -57,7 +57,7 @@ export function SubscriptionView({
       exit={{ opacity: 0, x: -20 }}
       className={`flex h-[100dvh] w-full flex-col overflow-hidden`}
     >
-      <div className="mx-auto flex h-full w-full max-w-[480px] flex-col overflow-hidden transition-all duration-500 lg:max-w-7xl">
+      <div className="mx-auto flex h-full w-full max-w-[480px] flex-col overflow-hidden transition-all duration-500 md:max-w-5xl">
         <SubscriptionHeader onBack={onBack} />
 
         <PlanPillTabs
@@ -72,7 +72,7 @@ export function SubscriptionView({
           onTouchEnd={handleTouchEnd}
         >
           <div
-            className="flex h-[520px] w-full flex-row items-stretch gap-4 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] lg:grid lg:h-auto lg:grid-cols-3 lg:gap-8"
+            className="flex h-[380px] w-full flex-row items-stretch gap-4 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:grid md:h-[380px] md:grid-cols-3 md:gap-6"
             style={{
               transform: isDesktop
                 ? "none"
