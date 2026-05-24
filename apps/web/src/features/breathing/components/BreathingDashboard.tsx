@@ -1,12 +1,23 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { SecureStorage } from "@libs/secureStorage";
-import { AchievementsView } from "@features/dashboard/components/AchievementsView";
-import { JournalView } from "@features/journal/components/JournalView";
-import { ProfileView } from "@features/profile/components/ProfileView";
-import { SubscriptionView } from "@features/subscription/components/SubscriptionView";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
+
+// Dynamically import heavy views for code splitting
+const AchievementsView = dynamic(() =>
+  import("@features/dashboard").then((m) => m.AchievementsView),
+);
+const JournalView = dynamic(() =>
+  import("@features/journal").then((m) => m.JournalView),
+);
+const ProfileView = dynamic(() =>
+  import("@features/profile").then((m) => m.ProfileView),
+);
+const SubscriptionView = dynamic(() =>
+  import("@features/subscription").then((m) => m.SubscriptionView),
+);
 
 import { BottomNav } from "./BottomNav";
 import { SidebarNav } from "./SidebarNav";
@@ -16,13 +27,30 @@ import { useHashNavigation } from "../hooks/useHashNavigation";
 import { useNotifications } from "../hooks/useNotifications";
 import { usePWA } from "../hooks/usePWA";
 import { useSoundscape } from "../hooks/useSoundscape";
-import { CustomBuilder } from "./CustomBuilder";
-import { DetailsView } from "./DetailsView";
-import { ExerciseView } from "./ExerciseView";
-import { ExploreView } from "./ExploreView";
-import { LibraryView } from "./LibraryView";
-import { SessionComplete } from "./SessionComplete";
-import { SessionConfig, SessionSetup } from "./SessionSetup";
+import { SessionConfig } from "./SessionSetup";
+
+// Dynamically import local heavy components
+const CustomBuilder = dynamic(() =>
+  import("./CustomBuilder").then((m) => m.CustomBuilder),
+);
+const DetailsView = dynamic(() =>
+  import("./DetailsView").then((m) => m.DetailsView),
+);
+const ExerciseView = dynamic(() =>
+  import("./ExerciseView").then((m) => m.ExerciseView),
+);
+const ExploreView = dynamic(() =>
+  import("./ExploreView").then((m) => m.ExploreView),
+);
+const LibraryView = dynamic(() =>
+  import("./LibraryView").then((m) => m.LibraryView),
+);
+const SessionComplete = dynamic(() =>
+  import("./SessionComplete").then((m) => m.SessionComplete),
+);
+const SessionSetup = dynamic(() =>
+  import("./SessionSetup").then((m) => m.SessionSetup),
+);
 
 export function BreathingDashboard({ onLogin }: { onLogin?: () => void } = {}) {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
