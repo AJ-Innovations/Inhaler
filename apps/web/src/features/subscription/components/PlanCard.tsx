@@ -63,7 +63,7 @@ export function PlanCard({
   return (
     <div
       onClick={onSelectPlan}
-      className={`relative flex h-full w-full min-w-full cursor-pointer flex-col justify-between rounded-[36px] p-6 backdrop-blur-3xl transition-all duration-500 lg:min-w-0 lg:p-8 ${
+      className={`relative flex h-full w-full min-w-full cursor-pointer flex-col justify-between rounded-[36px] p-5 backdrop-blur-3xl transition-all duration-500 lg:min-w-0 lg:p-6 ${
         isActive || isDesktop
           ? "scale-100 border border-white/20 bg-white/[0.06] opacity-100 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]"
           : "scale-95 border border-white/5 bg-white/[0.02] opacity-40 hover:opacity-70"
