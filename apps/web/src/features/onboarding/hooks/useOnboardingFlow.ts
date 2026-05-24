@@ -5,14 +5,12 @@ import React, { useEffect, useState } from "react";
 import { FALLBACK_COUNTRIES } from "../data/onboardingSteps";
 
 export type OnboardingStep =
-  | "intro"
   | "q_goal"
   | "q_stress"
   | "q_experience"
   | "q_country"
   | "calibrating"
   | "paywall"
-  | "auth"
   | "payment"
   | "success";
 
@@ -30,7 +28,7 @@ export interface CountryData {
 export function useOnboardingFlow(
   onComplete: (planId: string, userName?: string) => void,
 ) {
-  const [step, setStep] = useState<OnboardingStep>("intro");
+  const [step, setStep] = useState<OnboardingStep>("q_goal");
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
   const [selectedStress, setSelectedStress] = useState<string | null>(null);
   const [selectedExperience, setSelectedExperience] = useState<string | null>(

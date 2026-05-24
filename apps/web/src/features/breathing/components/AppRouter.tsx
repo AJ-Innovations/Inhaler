@@ -1,0 +1,247 @@
+"use client";
+
+import { AuthView } from "@features/auth/components/AuthView";
+import { OnboardingFlow } from "@features/onboarding/components/OnboardingFlow";
+import { useAuthStore } from "@features/auth/store/useAuthStore";
+import { supabase } from "@libs/supabaseClient";
+import { verifyOfflinePremium } from "@libs/offlineAuth";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+
+import { useAppFlow } from "../hooks/useAppFlow";
+import { BreathingDashboard } from "./BreathingDashboard";
+import { StarterExercise } from "./StarterExercise";
+import { VersionView } from "./VersionView";
+import { SubscriptionView } from "@features/subscription/components/SubscriptionView";
+
+import { getAmbientImage } from "../data/ambientImages";
+import { useSoundscape } from "../hooks/useSoundscape";
+
+export function AppRouter() {
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [isOfflineLocked, setIsOfflineLocked] = useState(false);
+  const { isAuthenticated, user, login, logout, setPremiumPlan } =
+    useAuthStore();
+  const {
+    currentView,
+    setCurrentView,
+    finishVersion,
+    finishStarter,
+    finishPaywall,
+    finishOnboarding,
+  } = useAppFlow(isAuthLoading);
+
+  const isStarted = currentView !== "loading";
+  const soundscape = useSoundscape(isStarted);
+
+  useEffect(() => {
+    soundscape.setActiveSoundscape("nature-birds");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ... rest of use effects ...
+  useEffect(() => {
+    if (!navigator.onLine) {
+      // ...
+      if (!isAuthenticated || !user) {
+        logout();
+        setIsOfflineLocked(true);
+      }
+      setIsAuthLoading(false);
+      return;
+    }
+
+    supabase.auth
+      .getSession()
+      .then(({ data: { session }, error }) => {
+        if (session?.user) {
+          supabase.auth
+            .getUser()
+            .then(({ data: { user }, error: userError }) => {
+              if (
+                userError &&
+                (userError.status === 401 ||
+                  userError.status === 403 ||
+                  userError.status === 404 ||
+                  userError.status === 400)
+              ) {
+                logout();
+              } else if (!user && userError) {
+                login({
+                  id: session.user.id,
+                  email: session.user.email || "",
+                  name: session.user.user_metadata?.full_name,
+                });
+              } else if (user) {
+                login({
+                  id: user.id,
+                  email: user.email || "",
+                  name: user.user_metadata?.full_name,
+                });
+              } else {
+                logout();
+              }
+              setIsAuthLoading(false);
+            })
+            .catch(() => {
+              login({
+                id: session.user.id,
+                email: session.user.email || "",
+                name: session.user.user_metadata?.full_name,
+              });
+              setIsAuthLoading(false);
+            });
+        } else {
+          logout();
+          setIsAuthLoading(false);
+        }
+      })
+      .catch(() => {
+        if (isAuthenticated && user) {
+          setIsAuthLoading(false);
+        } else {
+          logout();
+          setIsOfflineLocked(true);
+          setIsAuthLoading(false);
+        }
+      });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!navigator.onLine) return;
+      if (session?.user) {
+        login({
+          id: session.user.id,
+          email: session.user.email || "",
+          name: session.user.user_metadata?.full_name,
+        });
+      } else if (event === "SIGNED_OUT") {
+        logout();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [login, logout]);
+
+  useEffect(() => {
+    if (isAuthLoading) return;
+    if (!isAuthenticated) {
+      setPremiumPlan("free");
+      return;
+    }
+    verifyOfflinePremium().then(setPremiumPlan);
+  }, [isAuthenticated, isAuthLoading, setPremiumPlan]);
+
+  if (isAuthLoading || currentView === "loading") {
+    return (
+      <div className="flex h-[100dvh] w-full items-center justify-center bg-black">
+        <div className="h-8 w-8 animate-spin rounded-full border-t-2 border-white" />
+      </div>
+    );
+  }
+
+  if (isOfflineLocked) {
+    return (
+      <div className="flex h-[100dvh] w-full flex-col items-center justify-center bg-black p-8 text-center text-white">
+        <h2 className="mb-4 text-3xl font-bold">Offline</h2>
+        <p className="mb-8 max-w-sm text-gray-400">
+          Please connect to the internet to log in.
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="rounded-xl bg-white px-8 py-3 font-semibold text-black transition-transform hover:scale-105 active:scale-95"
+        >
+          Retry Connection
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="relative h-[100dvh] w-full overflow-hidden bg-black"
+      onClickCapture={soundscape.play}
+      style={{
+        backgroundImage: `url(${getAmbientImage("nature-birds")})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="absolute inset-0 bg-black/40" />
+      <div className="relative z-10 h-full w-full">
+        <AnimatePresence mode="wait">
+          {currentView === "version" && (
+            <motion.div
+              key="version"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="h-full w-full"
+            >
+              <VersionView onComplete={finishVersion} />
+            </motion.div>
+          )}
+          {currentView === "starter" && (
+            <motion.div
+              key="starter"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="h-full w-full"
+            >
+              <StarterExercise onComplete={finishStarter} />
+            </motion.div>
+          )}
+          {currentView === "paywall" && (
+            <motion.div
+              key="paywall"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="h-full w-full"
+            >
+              <SubscriptionView
+                onBack={finishPaywall}
+                onPlanSelected={finishPaywall}
+              />
+            </motion.div>
+          )}
+          {currentView === "auth" && (
+            <motion.div
+              key="auth"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="h-[100dvh] w-full overflow-y-auto"
+            >
+              <AuthView onSuccess={() => {}} />
+            </motion.div>
+          )}
+          {currentView === "onboarding" && (
+            <motion.div
+              key="onboarding"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="h-full w-full"
+            >
+              <OnboardingFlow onComplete={finishOnboarding} />
+            </motion.div>
+          )}
+          {currentView === "home" && (
+            <motion.div
+              key="home"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="h-full w-full"
+            >
+              <BreathingDashboard onLogin={() => setCurrentView("auth")} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
