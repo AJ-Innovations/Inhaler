@@ -1,7 +1,6 @@
 "use client";
 
-import { AuthView } from "@features/auth/components/AuthView";
-import { OnboardingFlow } from "@features/onboarding/components/OnboardingFlow";
+import dynamic from "next/dynamic";
 import { useAuthStore } from "@features/auth/store/useAuthStore";
 import { supabase } from "@libs/supabaseClient";
 import { verifyOfflinePremium } from "@libs/offlineAuth";
@@ -9,13 +8,28 @@ import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 
 import { useAppFlow } from "../hooks/useAppFlow";
-import { BreathingDashboard } from "./BreathingDashboard";
-import { StarterExercise } from "./StarterExercise";
-import { VersionView } from "./VersionView";
-import { SubscriptionView } from "@features/subscription/components/SubscriptionView";
-
 import { getAmbientImage } from "../data/ambientImages";
 import { useSoundscape } from "../hooks/useSoundscape";
+
+// Dynamically import heavy views for code splitting
+const AuthView = dynamic(() =>
+  import("@features/auth").then((m) => m.AuthView),
+);
+const OnboardingFlow = dynamic(() =>
+  import("@features/onboarding").then((m) => m.OnboardingFlow),
+);
+const SubscriptionView = dynamic(() =>
+  import("@features/subscription").then((m) => m.SubscriptionView),
+);
+const BreathingDashboard = dynamic(() =>
+  import("./BreathingDashboard").then((m) => m.BreathingDashboard),
+);
+const StarterExercise = dynamic(() =>
+  import("./StarterExercise").then((m) => m.StarterExercise),
+);
+const VersionView = dynamic(() =>
+  import("./VersionView").then((m) => m.VersionView),
+);
 
 export function AppRouter() {
   const [isAuthLoading, setIsAuthLoading] = useState(true);
