@@ -5,7 +5,7 @@
  * Data is fetched, encrypted instantly, and saved as ArrayBuffers in IndexedDB.
  */
 
-import { encryptBuffer, decryptBuffer } from "./crypto";
+import { decryptBuffer, encryptBuffer } from "./crypto";
 
 const DB_NAME = "SpiroxMediaDB";
 const DB_VERSION = 2; // Incremented for schema split
