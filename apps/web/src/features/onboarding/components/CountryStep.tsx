@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronLeft } from "lucide-react";
 import React from "react";
+
 import type { CountryData } from "../hooks/useOnboardingFlow";
 
 export function CountryStep({
