@@ -3,14 +3,14 @@
 import { motion } from "framer-motion";
 import React from "react";
 
+import { useJournalStats } from "../hooks/useJournalStats";
+import { JournalViewProps } from "../types";
+import { ContributionHeatmap } from "./ContributionHeatmap";
 import { DailyActivityBarChart } from "./DailyActivityBarChart";
 import { HealthTrendGraph } from "./HealthTrendGraph";
 import { JournalHeader } from "./JournalHeader";
-import { ContributionHeatmap } from "./ContributionHeatmap";
-import { TechniqueBreakdown } from "./TechniqueBreakdown";
 import { RecentSessions } from "./RecentSessions";
-import { useJournalStats } from "../hooks/useJournalStats";
-import { JournalViewProps } from "../types";
+import { TechniqueBreakdown } from "./TechniqueBreakdown";
 
 export function JournalView({ sessions, stats }: JournalViewProps) {
   const { weeks, monthLabels, modelBreakdown, recentSessions } =
