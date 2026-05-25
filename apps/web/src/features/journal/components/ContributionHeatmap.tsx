@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import React, { useEffect, useRef } from "react";
+
 import { LEVEL_COLORS } from "../data/constants";
 import { HeatmapDay } from "../types";
 
