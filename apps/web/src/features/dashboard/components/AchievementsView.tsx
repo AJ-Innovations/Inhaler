@@ -4,12 +4,13 @@ import { exercises as defaultExercises } from "@features/breathing/data";
 import { Badge } from "@features/breathing/hooks/useCustomExercises";
 import { motion } from "framer-motion";
 import React from "react";
-import { AddGoalModal } from "./AddGoalModal";
-import { CategorySection } from "./CategorySection";
-import { DashboardHeader } from "./DashboardHeader";
+
 import { DASHBOARD_CATEGORIES } from "../data/categories";
 import { useAddGoal } from "../hooks/useAddGoal";
 import { AchievementsViewProps } from "../types";
+import { AddGoalModal } from "./AddGoalModal";
+import { CategorySection } from "./CategorySection";
+import { DashboardHeader } from "./DashboardHeader";
 
 export function AchievementsView({
   stats,
