@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
-
 import {
   downloadAndCacheMedia,
   getDecryptedBlobUrl,
   MediaType,
 } from "@libs/secureMediaCache";
+import { useEffect, useState } from "react";
 
 /**
  * React hook to easily fetch and play secure, encrypted offline media.
