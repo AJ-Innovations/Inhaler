@@ -6,6 +6,7 @@ import { supabase } from "@libs/supabaseClient";
 import { verifyOfflinePremium } from "@libs/offlineAuth";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
+import { SecureStorage } from "@libs/secureStorage";
 
 import { useAppFlow } from "../hooks/useAppFlow";
 import { getAmbientImage } from "../data/ambientImages";
@@ -34,6 +35,7 @@ const VersionView = dynamic(() =>
 export function AppRouter() {
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [isOfflineLocked, setIsOfflineLocked] = useState(false);
+  const [isAmbientSoundOn, setIsAmbientSoundOn] = useState(true);
   const { isAuthenticated, user, login, logout, setPremiumPlan } =
     useAuthStore();
   const {
@@ -46,12 +48,29 @@ export function AppRouter() {
   } = useAppFlow(isAuthLoading);
 
   const isStarted = currentView !== "loading";
-  const soundscape = useSoundscape(isStarted);
+  const soundscape = useSoundscape(isAmbientSoundOn);
 
   useEffect(() => {
-    soundscape.setActiveSoundscape("nature-birds");
+    if (typeof window !== "undefined") {
+      SecureStorage.getItem("spirox_active_ambient").then((savedAmbient) => {
+        if (savedAmbient && savedAmbient !== "leaf") {
+          soundscape.setActiveSoundscape(savedAmbient as any);
+        } else {
+          soundscape.setActiveSoundscape("nature-birds");
+        }
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (soundscape.activeSoundscape) {
+      SecureStorage.setItem(
+        "spirox_active_ambient",
+        soundscape.activeSoundscape,
+      );
+    }
+  }, [soundscape.activeSoundscape]);
 
   // ... rest of use effects ...
   useEffect(() => {
@@ -175,9 +194,8 @@ export function AppRouter() {
   return (
     <div
       className="relative h-[100dvh] w-full overflow-hidden bg-black"
-      onClickCapture={soundscape.play}
       style={{
-        backgroundImage: `url(${getAmbientImage("nature-birds")})`,
+        backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape || "leaf")})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -251,7 +269,12 @@ export function AppRouter() {
               exit={{ opacity: 0 }}
               className="h-full w-full"
             >
-              <BreathingDashboard onLogin={() => setCurrentView("auth")} />
+              <BreathingDashboard
+                onLogin={() => setCurrentView("auth")}
+                soundscape={soundscape}
+                isAmbientSoundOn={isAmbientSoundOn}
+                setIsAmbientSoundOn={setIsAmbientSoundOn}
+              />
             </motion.div>
           )}
         </AnimatePresence>

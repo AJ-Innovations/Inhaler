@@ -52,7 +52,19 @@ const SessionSetup = dynamic(() =>
   import("./SessionSetup").then((m) => m.SessionSetup),
 );
 
-export function BreathingDashboard({ onLogin }: { onLogin?: () => void } = {}) {
+interface BreathingDashboardProps {
+  onLogin?: () => void;
+  soundscape: any;
+  isAmbientSoundOn: boolean;
+  setIsAmbientSoundOn: (on: boolean) => void;
+}
+
+export function BreathingDashboard({
+  onLogin,
+  soundscape,
+  isAmbientSoundOn,
+  setIsAmbientSoundOn,
+}: BreathingDashboardProps) {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
     null,
   );
@@ -63,10 +75,6 @@ export function BreathingDashboard({ onLogin }: { onLogin?: () => void } = {}) {
     duration: number;
     cycles: number;
   } | null>(null);
-
-  // Global Soundscape Controller
-  const [isAmbientSoundOn, setIsAmbientSoundOn] = useState(false);
-  const soundscape = useSoundscape(isAmbientSoundOn);
 
   // Extracted hooks
   const { view, setView, activeTab, setActiveTab } = useHashNavigation();
@@ -119,26 +127,6 @@ export function BreathingDashboard({ onLogin }: { onLogin?: () => void } = {}) {
     clearAllData,
   } = useLibrary();
 
-  // Persistence of selected ambient
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      SecureStorage.getItem("spirox_active_ambient").then((savedAmbient) => {
-        if (savedAmbient && savedAmbient !== "leaf") {
-          soundscape.setActiveSoundscape(savedAmbient as any);
-        }
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (soundscape.activeSoundscape) {
-      SecureStorage.setItem(
-        "spirox_active_ambient",
-        soundscape.activeSoundscape,
-      );
-    }
-  }, [soundscape.activeSoundscape]);
-
   // Pre-load speech synthesis voices
   useEffect(() => {
     if (typeof window !== "undefined" && window.speechSynthesis) {
@@ -174,12 +162,7 @@ export function BreathingDashboard({ onLogin }: { onLogin?: () => void } = {}) {
   };
 
   return (
-    <div
-      className="relative flex h-[100dvh] w-screen flex-col overflow-hidden bg-black bg-cover bg-center bg-no-repeat text-white transition-all duration-1000 selection:bg-white"
-      style={{
-        backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape || "leaf")})`,
-      }}
-    >
+    <div className="relative flex h-[100dvh] w-screen flex-col overflow-hidden bg-transparent text-white transition-all duration-1000 selection:bg-white">
       {/* Dynamic Ambient Background Overlay to guarantee contrast and glassmorphic premium feel */}
       <div className="pointer-events-none absolute inset-0 z-0 bg-black/25" />
       <AnimatePresence mode="wait">
