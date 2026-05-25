@@ -53,7 +53,7 @@ export function ProfileHeader({
                 src={userAvatar}
                 alt="Avatar"
                 fill
-                className="object-cover"
+                className="rounded-full object-cover"
               />
             ) : (
               <UserRound size={80} strokeWidth={1} className="text-white/20" />

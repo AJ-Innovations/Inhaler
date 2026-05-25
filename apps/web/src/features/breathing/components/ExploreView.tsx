@@ -380,7 +380,7 @@ export function ExploreView({
                     src={userAvatar}
                     alt="Profile"
                     fill
-                    className="object-cover"
+                    className="rounded-full object-cover"
                   />
                 ) : (
                   <UserRound size={22} className="text-white/40" />
