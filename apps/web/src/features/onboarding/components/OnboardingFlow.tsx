@@ -3,6 +3,7 @@
 import { SubscriptionView } from "@features/subscription";
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
+
 import { useOnboardingFlow } from "../hooks/useOnboardingFlow";
 import { CalibrationStep } from "./CalibrationStep";
 import { CountryStep } from "./CountryStep";
@@ -28,7 +29,6 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     setSelectedExperience,
     chosenPlan,
     setChosenPlan,
-    detectedCountry,
     selectedCountry,
     setSelectedCountry,
     countries,
