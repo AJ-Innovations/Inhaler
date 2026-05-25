@@ -1,4 +1,5 @@
 import { Calendar, Clock, Trophy } from "lucide-react";
+
 import { TargetArrow } from "./goalIcons";
 
 export const DASHBOARD_CATEGORIES = [
