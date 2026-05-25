@@ -4,6 +4,18 @@ import { SecureStorage } from "@libs/secureStorage";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
+import { ScrollArea } from "../../../components/ScrollArea";
+import { useLenis } from "lenis/react";
+
+function ScrollReset({ activeTab }: { activeTab: string }) {
+  const lenis = useLenis();
+  useEffect(() => {
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+    }
+  }, [activeTab, lenis]);
+  return null;
+}
 
 // Dynamically import heavy views for code splitting
 const AchievementsView = dynamic(() =>
@@ -212,10 +224,8 @@ export function BreathingDashboard({
             <SidebarNav activeTab={activeTab} setActiveTab={setActiveTab} />
 
             {/* Scrollable Content Area */}
-            <div
-              id="breathing-scroll-container"
-              className="flex-1 overflow-y-auto scroll-smooth pb-32 md:pl-28"
-            >
+            <ScrollArea className="flex-1 overflow-y-auto pb-32 md:pl-28">
+              <ScrollReset activeTab={activeTab} />
               <div className="relative z-10 mx-auto flex w-full max-w-[480px] flex-col items-center px-4 pt-6 font-sans sm:px-0 md:max-w-[1000px] md:px-8 lg:max-w-[1200px]">
                 <AnimatePresence mode="wait">
                   {activeTab === "explore" && (
@@ -294,7 +304,7 @@ export function BreathingDashboard({
                   )}
                 </AnimatePresence>
               </div>
-            </div>
+            </ScrollArea>
             <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
           </motion.div>
         ) : (

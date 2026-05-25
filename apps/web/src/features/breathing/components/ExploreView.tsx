@@ -20,6 +20,8 @@ import {
 import Image from "next/image";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
+import { ScrollArea } from "../../../components/ScrollArea";
+
 import { ExerciseCard } from "../components/ExerciseCard";
 import { Exercise, exercises, ambientList } from "../data";
 
@@ -722,7 +724,7 @@ export function ExploreView({
             `}</style>
 
             {/* Scrollable Content Area - Rest of screen */}
-            <div className="w-full flex-1 overflow-y-auto px-6 pb-16 md:px-12">
+            <ScrollArea className="w-full flex-1 overflow-y-auto px-6 pb-16 md:px-12">
               <div className="mx-auto flex w-full max-w-[480px] flex-col md:max-w-[1000px] lg:max-w-[1200px]">
                 <div className="grid grid-cols-2 gap-5 pt-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                   {ambientList.map((item) => {
@@ -862,7 +864,7 @@ export function ExploreView({
                   })}
                 </div>
               </div>
-            </div>
+            </ScrollArea>
           </motion.div>
         )}
       </AnimatePresence>
