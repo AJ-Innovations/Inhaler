@@ -4,20 +4,17 @@ import { motion } from "framer-motion";
 import React from "react";
 
 import { useGeoDetection } from "../data/useGeoDetection";
-import { useSubscriptionState } from "../hooks/useSubscriptionState";
 import { useSubscriptionPlans } from "../hooks/useSubscriptionPlans";
-
-import { SubscriptionHeader } from "./SubscriptionHeader";
-import { PlanPillTabs } from "./PlanPillTabs";
-import { PlanCard } from "./PlanCard";
+import { useSubscriptionState } from "../hooks/useSubscriptionState";
+import { SubscriptionViewProps } from "../types";
 import { BillingToggle } from "./BillingToggle";
 import { CountryPreviewSelector } from "./CountryPreviewSelector";
-
-import { SubscriptionViewProps } from "../types";
+import { PlanCard } from "./PlanCard";
+import { PlanPillTabs } from "./PlanPillTabs";
+import { SubscriptionHeader } from "./SubscriptionHeader";
 
 export function SubscriptionView({
   onBack,
-  isOnboarding,
   onPlanSelected,
 }: SubscriptionViewProps) {
   const { activeTier, detectedCountry, applyCountry } = useGeoDetection();
