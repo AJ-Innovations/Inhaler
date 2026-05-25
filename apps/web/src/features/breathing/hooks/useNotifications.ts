@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { SecureStorage } from "@libs/secureStorage";
+import { useEffect, useState } from "react";
 
 interface UseNotificationsReturn {
   dailyReminderEnabled: boolean;
