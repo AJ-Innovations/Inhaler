@@ -2,6 +2,7 @@ import { Badge } from "@features/breathing/hooks/useCustomExercises";
 import { motion } from "framer-motion";
 import { CheckCircle2, Lock, Play, Sparkles, Trash2 } from "lucide-react";
 import React from "react";
+
 import { GOAL_ICONS } from "../data/goalIcons";
 
 interface BadgeCardProps {
