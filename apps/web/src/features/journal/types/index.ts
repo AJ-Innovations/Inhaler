@@ -1,5 +1,5 @@
-import { Badge } from "@features/breathing/hooks/useCustomExercises";
 import { Exercise } from "@features/breathing/data";
+import { Badge } from "@features/breathing/hooks/useCustomExercises";
 
 export interface Session {
   exerciseId: string;
