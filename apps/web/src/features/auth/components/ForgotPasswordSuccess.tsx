@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 import React from "react";
+
 import { useAuthFlow } from "../hooks/useAuthFlow";
 
 interface ForgotPasswordSuccessProps {
