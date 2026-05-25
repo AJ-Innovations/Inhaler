@@ -2,10 +2,11 @@
 
 import React, { useState } from "react";
 import { z } from "zod";
+
 import { signInWithEmail, signUpWithEmail } from "../api/auth";
+import { useAuthStore } from "../store/useAuthStore";
 import { AuthFlowState, AuthMode, FormErrors } from "../types";
 import { formatZodError, loginSchema, signupSchema } from "../utils/validation";
-import { useAuthStore } from "../store/useAuthStore";
 
 /**
  * Manages all authentication state: login/signup, forgot password flow,
