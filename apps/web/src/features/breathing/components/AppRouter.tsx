@@ -5,7 +5,7 @@ import { useAuthStore } from "@features/auth/store/useAuthStore";
 import { supabase } from "@libs/supabaseClient";
 import { verifyOfflinePremium } from "@libs/offlineAuth";
 import { AnimatePresence, motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { SecureStorage } from "@libs/secureStorage";
 
 import { useAppFlow } from "../hooks/useAppFlow";
@@ -35,7 +35,33 @@ const VersionView = dynamic(() =>
 export function AppRouter() {
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [isOfflineLocked, setIsOfflineLocked] = useState(false);
-  const [isAmbientSoundOn, setIsAmbientSoundOn] = useState(true);
+  const [isAmbientSoundOn, _setIsAmbientSoundOn] = useState(true);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      SecureStorage.getItem("spirox_is_ambient_sound_on").then((saved) => {
+        if (saved !== null) {
+          _setIsAmbientSoundOn(saved === "true");
+        }
+      });
+    }
+  }, []);
+
+  const setIsAmbientSoundOn = useCallback(
+    (val: boolean | ((prevState: boolean) => boolean)) => {
+      _setIsAmbientSoundOn((prev) => {
+        const newVal = typeof val === "function" ? val(prev) : val;
+        if (typeof window !== "undefined") {
+          SecureStorage.setItem(
+            "spirox_is_ambient_sound_on",
+            newVal.toString(),
+          );
+        }
+        return newVal;
+      });
+    },
+    [],
+  );
   const { isAuthenticated, user, login, logout, setPremiumPlan } =
     useAuthStore();
   const {

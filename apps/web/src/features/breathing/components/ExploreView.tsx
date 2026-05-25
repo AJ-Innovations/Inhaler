@@ -330,13 +330,13 @@ export function ExploreView({
               <button
                 onClick={handleToggleSound}
                 className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-md backdrop-blur-md transition-all active:scale-90 ${
-                  isAmbientSoundOn
+                  soundscape.isActuallyPlaying
                     ? "border-white/20 bg-white/10 text-white"
                     : "border-white/5 bg-white/[0.03] text-white/40 hover:bg-white/[0.06] hover:text-white"
                 }`}
-                title={`Ambient Sound: ${isAmbientSoundOn ? "ON" : "OFF"}`}
+                title={`Ambient Sound: ${soundscape.isActuallyPlaying ? "ON" : "OFF"}`}
               >
-                {isAmbientSoundOn ? (
+                {soundscape.isActuallyPlaying ? (
                   <Volume2 size={16} />
                 ) : (
                   <VolumeX size={16} />
@@ -380,13 +380,17 @@ export function ExploreView({
             <button
               onClick={handleToggleSound}
               className={`flex h-12 w-12 items-center justify-center rounded-full border shadow-md backdrop-blur-md transition-all active:scale-90 ${
-                isAmbientSoundOn
+                soundscape.isActuallyPlaying
                   ? "border-white/20 bg-white/10 text-white"
                   : "border-white/5 bg-white/[0.03] text-white/40 hover:bg-white/[0.06] hover:text-white"
               }`}
-              title={`Ambient Sound: ${isAmbientSoundOn ? "ON" : "OFF"}`}
+              title={`Ambient Sound: ${soundscape.isActuallyPlaying ? "ON" : "OFF"}`}
             >
-              {isAmbientSoundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}
+              {soundscape.isActuallyPlaying ? (
+                <Volume2 size={18} />
+              ) : (
+                <VolumeX size={18} />
+              )}
             </button>
 
             <button
@@ -820,7 +824,7 @@ export function ExploreView({
                         <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-transparent" />
 
                         {/* Premium Dynamic Audio Soundwave Bars Animation */}
-                        {isActive && isAmbientSoundOn && (
+                        {isActive && soundscape.isActuallyPlaying && (
                           <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
                             <div className="flex h-6 items-end justify-center gap-[3px]">
                               <div
