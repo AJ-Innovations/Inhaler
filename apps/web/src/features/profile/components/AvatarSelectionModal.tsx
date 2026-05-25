@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Image as ImageIcon, Upload, X } from "lucide-react";
 import React, { RefObject } from "react";
+
 import { SUGGESTED_AVATARS } from "../data/constants";
 
 interface AvatarSelectionModalProps {
