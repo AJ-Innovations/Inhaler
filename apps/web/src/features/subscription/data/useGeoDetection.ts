@@ -57,7 +57,7 @@ export function useGeoDetection() {
             return;
           }
         }
-      } catch (e) {
+      } catch {
         console.warn("Backup Geo-IP (freeipapi.com) failed, using default US.");
       }
     }
