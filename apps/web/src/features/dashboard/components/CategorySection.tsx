@@ -1,7 +1,8 @@
-import React from "react";
-import { Plus } from "lucide-react";
-import { BadgeCard } from "./BadgeCard";
 import { Badge } from "@features/breathing/hooks/useCustomExercises";
+import { Plus } from "lucide-react";
+import React from "react";
+
+import { BadgeCard } from "./BadgeCard";
 
 interface CategorySectionProps {
   id: string;
