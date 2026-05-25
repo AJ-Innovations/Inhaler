@@ -297,61 +297,9 @@ export function useSoundscape(isPlaying: boolean = false) {
       );
   }, [volume]);
 
-  const selectSoundscape = useCallback(
-    (id: SoundscapeType) => {
-      setActiveSoundscape(id);
-
-      if (typeof window === "undefined") return;
-
-      if (!audioRef.current) {
-        audioRef.current = new Audio();
-        audioRef.current.loop = true;
-      }
-      const audio = audioRef.current;
-      const isNoise = id.includes("noise");
-
-      if (isNoise) {
-        safePause();
-        const type = id.split("-")[0] as "white" | "pink" | "brown";
-        startNoise(type);
-      } else {
-        stopNoise();
-        const sound = soundscapes.find((s) => s.id === id);
-        if (sound && sound.url) {
-          const absoluteUrl = new URL(sound.url, window.location.href).href;
-
-          (async () => {
-            try {
-              let blobUrl = await getDecryptedBlobUrl(absoluteUrl, "audio");
-              if (!blobUrl) {
-                await downloadAndCacheMedia(absoluteUrl, "audio");
-                blobUrl = await getDecryptedBlobUrl(absoluteUrl, "audio");
-              }
-              if (blobUrl) {
-                if (audio.src !== blobUrl) {
-                  safePause();
-                  audio.src = blobUrl;
-                }
-                audio.volume = volume;
-                if (audio.paused) {
-                  safePlay();
-                }
-              }
-            } catch (err) {
-              console.error("Failed to load encrypted soundscape:", err);
-              if (audio.src !== absoluteUrl) {
-                safePause();
-                audio.src = absoluteUrl;
-                audio.volume = volume;
-                safePlay();
-              }
-            }
-          })();
-        }
-      }
-    },
-    [startNoise, stopNoise, safePlay, safePause, volume],
-  );
+  const selectSoundscape = useCallback((id: SoundscapeType) => {
+    setActiveSoundscape(id);
+  }, []);
 
   const pauseSoundscape = useCallback(() => {
     safePause();
