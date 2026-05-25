@@ -1,4 +1,5 @@
 import { Bell, ExternalLink, Info, Shield, Target } from "lucide-react";
+
 import { SettingsType } from "../components/ProfileSettingsContent";
 
 export const SUGGESTED_AVATARS = [
