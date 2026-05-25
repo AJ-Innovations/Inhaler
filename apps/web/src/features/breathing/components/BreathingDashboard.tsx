@@ -1,8 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { SecureStorage } from "@libs/secureStorage";
 import { AnimatePresence, motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 
 // Dynamically import heavy views for code splitting
@@ -19,19 +19,19 @@ const SubscriptionView = dynamic(() =>
   import("@features/subscription").then((m) => m.SubscriptionView),
 );
 
-import { BottomNav } from "./BottomNav";
-import { SidebarNav } from "./SidebarNav";
 import {
   Exercise,
-  getAmbientImage,
   exercises as predefinedExercises,
+  getAmbientImage,
 } from "../data";
 import { useLibrary } from "../hooks/useCustomExercises";
 import { useHashNavigation } from "../hooks/useHashNavigation";
 import { useNotifications } from "../hooks/useNotifications";
 import { usePWA } from "../hooks/usePWA";
 import { useSoundscape } from "../hooks/useSoundscape";
+import { BottomNav } from "./BottomNav";
 import { SessionConfig } from "./SessionSetup";
+import { SidebarNav } from "./SidebarNav";
 
 // Dynamically import local heavy components
 const CustomBuilder = dynamic(() =>
