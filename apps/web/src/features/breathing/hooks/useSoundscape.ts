@@ -105,6 +105,7 @@ export function useSoundscape(isPlaying: boolean = false) {
   const [activeSoundscape, setActiveSoundscape] =
     useState<SoundscapeType>("leaf");
   const [volume, setVolume] = useState(0.5);
+  const [isActuallyPlaying, setIsActuallyPlaying] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -115,10 +116,11 @@ export function useSoundscape(isPlaying: boolean = false) {
     if (noiseNodeRef.current) {
       try {
         noiseNodeRef.current.stop();
-      } catch (e) {}
+      } catch (e) { }
       noiseNodeRef.current.disconnect();
       noiseNodeRef.current = null;
     }
+    setIsActuallyPlaying(false);
   }, []);
 
   const startNoise = useCallback(
@@ -177,6 +179,7 @@ export function useSoundscape(isPlaying: boolean = false) {
       noiseNodeRef.current.connect(gainNodeRef.current);
       gainNodeRef.current.connect(ctx.destination);
       noiseNodeRef.current.start();
+      setIsActuallyPlaying(true);
     },
     [volume, stopNoise],
   );
@@ -210,7 +213,7 @@ export function useSoundscape(isPlaying: boolean = false) {
     if (!audio) return;
     try {
       audio.pause();
-    } catch (e) {}
+    } catch (e) { }
     playPromiseRef.current = null;
   }, []);
 
@@ -220,6 +223,10 @@ export function useSoundscape(isPlaying: boolean = false) {
     if (!audioRef.current) {
       audioRef.current = new Audio();
       audioRef.current.loop = true;
+      audioRef.current.addEventListener("play", () => setIsActuallyPlaying(true));
+      audioRef.current.addEventListener("playing", () => setIsActuallyPlaying(true));
+      audioRef.current.addEventListener("pause", () => setIsActuallyPlaying(false));
+      audioRef.current.addEventListener("ended", () => setIsActuallyPlaying(false));
     }
 
     const audio = audioRef.current;
@@ -319,5 +326,6 @@ export function useSoundscape(isPlaying: boolean = false) {
     volume,
     setVolume,
     soundscapes,
+    isActuallyPlaying,
   };
 }

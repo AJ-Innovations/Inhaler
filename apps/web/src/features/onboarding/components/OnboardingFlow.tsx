@@ -55,13 +55,8 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   } = useOnboardingFlow(onComplete);
 
   return (
-    <div className="fixed inset-0 z-[500] flex flex-col overflow-hidden bg-black font-sans text-white select-none">
-      {/* Cinematic Natural Background */}
-      <div
-        className="pointer-events-none absolute inset-0 scale-110 bg-cover bg-center bg-no-repeat opacity-100 blur-[10px] transition-all duration-1000"
-        style={{ backgroundImage: "url('/image/ambients/lake4.png')" }}
-      />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/80" />
+    <div className="fixed inset-0 z-[500] flex flex-col overflow-hidden font-sans text-white select-none">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/20 via-black/50 to-black/80" />
 
       <div className="relative mx-auto flex h-full w-full max-w-[480px] flex-1 flex-col transition-all duration-300 md:max-w-[760px] lg:max-w-6xl">
         <div className="scrollbar-hide relative z-10 flex h-full flex-1 flex-col justify-center overflow-y-auto px-6 py-10">
