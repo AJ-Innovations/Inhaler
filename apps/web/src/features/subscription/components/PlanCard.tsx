@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Check, Lock, Star, Zap } from "lucide-react";
 import React from "react";
+
 import { BillingCycle, PlanType } from "../types";
 
 interface PlanCardProps {
