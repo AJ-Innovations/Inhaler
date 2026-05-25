@@ -1,7 +1,8 @@
+import { exercises } from "@features/breathing/data";
 import { motion } from "framer-motion";
 import { Zap } from "lucide-react";
 import React from "react";
-import { exercises } from "@features/breathing/data";
+
 import { Session } from "../types";
 
 interface RecentSessionsProps {
