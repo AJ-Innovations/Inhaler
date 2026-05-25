@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import React from "react";
+
 import { goals } from "../data/onboardingSteps";
 
 export function GoalStep({
