@@ -82,26 +82,8 @@ export function SessionSetup({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="scrollbar-hide fixed inset-0 z-[200] overflow-y-auto bg-black text-white"
+      className="scrollbar-hide fixed inset-0 z-[200] overflow-y-auto bg-transparent text-white backdrop-blur-sm"
     >
-      {/* Cinematic Natural Background */}
-      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-black">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={soundscape.activeSoundscape}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1.0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.8, ease: "easeInOut" }}
-            className="absolute inset-0 scale-110 bg-cover bg-center blur-[10px] transition-all duration-1000"
-            style={{
-              backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape)})`,
-            }}
-          />
-        </AnimatePresence>
-      </div>
-      <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-black/20 via-black/40 to-black/80" />
-
       <div className="relative z-10 mx-auto flex min-h-screen max-w-[480px] flex-col items-center justify-center px-6 py-8 md:max-w-[700px] md:px-8 lg:max-w-7xl lg:px-12 lg:py-12">
         {/* Header - Full Width */}
         <div className="mb-8 flex w-full items-center justify-between lg:mb-12">
