@@ -1,7 +1,7 @@
 "use client";
 
-import { supabase } from "@libs/supabaseClient";
 import { SecureStorage } from "@libs/secureStorage";
+import { supabase } from "@libs/supabaseClient";
 import { useEffect, useMemo, useState } from "react";
 
 import { Exercise } from "../data";
