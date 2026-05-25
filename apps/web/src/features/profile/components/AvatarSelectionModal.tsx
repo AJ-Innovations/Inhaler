@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Image as ImageIcon, Upload, X } from "lucide-react";
+import Image from "next/image";
 import React, { RefObject } from "react";
 
 import { SUGGESTED_AVATARS } from "../data/constants";
@@ -88,10 +89,11 @@ export function AvatarSelectionModal({
                   }}
                   className={`relative aspect-square w-full overflow-hidden rounded-[24px] border-2 transition-all ${userAvatar === avatar.path ? "scale-105 border-white shadow-[0_0_30px_rgba(255,255,255,0.1)]" : "border-white/5 opacity-40 hover:opacity-100"}`}
                 >
-                  <img
+                  <Image
                     src={avatar.path}
                     alt={avatar.label}
-                    className="h-full w-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                   {userAvatar === avatar.path && (
                     <div className="absolute top-2 right-2 flex h-4 w-4 items-center justify-center rounded-full bg-white">

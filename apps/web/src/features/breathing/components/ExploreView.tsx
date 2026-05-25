@@ -17,6 +17,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import Image from "next/image";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { ExerciseCard } from "../components/ExerciseCard";
@@ -373,10 +374,11 @@ export function ExploreView({
             >
               <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full">
                 {userAvatar ? (
-                  <img
+                  <Image
                     src={userAvatar}
-                    alt="Avatar"
-                    className="h-full w-full object-cover"
+                    alt="Profile"
+                    fill
+                    className="object-cover"
                   />
                 ) : (
                   <UserRound size={22} className="text-white/40" />
@@ -748,11 +750,12 @@ export function ExploreView({
                             : "border-white/10 bg-black hover:border-white/20 hover:shadow-2xl"
                         }`}
                       >
-                        {/* Background Image full height to avoid any cutoffs */}
-                        <img
+                        <Image
                           src={item.image}
                           alt={item.name}
-                          className={`absolute inset-0 h-full w-full object-cover transition-transform duration-700 ${
+                          fill
+                          unoptimized
+                          className={`object-cover transition-transform duration-700 ${
                             isActive
                               ? "scale-105"
                               : "scale-100 group-hover:scale-110"

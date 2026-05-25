@@ -14,6 +14,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import Image from "next/image";
 import React, { useState } from "react";
 
 import { binauralConfigs, BinauralType } from "../hooks/useBinauralBeats";
@@ -191,10 +192,12 @@ export function SessionSettings({
                                 : "border-white/5 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]"
                             }`}
                           >
-                            <img
+                            <Image
                               src={getAmbientImage(s.id)}
                               alt={s.name}
-                              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+                              fill
+                              unoptimized
+                              className={`object-cover transition-opacity duration-300 ${
                                 isActive
                                   ? "opacity-95"
                                   : "opacity-75 group-hover:opacity-90"
@@ -290,16 +293,18 @@ export function SessionSettings({
                             {/* Profile Avatar Icon */}
                             <div
                               onClick={() => onSelectVoice(v.id)}
-                              className={`flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border transition-all select-none active:scale-95 ${
+                              className={`relative flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border transition-all select-none active:scale-95 ${
                                 isActive
                                   ? "border-white/40 bg-white/10 shadow-lg"
                                   : "border-white/10 bg-white/5 opacity-80 hover:opacity-100"
                               }`}
                             >
-                              <img
+                              <Image
                                 src={`/image/avatars/${v.id}.png`}
                                 alt={v.name}
-                                className="h-full w-full object-cover"
+                                fill
+                                unoptimized
+                                className="object-cover"
                               />
                             </div>
 

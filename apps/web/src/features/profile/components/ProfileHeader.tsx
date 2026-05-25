@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Camera, Check, Edit2, Sparkles, UserRound, X } from "lucide-react";
+import Image from "next/image";
 import React from "react";
 
 interface ProfileHeaderProps {
@@ -48,10 +49,11 @@ export function ProfileHeader({
         >
           <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-white/10 bg-transparent">
             {userAvatar ? (
-              <img
+              <Image
                 src={userAvatar}
                 alt="Avatar"
-                className="h-full w-full object-cover"
+                fill
+                className="object-cover"
               />
             ) : (
               <UserRound size={80} strokeWidth={1} className="text-white/20" />

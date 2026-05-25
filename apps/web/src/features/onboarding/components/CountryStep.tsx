@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronLeft } from "lucide-react";
+import Image from "next/image";
 import React from "react";
 
 import type { CountryData } from "../hooks/useOnboardingFlow";
@@ -67,11 +68,15 @@ export function CountryStep({
             <div className="flex items-center truncate">
               {selectedCountryData ? (
                 <span className="flex items-center gap-3 truncate">
-                  <img
-                    src={selectedCountryData.flag}
-                    alt={selectedCountryData.name}
-                    className="h-5 w-7 shrink-0 rounded-[2px] border border-white/10 object-cover shadow-sm"
-                  />
+                  <div className="relative h-5 w-7 shrink-0">
+                    <Image
+                      src={selectedCountryData.flag}
+                      alt={selectedCountryData.name}
+                      fill
+                      unoptimized
+                      className="rounded-[2px] border border-white/10 object-cover shadow-sm"
+                    />
+                  </div>
                   <span className="truncate">{selectedCountryData.name}</span>
                 </span>
               ) : (
@@ -138,11 +143,15 @@ export function CountryStep({
                             : "text-white/80 hover:bg-white/5 hover:text-white"
                         }`}
                       >
-                        <img
-                          src={c.flag}
-                          alt={c.name}
-                          className="h-4 w-7 shrink-0 rounded-[2px] border border-white/10 object-cover shadow-sm"
-                        />
+                        <div className="relative h-4 w-7 shrink-0">
+                          <Image
+                            src={c.flag}
+                            alt={c.name}
+                            fill
+                            unoptimized
+                            className="rounded-[2px] border border-white/10 object-cover shadow-sm"
+                          />
+                        </div>
                         <span className="truncate">{c.name}</span>
                       </button>
                     ))
