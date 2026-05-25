@@ -1,15 +1,15 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useAuthStore } from "@features/auth/store/useAuthStore";
-import { supabase } from "@libs/supabaseClient";
 import { verifyOfflinePremium } from "@libs/offlineAuth";
-import { AnimatePresence, motion } from "framer-motion";
-import React, { useEffect, useState, useCallback } from "react";
 import { SecureStorage } from "@libs/secureStorage";
+import { supabase } from "@libs/supabaseClient";
+import { AnimatePresence, motion } from "framer-motion";
+import dynamic from "next/dynamic";
+import React, { useCallback, useEffect, useState } from "react";
 
-import { useAppFlow } from "../hooks/useAppFlow";
 import { getAmbientImage } from "../data/ambientImages";
+import { useAppFlow } from "../hooks/useAppFlow";
 import { useSoundscape } from "../hooks/useSoundscape";
 
 // Dynamically import heavy views for code splitting
