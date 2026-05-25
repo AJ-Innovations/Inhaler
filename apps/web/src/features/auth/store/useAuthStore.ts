@@ -1,6 +1,6 @@
+import { SecureStorage } from "@libs/secureStorage";
 import { create } from "zustand";
 import { createJSONStorage, persist, StateStorage } from "zustand/middleware";
-import { SecureStorage } from "@libs/secureStorage";
 
 export interface User {
   id: string;
