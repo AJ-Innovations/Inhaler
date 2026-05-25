@@ -3,10 +3,9 @@
 import { motion } from "framer-motion";
 import React from "react";
 
-import { ProfileDangerZone } from "./ProfileDangerZone";
-import { ProfileHeader } from "./ProfileHeader";
-import { ProfileStats } from "./ProfileStats";
-
+import { getMenuGroups } from "../data/constants";
+import { useProfileState } from "../hooks/useProfileState";
+import { ProfileViewProps } from "../types";
 import { AccountSignInCard } from "./AccountSignInCard";
 import { AvatarSelectionModal } from "./AvatarSelectionModal";
 import {
@@ -15,13 +14,12 @@ import {
 } from "./InstallPromptModals";
 import { PreferencesMenu } from "./PreferencesMenu";
 import { PremiumUpgradeCard } from "./PremiumUpgradeCard";
+import { ProfileDangerZone } from "./ProfileDangerZone";
+import { ProfileHeader } from "./ProfileHeader";
+import { ProfileStats } from "./ProfileStats";
 import { PWAInstallCard } from "./PWAInstallCard";
 import { ResetConfirmationModal } from "./ResetConfirmationModal";
 import { SettingsModal } from "./SettingsModal";
-
-import { getMenuGroups } from "../data/constants";
-import { useProfileState } from "../hooks/useProfileState";
-import { ProfileViewProps } from "../types";
 
 export function ProfileView({
   stats,
