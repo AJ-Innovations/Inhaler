@@ -116,7 +116,7 @@ export function useSoundscape(isPlaying: boolean = false) {
     if (noiseNodeRef.current) {
       try {
         noiseNodeRef.current.stop();
-      } catch (e) { }
+      } catch (e) {}
       noiseNodeRef.current.disconnect();
       noiseNodeRef.current = null;
     }
@@ -213,7 +213,7 @@ export function useSoundscape(isPlaying: boolean = false) {
     if (!audio) return;
     try {
       audio.pause();
-    } catch (e) { }
+    } catch (e) {}
     playPromiseRef.current = null;
   }, []);
 
@@ -223,10 +223,18 @@ export function useSoundscape(isPlaying: boolean = false) {
     if (!audioRef.current) {
       audioRef.current = new Audio();
       audioRef.current.loop = true;
-      audioRef.current.addEventListener("play", () => setIsActuallyPlaying(true));
-      audioRef.current.addEventListener("playing", () => setIsActuallyPlaying(true));
-      audioRef.current.addEventListener("pause", () => setIsActuallyPlaying(false));
-      audioRef.current.addEventListener("ended", () => setIsActuallyPlaying(false));
+      audioRef.current.addEventListener("play", () =>
+        setIsActuallyPlaying(true),
+      );
+      audioRef.current.addEventListener("playing", () =>
+        setIsActuallyPlaying(true),
+      );
+      audioRef.current.addEventListener("pause", () =>
+        setIsActuallyPlaying(false),
+      );
+      audioRef.current.addEventListener("ended", () =>
+        setIsActuallyPlaying(false),
+      );
     }
 
     const audio = audioRef.current;
