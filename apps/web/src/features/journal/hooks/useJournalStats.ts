@@ -1,5 +1,6 @@
-import { useMemo } from "react";
 import { exercises } from "@features/breathing/data";
+import { useMemo } from "react";
+
 import { BreakdownItem, HeatmapDay, Session } from "../types";
 
 export function useJournalStats(sessions: Session[]) {
