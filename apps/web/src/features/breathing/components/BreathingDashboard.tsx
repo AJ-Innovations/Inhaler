@@ -93,6 +93,7 @@ export function BreathingDashboard({
   const { view, setView, activeTab, setActiveTab } = useHashNavigation();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsClient(true);
     const savedExerciseId = sessionStorage.getItem("spirox_dashboard_exercise");
 

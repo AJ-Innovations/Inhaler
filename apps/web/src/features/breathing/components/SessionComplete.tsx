@@ -111,6 +111,16 @@ export function SessionComplete({
     },
   ];
 
+  const particles = React.useMemo(() => {
+    return [...Array(8)].map(() => ({
+      x: `${50 + (Math.random() - 0.5) * 80}%`,
+      y: `${50 + (Math.random() - 0.5) * 80}%`,
+      scale: [0, Math.random() * 1.5 + 0.5, 0],
+      duration: Math.random() * 3 + 2,
+      delay: Math.random() * 2,
+    }));
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -155,7 +165,7 @@ export function SessionComplete({
 
           {/* Floating Sparkles & Particles */}
           <div className="absolute inset-0 z-0">
-            {[...Array(8)].map((_, i) => (
+            {particles.map((particle, i) => (
               <motion.div
                 key={i}
                 initial={{
@@ -165,15 +175,15 @@ export function SessionComplete({
                   opacity: 0,
                 }}
                 animate={{
-                  x: `${50 + (Math.random() - 0.5) * 80}%`,
-                  y: `${50 + (Math.random() - 0.5) * 80}%`,
-                  scale: [0, Math.random() * 1.5 + 0.5, 0],
+                  x: particle.x,
+                  y: particle.y,
+                  scale: particle.scale,
                   opacity: [0, 0.6, 0],
                 }}
                 transition={{
                   repeat: Infinity,
-                  duration: Math.random() * 3 + 2,
-                  delay: Math.random() * 2,
+                  duration: particle.duration,
+                  delay: particle.delay,
                   ease: "easeOut",
                 }}
                 className="absolute h-1 w-1 rounded-full bg-white/40 blur-[0.2px]"

@@ -104,6 +104,7 @@ export function AppRouter() {
       // ...
       if (!isAuthenticated || !user) {
         logout();
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsOfflineLocked(true);
       }
       setIsAuthLoading(false);

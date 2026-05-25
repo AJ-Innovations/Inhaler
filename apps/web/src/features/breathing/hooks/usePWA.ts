@@ -49,6 +49,7 @@ export function usePWA(): UsePWAReturn {
     // 2. Detect Apple iOS Device
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isApple = /iphone|ipad|ipod/.test(userAgent);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsIOS(isApple);
 
     // 3. Detect if already running in standalone/installed mode

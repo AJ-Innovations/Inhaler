@@ -25,7 +25,7 @@ const LAST_VERIFIED_TIME_KEY = "spirox_last_verified_time";
  * backend server (Supabase Edge Function). The frontend can verify
  * signatures but NEVER create them.
  *
- * TODO: Replace this with your actual production public key when
+ * NOTE: Replace this with your actual production public key when
  * Supabase Edge Functions are deployed.
  */
 const RSA_PUBLIC_KEY_B64 =

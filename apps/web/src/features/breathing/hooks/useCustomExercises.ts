@@ -44,6 +44,42 @@ export function useLibrary() {
   const [userCountry, setUserCountry] = useState("US");
   const [user, setUser] = useState<any>(null);
 
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("username, avatar_url")
+        .eq("id", userId)
+        .single();
+
+      if (error) {
+        if (
+          error.message?.includes("country_code") ||
+          error.code === "PGRST204" ||
+          error.code === "PGRST100"
+        ) {
+          const { data: fbData } = await supabase
+            .from("profiles")
+            .select("username, avatar_url")
+            .eq("id", userId)
+            .single();
+          if (fbData) {
+            if (fbData.username) setUserName(fbData.username);
+            if (fbData.avatar_url) setUserAvatar(fbData.avatar_url);
+          }
+          return;
+        }
+        throw error;
+      }
+      if (data) {
+        if (data.username) setUserName(data.username);
+        if (data.avatar_url) setUserAvatar(data.avatar_url);
+      }
+    } catch (err) {
+      console.error("Error fetching user profile from database:", err);
+    }
+  };
+
   // Sync user profile from Supabase
   useEffect(() => {
     // 1. Fetch current active session
@@ -83,41 +119,6 @@ export function useLibrary() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const fetchUserProfile = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("username, avatar_url")
-        .eq("id", userId)
-        .single();
-
-      if (error) {
-        if (
-          error.message?.includes("country_code") ||
-          error.code === "PGRST204" ||
-          error.code === "PGRST100"
-        ) {
-          const { data: fbData } = await supabase
-            .from("profiles")
-            .select("username, avatar_url")
-            .eq("id", userId)
-            .single();
-          if (fbData) {
-            if (fbData.username) setUserName(fbData.username);
-            if (fbData.avatar_url) setUserAvatar(fbData.avatar_url);
-          }
-          return;
-        }
-        throw error;
-      }
-      if (data) {
-        if (data.username) setUserName(data.username);
-        if (data.avatar_url) setUserAvatar(data.avatar_url);
-      }
-    } catch (err) {
-      console.error("Error fetching user profile from database:", err);
-    }
-  };
 
   // Load persisted data from encrypted storage
   useEffect(() => {
