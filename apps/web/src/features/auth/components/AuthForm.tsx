@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import React, { useState } from "react";
-import { SocialAuth } from "./SocialAuth";
+
 import { useAuthFlow } from "../hooks/useAuthFlow";
+import { SocialAuth } from "./SocialAuth";
 
 interface AuthFormProps {
   flow: ReturnType<typeof useAuthFlow>;
