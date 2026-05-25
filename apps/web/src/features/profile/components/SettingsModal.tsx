@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, X } from "lucide-react";
 import React from "react";
+
 import { ProfileSettingsContent, SettingsType } from "./ProfileSettingsContent";
 
 interface SettingsModalProps {
