@@ -21,7 +21,7 @@ const SubscriptionView = dynamic(() =>
 
 import { BottomNav } from "./BottomNav";
 import { SidebarNav } from "./SidebarNav";
-import { Exercise, getAmbientImage } from "../data";
+import { Exercise, getAmbientImage, predefinedExercises } from "../data";
 import { useLibrary } from "../hooks/useCustomExercises";
 import { useHashNavigation } from "../hooks/useHashNavigation";
 import { useNotifications } from "../hooks/useNotifications";
@@ -54,6 +54,7 @@ const SessionSetup = dynamic(() =>
 
 interface BreathingDashboardProps {
   onLogin?: () => void;
+  onLogout?: () => void;
   soundscape: any;
   isAmbientSoundOn: boolean;
   setIsAmbientSoundOn: (on: boolean) => void;
@@ -61,13 +62,43 @@ interface BreathingDashboardProps {
 
 export function BreathingDashboard({
   onLogin,
+  onLogout,
   soundscape,
   isAmbientSoundOn,
   setIsAmbientSoundOn,
 }: BreathingDashboardProps) {
+  // Use a custom hook to safely initialize state from sessionStorage only on the client
+  const [isClient, setIsClient] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
     null,
   );
+
+  // Extracted hooks
+  const { view, setView, activeTab, setActiveTab } = useHashNavigation();
+
+  useEffect(() => {
+    setIsClient(true);
+    const savedExerciseId = sessionStorage.getItem("spirox_dashboard_exercise");
+
+    if (savedExerciseId) {
+      const allExercises = [...predefinedExercises];
+      const found = allExercises.find((e) => e.id === savedExerciseId);
+      if (found) setSelectedExercise(found);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      if (selectedExercise) {
+        sessionStorage.setItem(
+          "spirox_dashboard_exercise",
+          selectedExercise.id,
+        );
+      } else {
+        sessionStorage.removeItem("spirox_dashboard_exercise");
+      }
+    }
+  }, [selectedExercise, isClient]);
   const [sessionConfig, setSessionConfig] = useState<SessionConfig | null>(
     null,
   );
@@ -77,7 +108,6 @@ export function BreathingDashboard({
   } | null>(null);
 
   // Extracted hooks
-  const { view, setView, activeTab, setActiveTab } = useHashNavigation();
   const { isInstallable, isInstalled, isIOS, handleInstallPWA } = usePWA();
   const {
     dailyReminderEnabled,
