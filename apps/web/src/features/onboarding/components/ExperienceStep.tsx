@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
 import React from "react";
+
 import { experienceLevels } from "../data/onboardingSteps";
 
 export function ExperienceStep({
