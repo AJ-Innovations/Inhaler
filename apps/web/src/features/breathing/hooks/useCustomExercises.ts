@@ -119,7 +119,6 @@ export function useLibrary() {
     return () => subscription.unsubscribe();
   }, []);
 
-
   // Load persisted data from encrypted storage
   useEffect(() => {
     const loadEncryptedData = async () => {
