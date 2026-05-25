@@ -1,5 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import React from "react";
+
 import { SettingsType } from "./ProfileSettingsContent";
 
 interface MenuSection {
