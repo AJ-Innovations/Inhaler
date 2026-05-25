@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { useAuthStore } from "../../auth/store/useAuthStore";
 import { SettingsType } from "../components/ProfileSettingsContent";
 
