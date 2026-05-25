@@ -7,7 +7,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export type SoundscapeType =
-  | "leaf"
+  | "silent-focus"
   | "zen-river"
   | "zen-fountain"
   | "winter-rain"
@@ -22,7 +22,10 @@ export type SoundscapeType =
   | "marine"
   | "desert"
   | "ethereal"
-  | "forest";
+  | "forest"
+  | "desert-night"
+  | "sunset-beach"
+  | "deep-nature";
 
 interface Soundscape {
   id: SoundscapeType;
@@ -32,8 +35,8 @@ interface Soundscape {
 
 export const soundscapes: Soundscape[] = [
   {
-    id: "leaf",
-    name: "Leaf",
+    id: "silent-focus",
+    name: "Silent Focus",
     url: "/music/mdjahidhossain-birds-nature-relax-sounds-110839.mp3",
   },
   {
@@ -44,7 +47,7 @@ export const soundscapes: Soundscape[] = [
   {
     id: "zen-fountain",
     name: "Zen Fountain",
-    url: "/music/alex_jauk-zen-fountain-ambience-210613.mp3",
+    url: "/music/mdjahidhossain-birds-nature-relax-sounds-110839.mp3",
   },
   {
     id: "winter-rain",
@@ -54,7 +57,7 @@ export const soundscapes: Soundscape[] = [
   {
     id: "light-rain",
     name: "Light Rain",
-    url: "/music/liecio-light-rain-109591.mp3",
+    url: "/music/fxprosound-winter-rain-in-oak-forest-loop-185672.mp3",
   },
   {
     id: "nature-birds",
@@ -66,13 +69,25 @@ export const soundscapes: Soundscape[] = [
     name: "528Hz Transform",
     url: "/music/soul_frequencies-528-hz-transformation-music-500282.mp3",
   },
-  { id: "white-noise", name: "White Noise" },
-  { id: "pink-noise", name: "Pink Noise" },
-  { id: "brown-noise", name: "Deep Brownian" },
+  {
+    id: "white-noise",
+    name: "White Noise",
+    url: "/music/alex_jauk-calm-zen-river-flowing-228223.mp3",
+  },
+  {
+    id: "pink-noise",
+    name: "Pink Noise",
+    url: "/music/soul_frequencies-528-hz-transformation-music-500282.mp3",
+  },
+  {
+    id: "brown-noise",
+    name: "Deep Brownian",
+    url: "/music/fxprosound-winter-rain-in-oak-forest-loop-185672.mp3",
+  },
   {
     id: "beach",
     name: "Sunset Beach",
-    url: "/music/alex_jauk-calm-zen-river-flowing-228223.mp3",
+    url: "/music/mdjahidhossain-birds-nature-relax-sounds-110839.mp3",
   },
   {
     id: "lake",
@@ -82,12 +97,12 @@ export const soundscapes: Soundscape[] = [
   {
     id: "marine",
     name: "Marine Depths",
-    url: "/music/alex_jauk-zen-fountain-ambience-210613.mp3",
+    url: "/music/soul_frequencies-528-hz-transformation-music-500282.mp3",
   },
   {
     id: "desert",
     name: "Desert Breeze",
-    url: "/music/soul_frequencies-528-hz-transformation-music-500282.mp3",
+    url: "/music/fxprosound-winter-rain-in-oak-forest-loop-185672.mp3",
   },
   {
     id: "ethereal",
@@ -99,11 +114,26 @@ export const soundscapes: Soundscape[] = [
     name: "Oak Forest",
     url: "/music/fxprosound-winter-rain-in-oak-forest-loop-185672.mp3",
   },
+  {
+    id: "desert-night",
+    name: "Desert Night",
+    url: "/music/soul_frequencies-528-hz-transformation-music-500282.mp3",
+  },
+  {
+    id: "sunset-beach",
+    name: "Sunset Beach",
+    url: "/music/alex_jauk-calm-zen-river-flowing-228223.mp3",
+  },
+  {
+    id: "deep-nature",
+    name: "Deep Nature",
+    url: "/music/fxprosound-winter-rain-in-oak-forest-loop-185672.mp3",
+  },
 ];
 
 export function useSoundscape(isPlaying: boolean = false) {
   const [activeSoundscape, setActiveSoundscape] =
-    useState<SoundscapeType>("leaf");
+    useState<SoundscapeType>("nature-birds");
   const [volume, setVolume] = useState(0.5);
   const [isActuallyPlaying, setIsActuallyPlaying] = useState(false);
 
@@ -322,7 +352,7 @@ export function useSoundscape(isPlaying: boolean = false) {
   }, [safePause, stopNoise]);
 
   const toggleSoundscape = (id: SoundscapeType) => {
-    selectSoundscape(activeSoundscape === id ? "leaf" : id);
+    selectSoundscape(activeSoundscape === id ? "silent-focus" : id);
   };
 
   return {

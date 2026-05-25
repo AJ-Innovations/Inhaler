@@ -241,7 +241,9 @@ export function SessionSettings({
                                     : "border border-white/10 bg-white/10 text-white/60"
                                 }`}
                               >
-                                {s.id === "leaf" ? "Silent" : "Audio + Visual"}
+                                {s.id === "silent-focus"
+                                  ? "Silent"
+                                  : "Audio + Visual"}
                               </span>
                             </div>
                           </button>

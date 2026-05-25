@@ -45,7 +45,7 @@ const getAmbientImage = (activeSoundscape: string) => {
       return "/image/ambients/loop.png";
     case "forest":
       return "/image/ambients/forest.png";
-    case "leaf":
+    case "silent-focus":
     default:
       return "/image/ambients/leaf.png";
   }

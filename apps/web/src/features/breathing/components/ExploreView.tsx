@@ -20,7 +20,7 @@ import {
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { ExerciseCard } from "../components/ExerciseCard";
-import { Exercise, exercises } from "../data";
+import { Exercise, exercises, ambientList } from "../data";
 
 interface ExploreViewProps {
   onStart: (ex: Exercise) => void;
@@ -57,75 +57,11 @@ export function ExploreView({
   const [searchQuery, setSearchQuery] = useState("");
 
   const [isAmbientSelectorOpen, setIsAmbientSelectorOpen] = useState(false);
-
-  const ambientList = [
-    { id: "zen-river", name: "Zen River", image: "/image/ambients/river.png" },
-    {
-      id: "zen-fountain",
-      name: "Zen Fountain",
-      image: "/image/ambients/whaterfalls.png",
-    },
-    {
-      id: "winter-rain",
-      name: "Winter Rain",
-      image: "/image/ambients/rain.png",
-    },
-    {
-      id: "light-rain",
-      name: "Light Rain",
-      image: "/image/ambients/rain2.png",
-    },
-    {
-      id: "nature-birds",
-      name: "Nature Birds",
-      image: "/image/ambients/nature2.png",
-    },
-    {
-      id: "hz-transformation",
-      name: "528Hz Transform",
-      image: "/image/ambients/galaxy.png",
-    },
-    {
-      id: "white-noise",
-      name: "White Noise",
-      image: "/image/ambients/galaxy2.png",
-    },
-    {
-      id: "pink-noise",
-      name: "Pink Noise",
-      image: "/image/ambients/galaxy3.png",
-    },
-    {
-      id: "brown-noise",
-      name: "Deep Brownian",
-      image: "/image/ambients/nature.png",
-    },
-    { id: "beach", name: "Sunset Beach", image: "/image/ambients/beach.png" },
-    { id: "lake", name: "Calm Lake", image: "/image/ambients/lake4.png" },
-    {
-      id: "marine",
-      name: "Marine Depths",
-      image: "/image/ambients/marain.png",
-    },
-    {
-      id: "desert",
-      name: "Desert Breeze",
-      image: "/image/ambients/desert3.png",
-    },
-    {
-      id: "ethereal",
-      name: "Ethereal Loop",
-      image: "/image/ambients/loop.png",
-    },
-    { id: "forest", name: "Oak Forest", image: "/image/ambients/forest.png" },
-    { id: "leaf", name: "Leaf", image: "/image/ambients/leaf.png" },
-  ];
-
   const handleToggleSound = () => {
     if (isAmbientSoundOn) {
       setIsAmbientSoundOn(false);
     } else {
-      if (soundscape.activeSoundscape === "leaf") {
+      if (soundscape.activeSoundscape === "silent-focus") {
         soundscape.setActiveSoundscape("zen-river");
       }
       setIsAmbientSoundOn(true);
@@ -806,64 +742,117 @@ export function ExploreView({
                             setIsAmbientSoundOn(true);
                           }
                         }}
-                        className={`group relative flex aspect-[3/4] w-full flex-col overflow-hidden rounded-3xl border text-left transition-all duration-300 active:scale-95 ${
+                        className={`group relative flex aspect-[2/3] w-full flex-col overflow-hidden rounded-[1.5rem] border text-left transition-all duration-500 active:scale-95 ${
                           isActive
-                            ? "border-white bg-white/10 ring-1 ring-white/20"
-                            : "border-white/5 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]"
+                            ? "border-emerald-500/50 bg-black shadow-[0_0_30px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/50"
+                            : "border-white/10 bg-black hover:border-white/20 hover:shadow-2xl"
                         }`}
                       >
+                        {/* Background Image full height to avoid any cutoffs */}
                         <img
                           src={item.image}
                           alt={item.name}
-                          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+                          className={`absolute inset-0 h-full w-full object-cover transition-transform duration-700 ${
                             isActive
-                              ? "opacity-95"
-                              : "opacity-75 group-hover:opacity-90"
+                              ? "scale-105"
+                              : "scale-100 group-hover:scale-110"
                           }`}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-transparent" />
 
-                        {/* Premium Dynamic Audio Soundwave Bars Animation */}
-                        {isActive && soundscape.isActuallyPlaying && (
-                          <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
-                            <div className="flex h-6 items-end justify-center gap-[3px]">
-                              <div
-                                className="animate-wave-1 w-[3px] rounded-full bg-white"
-                                style={{ height: "4px" }}
-                              />
-                              <div
-                                className="animate-wave-2 w-[3px] rounded-full bg-white"
-                                style={{ height: "4px" }}
-                              />
-                              <div
-                                className="animate-wave-3 w-[3px] rounded-full bg-white"
-                                style={{ height: "4px" }}
-                              />
-                              <div
-                                className="animate-wave-4 w-[3px] rounded-full bg-white"
-                                style={{ height: "4px" }}
-                              />
-                              <div
-                                className="animate-wave-5 w-[3px] rounded-full bg-white"
-                                style={{ height: "4px" }}
-                              />
-                            </div>
+                        {/* Hover overlay cutting visibility */}
+                        <div
+                          className={`duration-500"} absolute inset-0 transition-colors`}
+                        />
+
+                        {/* Double gradient for smooth blend to black at the bottom */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black via-black/90 to-transparent" />
+
+                        {/* Top-left tag based on ambient type */}
+                        <div className="absolute top-4 left-4 z-10">
+                          <span className="text-[9px] tracking-widest text-white/80 uppercase mix-blend-overlay">
+                            {item.id.includes("rain") ||
+                            item.id.includes("river") ||
+                            item.id.includes("lake") ||
+                            item.id.includes("beach") ||
+                            item.id.includes("marain")
+                              ? "Water Element"
+                              : item.id.includes("galaxy")
+                                ? "Cosmic Element"
+                                : item.id.includes("forest") ||
+                                    item.id.includes("nature") ||
+                                    item.id.includes("leaf") ||
+                                    item.id.includes("desert")
+                                  ? "Earth Element"
+                                  : "Ambient Sound"}
+                          </span>
+                        </div>
+
+                        {/* Content Section */}
+                        <div className="relative z-10 flex h-full flex-col justify-between px-4 pt-1 pb-4 sm:px-5 sm:pb-5">
+                          {/* Top part where animation sits */}
+                          <div className="flex flex-1 items-center justify-center">
+                            {isActive && soundscape.isActuallyPlaying && (
+                              <div className="flex h-8 items-end justify-center gap-[4px] opacity-80 mix-blend-overlay">
+                                <div
+                                  className="animate-wave-1 w-[4px] rounded-full bg-white"
+                                  style={{ height: "4px" }}
+                                />
+                                <div
+                                  className="animate-wave-2 w-[4px] rounded-full bg-white"
+                                  style={{ height: "4px" }}
+                                />
+                                <div
+                                  className="animate-wave-3 w-[4px] rounded-full bg-white"
+                                  style={{ height: "4px" }}
+                                />
+                                <div
+                                  className="animate-wave-4 w-[4px] rounded-full bg-white"
+                                  style={{ height: "4px" }}
+                                />
+                                <div
+                                  className="animate-wave-5 w-[4px] rounded-full bg-white"
+                                  style={{ height: "4px" }}
+                                />
+                              </div>
+                            )}
                           </div>
-                        )}
 
-                        <div className="relative z-10 mt-auto flex w-full flex-col gap-1.5 p-4">
-                          <span className="block truncate text-xs font-medium tracking-wide text-white">
-                            {item.name}
-                          </span>
-                          <span
-                            className={`w-fit rounded-full px-2 py-0.5 text-[7.5px] font-bold tracking-widest uppercase inline-fit ${
-                              isActive
-                                ? "border border-white bg-white text-black"
-                                : "border border-white/10 bg-white/10 text-white/60"
-                            }`}
-                          >
-                            {item.id === "leaf" ? "Silent" : "Audio + Visual"}
-                          </span>
+                          {/* Bottom part for Text */}
+                          <div className="flex flex-col">
+                            <h3
+                              className={`text-lg tracking-tight transition-colors duration-300 sm:text-xl ${
+                                isActive
+                                  ? "font-medium text-emerald-400"
+                                  : "font-normal text-white"
+                              }`}
+                            >
+                              {item.name}
+                            </h3>
+
+                            {/* Tags instead of button */}
+                            <p className="mt-1 text-[10px] text-white/60">
+                              {item.id.includes("rain")
+                                ? "Deep sleep & relaxation"
+                                : item.id.includes("galaxy")
+                                  ? "Deep focus & meditation"
+                                  : item.id.includes("forest")
+                                    ? "Calm & stress relief"
+                                    : item.id === "leaf"
+                                      ? "Pure focus & reading"
+                                      : "Immersive ambiance"}
+                            </p>
+                          </div>
+
+                          {/* Footer Text */}
+                          <div className="mt-4 flex w-full items-center justify-between text-[8px] tracking-[0.15em] text-white/30 uppercase sm:text-[9px]">
+                            <span>spirox.app</span>
+                            <span>
+                              {item.id === "silent-focus"
+                                ? "silent"
+                                : "audio + visual"}
+                            </span>
+                          </div>
                         </div>
                       </button>
                     );

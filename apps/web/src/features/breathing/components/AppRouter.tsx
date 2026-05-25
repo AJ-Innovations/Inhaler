@@ -79,7 +79,7 @@ export function AppRouter() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       SecureStorage.getItem("spirox_active_ambient").then((savedAmbient) => {
-        if (savedAmbient && savedAmbient !== "leaf") {
+        if (savedAmbient && savedAmbient !== "silent-focus") {
           soundscape.setActiveSoundscape(savedAmbient as any);
         } else {
           soundscape.setActiveSoundscape("nature-birds");
@@ -221,7 +221,7 @@ export function AppRouter() {
     <div
       className="relative h-[100dvh] w-full overflow-hidden bg-black"
       style={{
-        backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape || "leaf")})`,
+        backgroundImage: `url(${getAmbientImage(soundscape.activeSoundscape || "silent-focus")})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
