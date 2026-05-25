@@ -1,3 +1,3 @@
-export * from "./exercises";
-export * from "./ambientImages";
 export * from "../types";
+export * from "./ambientImages";
+export * from "./exercises";
