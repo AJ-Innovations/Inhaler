@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
 import React from "react";
+
 import { stressLevels } from "../data/onboardingSteps";
 
 export function StressStep({
