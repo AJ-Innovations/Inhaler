@@ -246,10 +246,6 @@ export function SessionSetup({
                     <h3 className="text-lg font-light text-white">
                       Unrestricted Flow
                     </h3>
-                    <p className="max-w-[260px] text-xs leading-relaxed font-light text-gray-200">
-                      Experience a session without boundaries. You decide when
-                      to conclude your journey.
-                    </p>
                   </div>
                 </motion.div>
               )}
