@@ -1,4 +1,5 @@
 import React from "react";
+
 import { PlanType } from "../types";
 
 interface PlanPillTabsProps {
