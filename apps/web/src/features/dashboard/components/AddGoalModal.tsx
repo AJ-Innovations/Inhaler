@@ -2,6 +2,7 @@ import { Exercise } from "@features/breathing/data";
 import { motion } from "framer-motion";
 import { CheckCircle2, ChevronLeft, Repeat, Zap } from "lucide-react";
 import React from "react";
+
 import { GOAL_ICONS } from "../data/goalIcons";
 
 interface AddGoalModalProps {
