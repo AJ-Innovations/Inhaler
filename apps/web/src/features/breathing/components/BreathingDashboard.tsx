@@ -21,7 +21,11 @@ const SubscriptionView = dynamic(() =>
 
 import { BottomNav } from "./BottomNav";
 import { SidebarNav } from "./SidebarNav";
-import { Exercise, getAmbientImage, predefinedExercises } from "../data";
+import {
+  Exercise,
+  getAmbientImage,
+  exercises as predefinedExercises,
+} from "../data";
 import { useLibrary } from "../hooks/useCustomExercises";
 import { useHashNavigation } from "../hooks/useHashNavigation";
 import { useNotifications } from "../hooks/useNotifications";
